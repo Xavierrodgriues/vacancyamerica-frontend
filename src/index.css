@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 11% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 11% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 11% 15%;
+
+    --primary: 204 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 16% 96%;
+    --secondary-foreground: 210 11% 15%;
+
+    --muted: 210 16% 96%;
+    --muted-foreground: 210 9% 53%;
+
+    --accent: 210 16% 96%;
+    --accent-foreground: 210 11% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 20% 92%;
+    --input: 214 20% 92%;
+    --ring: 204 89% 53%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 210 11% 15%;
+    --sidebar-primary: 204 89% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 16% 96%;
+    --sidebar-accent-foreground: 210 11% 15%;
+    --sidebar-border: 214 20% 92%;
+    --sidebar-ring: 204 89% 53%;
+
+    /* Custom tokens */
+    --hover-bg: 210 16% 97%;
+    --post-border: 214 20% 92%;
+    --icon-muted: 210 9% 65%;
+    --badge-bg: 204 89% 95%;
+    --badge-text: 204 89% 40%;
+  }
+
+  .dark {
+    --background: 210 11% 7%;
+    --foreground: 210 16% 96%;
+
+    --card: 210 11% 10%;
+    --card-foreground: 210 16% 96%;
+
+    --popover: 210 11% 10%;
+    --popover-foreground: 210 16% 96%;
+
+    --primary: 204 89% 53%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 11% 15%;
+    --secondary-foreground: 210 16% 96%;
+
+    --muted: 210 11% 15%;
+    --muted-foreground: 210 9% 53%;
+
+    --accent: 210 11% 15%;
+    --accent-foreground: 210 16% 96%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 16% 96%;
+
+    --border: 210 11% 18%;
+    --input: 210 11% 18%;
+    --ring: 204 89% 53%;
+
+    --sidebar-background: 210 11% 7%;
+    --sidebar-foreground: 210 16% 96%;
+    --sidebar-primary: 204 89% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 11% 15%;
+    --sidebar-accent-foreground: 210 16% 96%;
+    --sidebar-border: 210 11% 18%;
+    --sidebar-ring: 204 89% 53%;
+
+    --hover-bg: 210 11% 12%;
+    --post-border: 210 11% 18%;
+    --icon-muted: 210 9% 45%;
+    --badge-bg: 204 89% 15%;
+    --badge-text: 204 89% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+}
+
+@layer utilities {
+  .hover-card {
+    @apply transition-colors duration-150;
+  }
+  .hover-card:hover {
+    background-color: hsl(var(--hover-bg));
+  }
+}
