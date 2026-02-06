@@ -122,6 +122,10 @@ export function PostCard({ post }: { post: Post }) {
                 <video
                   src={post.video_url}
                   controls
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   className="w-full max-h-[600px] object-contain bg-black aspect-video"
                   preload="metadata"
                 />
