@@ -47,7 +47,7 @@ export function useCreatePost() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ content, imageFile }: { content: string; imageFile?: File }) => {
+    mutationFn: async ({ content, mediaFile }: { content: string; mediaFile?: File }) => {
       if (!user || !user.token) throw new Error("Not authenticated");
 
       let body: any;
@@ -55,10 +55,10 @@ export function useCreatePost() {
         "Authorization": `Bearer ${user.token}`
       };
 
-      if (imageFile) {
+      if (mediaFile) {
         const formData = new FormData();
         formData.append('content', content);
-        formData.append('image', imageFile);
+        formData.append('image', mediaFile); // Multer expects 'image' field based on middleware config, even for video
         body = formData;
         // Content-Type header with FormData is set automatically by fetch to include boundary
       } else {

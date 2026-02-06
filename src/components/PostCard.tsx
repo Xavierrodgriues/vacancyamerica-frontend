@@ -23,6 +23,7 @@ interface Post {
   user?: any; // For flexibility
   content: string;
   image_url: string | null;
+  video_url?: string | null;
   createdAt?: string;
   created_at?: string;
   profiles: PostProfile;
@@ -112,6 +113,17 @@ export function PostCard({ post }: { post: Post }) {
                   alt="Post image"
                   className="max-h-[512px] w-full object-cover"
                   loading="lazy"
+                />
+              </div>
+            )}
+
+            {post.video_url && (
+              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border">
+                <video
+                  src={post.video_url}
+                  controls
+                  className="w-full max-h-[600px] object-contain bg-black aspect-video"
+                  preload="metadata"
                 />
               </div>
             )}

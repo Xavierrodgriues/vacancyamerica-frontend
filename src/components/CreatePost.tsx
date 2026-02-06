@@ -9,38 +9,44 @@ import { toast } from "sonner";
 
 export function CreatePost() {
   const [content, setContent] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: profile } = useProfile();
   const createPost = useCreatePost();
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image must be less than 5MB");
+      const isVideo = file.type.startsWith("video/");
+      const limit = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024; // 50MB for video, 5MB for image
+
+      if (file.size > limit) {
+        toast.error(`${isVideo ? "Video" : "Image"} must be less than ${isVideo ? "50MB" : "5MB"}`);
         return;
       }
-      setImageFile(file);
+      setMediaFile(file);
+      setMediaType(isVideo ? "video" : "image");
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result as string);
+      reader.onloadend = () => setMediaPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+  const removeMedia = () => {
+    setMediaFile(null);
+    setMediaPreview(null);
+    setMediaType(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = async () => {
-    if (!content.trim() && !imageFile) return;
+    if (!content.trim() && !mediaFile) return;
     try {
-      await createPost.mutateAsync({ content: content.trim(), imageFile: imageFile || undefined });
+      await createPost.mutateAsync({ content: content.trim(), mediaFile: mediaFile || undefined });
       setContent("");
-      removeImage();
+      removeMedia();
       toast.success("Post created!");
     } catch {
       toast.error("Failed to create post");
@@ -63,16 +69,20 @@ export function CreatePost() {
             className="border-0 bg-transparent resize-none text-lg placeholder:text-muted-foreground focus-visible:ring-0 p-0 min-h-[60px]"
             maxLength={280}
           />
-          {imagePreview && (
+          {mediaPreview && (
             <div className="relative mt-3 rounded-2xl overflow-hidden border border-post-border">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="max-h-80 w-full object-cover"
-              />
+              {mediaType === 'video' ? (
+                <video src={mediaPreview} controls className="w-full max-h-[600px] object-contain bg-black aspect-video" />
+              ) : (
+                <img
+                  src={mediaPreview}
+                  alt="Preview"
+                  className="max-h-80 w-full object-cover"
+                />
+              )}
               <button
-                onClick={removeImage}
-                className="absolute top-2 right-2 bg-foreground/70 text-background rounded-full p-1 hover:bg-foreground/90 transition-colors"
+                onClick={removeMedia}
+                className="absolute top-2 right-2 bg-foreground/70 text-background rounded-full p-1 hover:bg-foreground/90 transition-colors z-10"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -83,8 +93,8 @@ export function CreatePost() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
-                onChange={handleImageSelect}
+                accept="image/*,video/mp4,video/webm"
+                onChange={handleMediaSelect}
                 className="hidden"
               />
               <Button
@@ -92,13 +102,14 @@ export function CreatePost() {
                 size="icon"
                 className="text-primary hover:bg-primary/10 rounded-full h-9 w-9"
                 onClick={() => fileInputRef.current?.click()}
+                title="Add media"
               >
                 <ImagePlus className="h-5 w-5" />
               </Button>
             </div>
             <Button
               onClick={handleSubmit}
-              disabled={(!content.trim() && !imageFile) || createPost.isPending}
+              disabled={(!content.trim() && !mediaFile) || createPost.isPending}
               className="rounded-full px-5 font-bold"
               size="sm"
             >
