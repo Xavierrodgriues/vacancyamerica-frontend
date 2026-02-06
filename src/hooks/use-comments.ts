@@ -25,7 +25,7 @@ export function useCreateComment() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
+    mutationFn: async ({ postId, content, parentId }: { postId: string; content: string; parentId?: string }) => {
       if (!user || !user.token) throw new Error("Not authenticated");
 
       const res = await fetch("http://localhost:5000/api/comments", {
@@ -34,7 +34,7 @@ export function useCreateComment() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${user.token}`
         },
-        body: JSON.stringify({ content, postId })
+        body: JSON.stringify({ content, postId, parentId })
       });
 
       if (!res.ok) {
@@ -45,6 +45,33 @@ export function useCreateComment() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["comments", variables.postId] });
+    },
+  });
+}
+
+export function useDeleteComment() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (commentId: string) => {
+      if (!user || !user.token) throw new Error("Not authenticated");
+
+      const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${user.token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errorPayload = await res.json();
+        throw new Error(errorPayload.message || "Failed to delete comment");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
   });
 }
