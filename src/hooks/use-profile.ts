@@ -9,10 +9,18 @@ export function useProfile() {
   return useQuery({
     queryKey: ["profile", user?._id],
     queryFn: async () => {
-      // Return user from context or fetch me
-      // Since useAuth already fetches me, we can just return user if valid
-      if (user) return { ...user, id: user._id, user_id: user._id };
-      return null;
+      const token = localStorage.getItem('token');
+      if (!token) return null;
+
+      const res = await fetch('http://localhost:5000/api/auth/me', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      const data = await res.json();
+      return { ...data, id: data._id, user_id: data._id };
     },
     enabled: !!user,
   });

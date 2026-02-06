@@ -13,6 +13,9 @@ import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { FriendActionButtons } from "@/components/FriendActionButtons";
+import { FriendsList } from "@/components/FriendsList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
@@ -123,6 +126,8 @@ export default function Profile() {
               size="xl"
             />
           </div>
+        </div>
+        <div className="flex gap-2">
           {isOwnProfile && !editing && (
             <Button
               variant="outline"
@@ -131,6 +136,12 @@ export default function Profile() {
             >
               Edit profile
             </Button>
+          )}
+          {!isOwnProfile && visitedProfile && (
+            <FriendActionButtons
+              userId={visitedProfile.user_id}
+              username={visitedProfile.username}
+            />
           )}
         </div>
 
@@ -175,25 +186,55 @@ export default function Profile() {
         )}
       </div>
 
-      {/* User posts */}
-      <div className="border-t border-post-border">
-        <div className="px-4 py-3 border-b border-post-border">
-          <span className="font-bold text-foreground border-b-2 border-primary pb-3 px-1">
-            Posts
-          </span>
-        </div>
-        {postsLoading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      {/* Content Tabs */}
+      <div className="mt-4">
+        <Tabs key={username} defaultValue="posts" className="w-full">
+          <div className="border-b border-post-border px-4">
+            <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b-0 rounded-none space-x-6">
+              <TabsTrigger
+                value="posts"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-2 py-3"
+              >
+                Posts
+              </TabsTrigger>
+              {isOwnProfile && (
+                <TabsTrigger
+                  value="friends"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-2 py-3"
+                >
+                  Friends & Requests
+                </TabsTrigger>
+              )}
+            </TabsList>
           </div>
-        ) : posts?.length === 0 ? (
-          <p className="text-center py-12 text-muted-foreground">No posts yet</p>
-        ) : (
-          posts?.map((post: any) => <PostCard key={post._id} post={post} />)
-        )}
+
+          <TabsContent value="posts" className="mt-0">
+            <div className="border-t border-post-border">
+              {postsLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : !posts ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : posts.length === 0 ? (
+                <p className="text-center py-12 text-muted-foreground">No posts yet</p>
+              ) : (
+                posts.map((post: any) => <PostCard key={post._id} post={post} />)
+              )}
+            </div>
+          </TabsContent>
+
+          {isOwnProfile && (
+            <TabsContent value="friends" className="p-4">
+              <FriendsList />
+            </TabsContent>
+          )}
+        </Tabs>
       </div>
 
       <div className="h-16 md:hidden" />
-    </AppLayout>
+    </AppLayout >
   );
 }

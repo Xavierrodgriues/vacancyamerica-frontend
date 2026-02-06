@@ -7,6 +7,8 @@ interface User {
   email: string;
   avatar_url?: string;
   token?: string;
+  friends?: string[];
+  blocked_users?: string[];
 }
 
 interface AuthContextType {
