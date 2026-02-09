@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../lib/admin-auth-context';
 import { toast } from 'sonner';
-import { Loader2, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Loader2, ShieldCheck, Eye, EyeOff, Clock, XCircle } from 'lucide-react';
 
 export default function AdminLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{ type: 'pending' | 'rejected' | null; message: string }>({ type: null, message: '' });
     const { login, admin } = useAdminAuth();
     const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ export default function AdminLogin() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setStatusMessage({ type: null, message: '' });
 
         if (!email || !password) {
             toast.error('Please fill in all fields');
@@ -32,7 +34,20 @@ export default function AdminLogin() {
             toast.success('Welcome back, Admin!');
             navigate('/admin/dashboard');
         } catch (error: any) {
-            toast.error(error.message || 'Login failed');
+            // Check for pending/rejected status
+            if (error.message?.includes('pending')) {
+                setStatusMessage({
+                    type: 'pending',
+                    message: 'Your account is awaiting super admin approval. Please check back later.'
+                });
+            } else if (error.message?.includes('rejected')) {
+                setStatusMessage({
+                    type: 'rejected',
+                    message: error.message
+                });
+            } else {
+                toast.error(error.message || 'Login failed');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -53,6 +68,23 @@ export default function AdminLogin() {
                         <h1 className="text-2xl font-bold text-white mb-2">Admin Portal</h1>
                         <p className="text-gray-400 text-sm">Sign in to manage your platform</p>
                     </div>
+
+                    {/* Status Messages */}
+                    {statusMessage.type && (
+                        <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${statusMessage.type === 'pending'
+                                ? 'bg-amber-500/10 border border-amber-500/20'
+                                : 'bg-red-500/10 border border-red-500/20'
+                            }`}>
+                            {statusMessage.type === 'pending' ? (
+                                <Clock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                            ) : (
+                                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                            )}
+                            <p className={`text-sm ${statusMessage.type === 'pending' ? 'text-amber-200' : 'text-red-200'}`}>
+                                {statusMessage.message}
+                            </p>
+                        </div>
+                    )}
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
@@ -117,10 +149,16 @@ export default function AdminLogin() {
                         </p>
                     </div>
 
-                    <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                    <div className="mt-6 pt-6 border-t border-white/10 text-center space-y-2">
+                        <Link
+                            to="/superadmin/login"
+                            className="block text-amber-400 hover:text-amber-300 text-sm font-medium transition-colors"
+                        >
+                            Super Admin Login →
+                        </Link>
                         <Link
                             to="/auth"
-                            className="text-gray-500 hover:text-gray-400 text-sm transition-colors"
+                            className="block text-gray-500 hover:text-gray-400 text-sm transition-colors"
                         >
                             ← Back to User Login
                         </Link>

@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAdminAuth } from '../lib/admin-auth-context';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Loader2, ShieldPlus, Eye, EyeOff, Check, X } from 'lucide-react';
+import { Loader2, ShieldPlus, Eye, EyeOff, Check, X, Clock } from 'lucide-react';
 
 export default function AdminRegister() {
     const [formData, setFormData] = useState({
@@ -14,14 +13,7 @@ export default function AdminRegister() {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const { register, admin } = useAdminAuth();
-    const navigate = useNavigate();
-
-    // Redirect if already logged in
-    if (admin) {
-        navigate('/admin/dashboard');
-        return null;
-    }
+    const [registrationComplete, setRegistrationComplete] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
@@ -62,15 +54,61 @@ export default function AdminRegister() {
 
         setIsLoading(true);
         try {
-            await register(formData.username, formData.email, formData.password, formData.display_name);
-            toast.success('Admin account created successfully!');
-            navigate('/admin/dashboard');
+            const res = await fetch('http://localhost:5000/api/admin/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                    display_name: formData.display_name
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || 'Registration failed');
+            }
+
+            toast.success('Registration submitted!');
+            setRegistrationComplete(true);
         } catch (error: any) {
             toast.error(error.message || 'Registration failed');
         } finally {
             setIsLoading(false);
         }
     };
+
+    // Success screen after registration
+    if (registrationComplete) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+                <div className="relative w-full max-w-md">
+                    <div className="backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-2xl p-8 text-center">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/20 mb-6">
+                            <Clock className="w-10 h-10 text-amber-400" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-white mb-3">Registration Submitted!</h1>
+                        <p className="text-gray-400 mb-6">
+                            Your admin account is pending approval. A super admin will review your request shortly.
+                        </p>
+                        <div className="bg-slate-800/50 rounded-xl p-4 mb-6">
+                            <p className="text-sm text-slate-300">
+                                You'll be able to login once your account is approved.
+                            </p>
+                        </div>
+                        <Link
+                            to="/admin/login"
+                            className="inline-block px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold rounded-xl transition-all hover:scale-105"
+                        >
+                            Go to Login
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
@@ -84,7 +122,7 @@ export default function AdminRegister() {
                             <ShieldPlus className="w-8 h-8 text-white" />
                         </div>
                         <h1 className="text-2xl font-bold text-white mb-2">Create Admin Account</h1>
-                        <p className="text-gray-400 text-sm">Set up your administrator profile</p>
+                        <p className="text-gray-400 text-sm">Requires super admin approval</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -186,10 +224,10 @@ export default function AdminRegister() {
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all ${formData.confirmPassword
-                                        ? doPasswordsMatch
-                                            ? 'border-emerald-500/50'
-                                            : 'border-red-500/50'
-                                        : 'border-white/10'
+                                    ? doPasswordsMatch
+                                        ? 'border-emerald-500/50'
+                                        : 'border-red-500/50'
+                                    : 'border-white/10'
                                     }`}
                                 placeholder="••••••••"
                                 disabled={isLoading}
@@ -204,7 +242,7 @@ export default function AdminRegister() {
                             {isLoading ? (
                                 <Loader2 className="w-5 h-5 animate-spin mx-auto" />
                             ) : (
-                                'Create Account'
+                                'Submit for Approval'
                             )}
                         </button>
                     </form>

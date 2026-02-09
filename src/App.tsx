@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { AdminAuthProvider, useAdminAuth } from "@/admin/lib/admin-auth-context";
+import { SuperAdminAuthProvider, useSuperAdminAuth } from "@/admin/lib/super-admin-auth-context";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
@@ -13,6 +14,9 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AdminRegister from "./admin/pages/AdminRegister";
 import AdminDashboard from "./admin/pages/AdminDashboard";
+import SuperAdminLogin from "./admin/pages/SuperAdminLogin";
+import SuperAdminRegister from "./admin/pages/SuperAdminRegister";
+import SuperAdminDashboard from "./admin/pages/SuperAdminDashboard";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -71,6 +75,24 @@ function AdminProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function SuperAdminProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { superAdmin, loading } = useSuperAdminAuth();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-slate-950">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+      </div>
+    );
+  }
+
+  if (!superAdmin) {
+    return <Navigate to="/superadmin/login" replace />;
+  }
+
+  return <>{children}</>;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -79,20 +101,27 @@ const App = () => (
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <AdminAuthProvider>
-            <Routes>
-              {/* User routes */}
-              <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
-              <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-              <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
-              <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <SuperAdminAuthProvider>
+              <Routes>
+                {/* User routes */}
+                <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
+                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+                <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
-              {/* Admin routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/register" element={<AdminRegister />} />
-              <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
+                {/* Admin routes */}
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/register" element={<AdminRegister />} />
+                <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* Super Admin routes */}
+                <Route path="/superadmin/login" element={<SuperAdminLogin />} />
+                <Route path="/superadmin/register" element={<SuperAdminRegister />} />
+                <Route path="/superadmin/dashboard" element={<SuperAdminProtectedRoute><SuperAdminDashboard /></SuperAdminProtectedRoute>} />
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SuperAdminAuthProvider>
           </AdminAuthProvider>
         </AuthProvider>
       </BrowserRouter>
