@@ -1,4 +1,3 @@
-import { CreatePost } from "@/components/CreatePost";
 import { PostCard } from "@/components/PostCard";
 import { usePosts } from "@/hooks/use-posts";
 import { AppLayout } from "@/components/AppLayout";
@@ -14,9 +13,6 @@ export default function Home() {
         <h1 className="text-xl font-bold p-4">Home</h1>
       </header>
 
-      {/* Create post */}
-      <CreatePost />
-
       {/* Feed */}
       {isLoading ? (
         <div className="flex justify-center py-12">
@@ -24,9 +20,9 @@ export default function Home() {
         </div>
       ) : posts?.length === 0 ? (
         <div className="text-center py-16 px-4">
-          <h3 className="text-xl font-bold text-foreground mb-2">Welcome to X!</h3>
+          <h3 className="text-xl font-bold text-foreground mb-2">Welcome!</h3>
           <p className="text-muted-foreground">
-            This is your home feed. Create your first post above!
+            No posts yet. Check back later for updates!
           </p>
         </div>
       ) : (

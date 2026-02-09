@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 import { UserAvatar } from "@/components/UserAvatar";
 import { CommentSection } from "@/components/CommentSection";
 import { timeAgo } from "@/lib/time";
-import { MessageCircle, Heart, Share, Trash2 } from "lucide-react";
+import { MessageCircle, Heart, Share, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
-// import { supabase } from "@/integrations/supabase/client"; // Removed Supabase import
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -20,7 +19,7 @@ interface Post {
   _id?: string;
   id?: string;
   user_id?: string;
-  user?: any; // For flexibility
+  user?: any;
   content: string;
   image_url: string | null;
   video_url?: string | null;
@@ -35,32 +34,7 @@ export function PostCard({ post }: { post: Post }) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Handle different ID formats (MongoDB _id vs Supabase id/user_id)
   const postId = post._id || post.id;
-  const postUserId = post.user?._id || post.user_id; // Check populated user object first, then user_id (if flattened)
-
-  const isOwner = user && (user._id === postUserId || user.username === post.profiles.username);
-
-  const handleDelete = async () => {
-    if (!user || !user.token) return;
-
-    try {
-      const res = await fetch(`http://localhost:5000/api/posts/${postId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${user.token}`
-        }
-      });
-
-      if (!res.ok) throw new Error("Failed to delete post");
-
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Post deleted");
-    } catch (error) {
-      toast.error("Failed to delete post");
-    }
-  };
-
   const createdAt = post.createdAt || post.created_at || new Date().toISOString();
 
   return (
@@ -90,16 +64,6 @@ export function PostCard({ post }: { post: Post }) {
               </Link>
               <span className="text-muted-foreground">·</span>
               <span className="text-muted-foreground text-sm">{timeAgo(createdAt)}</span>
-              {isOwner && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="ml-auto h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
-                  onClick={handleDelete}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
             </div>
 
             <p className="mt-1 text-foreground whitespace-pre-wrap break-words leading-relaxed">
@@ -162,6 +126,19 @@ export function PostCard({ post }: { post: Post }) {
               >
                 <Share className="h-4 w-4" />
               </Button>
+              {/* Follow button - visible if not own post */}
+              {user && post.profiles.username !== user.username && (
+                <Link to={`/profile/${post.profiles.username}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    <span className="text-sm">Follow</span>
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
