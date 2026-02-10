@@ -1,59 +1,39 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSuperAdminAuth } from '../lib/super-admin-auth-context';
 import { useAdminAuth } from '../lib/admin-auth-context';
 
-const API_BASE = 'http://localhost:5000/api/admin/posts';
+const API_URL = 'http://localhost:5000/api/admin/posts';
 
-interface Post {
+export interface AdminPost {
     _id: string;
-    content: string;
-    image_url: string | null;
-    video_url: string | null;
     user: {
         _id: string;
         username: string;
         display_name: string;
-        avatar_url: string | null;
+        avatar_url: string;
     };
+    content: string;
+    image_url: string | null;
+    video_url: string | null;
+    status: 'pending' | 'pending_trusted' | 'published' | 'rejected';
     createdAt: string;
-}
-
-interface PostsResponse {
-    success: boolean;
-    data: Post[];
-    pagination: {
-        currentPage: number;
-        totalPages: number;
-        totalItems: number;
-        itemsPerPage: number;
+    rejectionReason?: string;
+    approvedBy?: {
+        display_name: string;
     };
 }
 
-interface StatsResponse {
-    success: boolean;
-    data: {
-        totalPosts: number;
-        todayPosts: number;
-        weeklyPosts: number;
-    };
-}
+// --- Regular Admin Hooks ---
 
-export function useAdminPosts(page = 1, limit = 20) {
+export function useAdminPosts(page = 1) {
     const { admin } = useAdminAuth();
-
     return useQuery({
-        queryKey: ['admin-posts', page, limit],
-        queryFn: async (): Promise<PostsResponse> => {
-            if (!admin?.token) throw new Error('Not authenticated');
-
-            const res = await fetch(`${API_BASE}?page=${page}&limit=${limit}`, {
-                headers: { 'Authorization': `Bearer ${admin.token}` }
+        queryKey: ['adminPosts', page],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}?page=${page}`, {
+                headers: { 'Authorization': `Bearer ${admin?.token}` }
             });
-
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || 'Failed to fetch posts');
-            }
-
+            if (!res.ok) throw new Error('Failed to fetch posts');
             return res.json();
         },
         enabled: !!admin?.token
@@ -62,21 +42,13 @@ export function useAdminPosts(page = 1, limit = 20) {
 
 export function useAdminPostStats() {
     const { admin } = useAdminAuth();
-
     return useQuery({
-        queryKey: ['admin-post-stats'],
-        queryFn: async (): Promise<StatsResponse> => {
-            if (!admin?.token) throw new Error('Not authenticated');
-
-            const res = await fetch(`${API_BASE}/stats`, {
-                headers: { 'Authorization': `Bearer ${admin.token}` }
+        queryKey: ['adminPostStats'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/stats`, {
+                headers: { 'Authorization': `Bearer ${admin?.token}` }
             });
-
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || 'Failed to fetch stats');
-            }
-
+            if (!res.ok) throw new Error('Failed to fetch stats');
             return res.json();
         },
         enabled: !!admin?.token
@@ -84,116 +56,153 @@ export function useAdminPostStats() {
 }
 
 export function useCreateAdminPost() {
-    const queryClient = useQueryClient();
     const { admin } = useAdminAuth();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ content, mediaFile }: { content: string; mediaFile?: File }) => {
-            if (!admin?.token) throw new Error('Not authenticated');
-
-            let body: FormData | string;
-            const headers: HeadersInit = {
-                'Authorization': `Bearer ${admin.token}`
-            };
-
-            if (mediaFile) {
-                const formData = new FormData();
-                formData.append('content', content);
-                formData.append('image', mediaFile);
-                body = formData;
-            } else {
-                body = JSON.stringify({ content });
-                headers['Content-Type'] = 'application/json';
+        mutationFn: async (data: { content: string; mediaFile?: File }) => {
+            const formData = new FormData();
+            formData.append('content', data.content);
+            if (data.mediaFile) {
+                formData.append('media', data.mediaFile);
             }
 
-            const res = await fetch(API_BASE, {
+            const res = await fetch(API_URL, {
                 method: 'POST',
-                headers,
-                body
+                headers: { 'Authorization': `Bearer ${admin?.token}` },
+                body: formData
             });
 
             if (!res.ok) {
                 const error = await res.json();
                 throw new Error(error.message || 'Failed to create post');
             }
-
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-            queryClient.invalidateQueries({ queryKey: ['admin-post-stats'] });
-            queryClient.invalidateQueries({ queryKey: ['posts'] });
-        }
-    });
-}
-
-export function useUpdateAdminPost() {
-    const queryClient = useQueryClient();
-    const { admin } = useAdminAuth();
-
-    return useMutation({
-        mutationFn: async ({ id, content, mediaFile }: { id: string; content: string; mediaFile?: File }) => {
-            if (!admin?.token) throw new Error('Not authenticated');
-
-            let body: FormData | string;
-            const headers: HeadersInit = {
-                'Authorization': `Bearer ${admin.token}`
-            };
-
-            if (mediaFile) {
-                const formData = new FormData();
-                formData.append('content', content);
-                formData.append('image', mediaFile);
-                body = formData;
-            } else {
-                body = JSON.stringify({ content });
-                headers['Content-Type'] = 'application/json';
-            }
-
-            const res = await fetch(`${API_BASE}/${id}`, {
-                method: 'PUT',
-                headers,
-                body
-            });
-
-            if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || 'Failed to update post');
-            }
-
-            return res.json();
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-            queryClient.invalidateQueries({ queryKey: ['posts'] });
+            queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
+            queryClient.invalidateQueries({ queryKey: ['adminPostStats'] });
         }
     });
 }
 
 export function useDeleteAdminPost() {
-    const queryClient = useQueryClient();
     const { admin } = useAdminAuth();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (id: string) => {
-            if (!admin?.token) throw new Error('Not authenticated');
-
-            const res = await fetch(`${API_BASE}/${id}`, {
+            const res = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${admin.token}` }
+                headers: { 'Authorization': `Bearer ${admin?.token}` }
             });
 
             if (!res.ok) {
-                const error = await res.json();
-                throw new Error(error.message || 'Failed to delete post');
+                throw new Error('Failed to delete post');
             }
-
             return res.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-            queryClient.invalidateQueries({ queryKey: ['admin-post-stats'] });
-            queryClient.invalidateQueries({ queryKey: ['posts'] });
+            queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
+            queryClient.invalidateQueries({ queryKey: ['adminPostStats'] });
+        }
+    });
+}
+
+// --- Super Admin Hooks ---
+
+export function usePendingPosts() {
+    const { superAdmin } = useSuperAdminAuth();
+    return useQuery<AdminPost[]>({
+        queryKey: ['adminPosts', 'pending'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/pending`, {
+                headers: { 'Authorization': `Bearer ${superAdmin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch pending posts');
+            const data = await res.json();
+            return data.data;
+        },
+        enabled: !!superAdmin?.token,
+        staleTime: 60000, // 1 minute
+        refetchOnWindowFocus: false
+    });
+}
+
+export function useTrustedPosts() {
+    const { superAdmin } = useSuperAdminAuth();
+    return useQuery<AdminPost[]>({
+        queryKey: ['adminPosts', 'trusted'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/trusted`, {
+                headers: { 'Authorization': `Bearer ${superAdmin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch trusted posts');
+            const data = await res.json();
+            return data.data;
+        },
+        enabled: !!superAdmin?.token,
+        staleTime: 60000, // 1 minute
+        refetchOnWindowFocus: false
+    });
+}
+
+export function useRejectedPosts() {
+    const { superAdmin } = useSuperAdminAuth();
+    return useQuery<AdminPost[]>({
+        queryKey: ['adminPosts', 'rejected'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/rejected`, {
+                headers: { 'Authorization': `Bearer ${superAdmin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch rejected posts');
+            const data = await res.json();
+            return data.data;
+        },
+        enabled: !!superAdmin?.token,
+        staleTime: 60000, // 1 minute
+        refetchOnWindowFocus: false
+    });
+}
+
+export function useApprovePost() {
+    const { superAdmin } = useSuperAdminAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (postId: string) => {
+            const res = await fetch(`${API_URL}/${postId}/approve`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${superAdmin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to approve post');
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
+        }
+    });
+}
+
+export function useRejectPost() {
+    const { superAdmin } = useSuperAdminAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ postId, reason }: { postId: string; reason: string }) => {
+            const res = await fetch(`${API_URL}/${postId}/reject`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${superAdmin?.token}`
+                },
+                body: JSON.stringify({ reason })
+            });
+            if (!res.ok) throw new Error('Failed to reject post');
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminPosts'] });
         }
     });
 }

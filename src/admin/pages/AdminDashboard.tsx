@@ -211,11 +211,37 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 text-sm">
-                                <span className="font-medium text-white">{post.user?.display_name || 'Admin'}</span>
-                                <span className="text-gray-500">@{post.user?.username || 'admin'}</span>
-                                <span className="text-gray-500">·</span>
-                                <span className="text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</span>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <span className="font-medium text-white">{post.user?.display_name || 'Admin'}</span>
+                                    <span className="text-gray-500">@{post.user?.username || 'admin'}</span>
+                                    <span className="text-gray-500">·</span>
+                                    <span className="text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</span>
+                                </div>
+
+                                {/* Status Badge */}
+                                <div className="flex items-center gap-2">
+                                    {post.status === 'published' && (
+                                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs border border-emerald-500/20">
+                                            Published
+                                        </span>
+                                    )}
+                                    {post.status === 'pending' && (
+                                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs border border-amber-500/20">
+                                            Pending Approval
+                                        </span>
+                                    )}
+                                    {post.status === 'pending_trusted' && (
+                                        <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-xs border border-blue-500/20">
+                                            Pending (Trusted)
+                                        </span>
+                                    )}
+                                    {post.status === 'rejected' && (
+                                        <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-xs border border-red-500/20">
+                                            Rejected
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <p className="text-gray-200 mt-2 whitespace-pre-wrap">{post.content}</p>
@@ -229,6 +255,14 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
                             {post.video_url && (
                                 <div className="mt-3 rounded-xl overflow-hidden border border-white/10">
                                     <video src={post.video_url} controls className="max-h-48 w-full" />
+                                </div>
+                            )}
+
+                            {/* Rejection Reason */}
+                            {post.status === 'rejected' && post.rejectionReason && (
+                                <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                                    <p className="text-xs text-red-400 font-medium mb-1">Rejection Reason:</p>
+                                    <p className="text-sm text-gray-300">{post.rejectionReason}</p>
                                 </div>
                             )}
                         </div>

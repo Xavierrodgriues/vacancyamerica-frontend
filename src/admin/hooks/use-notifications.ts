@@ -218,3 +218,33 @@ export function useUpdateAdminStatus() {
         }
     });
 }
+
+export function useUpdateAdminLevel() {
+    const { superAdmin } = useSuperAdminAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ adminId, level }: {
+            adminId: string;
+            level: number;
+        }) => {
+            const res = await fetch(`${API_URL}/admins/${adminId}/level`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${superAdmin?.token}`
+                },
+                body: JSON.stringify({ level })
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.message || 'Failed to update level');
+            }
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['allAdmins'] });
+        }
+    });
+}
