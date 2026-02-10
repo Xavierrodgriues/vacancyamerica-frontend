@@ -44,7 +44,9 @@ export function useNotifications(page = 1, status?: string) {
             const data = await res.json();
             return data.data;
         },
-        enabled: !!superAdmin?.token
+        enabled: !!superAdmin?.token,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 
@@ -161,7 +163,9 @@ export function usePendingAdmins() {
             const data = await res.json();
             return data.data;
         },
-        enabled: !!superAdmin?.token
+        enabled: !!superAdmin?.token,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 
@@ -182,7 +186,9 @@ export function useAllAdmins(status?: string) {
             const data = await res.json();
             return data.data;
         },
-        enabled: !!superAdmin?.token
+        enabled: !!superAdmin?.token,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 

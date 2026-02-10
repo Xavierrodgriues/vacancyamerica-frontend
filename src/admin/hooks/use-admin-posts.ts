@@ -124,8 +124,9 @@ export function usePendingPosts() {
             return data.data;
         },
         enabled: !!superAdmin?.token,
-        staleTime: 60000, // 1 minute
-        refetchOnWindowFocus: false
+        staleTime: 0,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 
@@ -142,8 +143,9 @@ export function useTrustedPosts() {
             return data.data;
         },
         enabled: !!superAdmin?.token,
-        staleTime: 60000, // 1 minute
-        refetchOnWindowFocus: false
+        staleTime: 0,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 
@@ -160,8 +162,9 @@ export function useRejectedPosts() {
             return data.data;
         },
         enabled: !!superAdmin?.token,
-        staleTime: 60000, // 1 minute
-        refetchOnWindowFocus: false
+        staleTime: 0,
+        refetchInterval: 10000,
+        refetchOnWindowFocus: true
     });
 }
 

@@ -9,7 +9,6 @@ import {
 } from '../hooks/use-admin-posts';
 import { toast } from 'sonner';
 import {
-    Loader2,
     LogOut,
     Plus,
     Trash2,
@@ -19,10 +18,14 @@ import {
     FileText,
     TrendingUp,
     Calendar,
-    BarChart3,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    LayoutDashboard,
+    Clock,
+    CheckCircle2,
+    AlertCircle
 } from 'lucide-react';
+import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 
 export default function AdminDashboard() {
     const { admin, logout } = useAdminAuth();
@@ -43,27 +46,27 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
             {/* Header */}
-            <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/80 border-b border-white/10">
+            <header className="sticky top-0 z-50 backdrop-blur-md bg-black/80 border-b border-neutral-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                                <FileText className="w-5 h-5 text-white" />
+                    <div className="flex items-center justify-between h-20">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                                <LayoutDashboard className="w-5 h-5 text-black" />
                             </div>
                             <div>
-                                <h1 className="text-lg font-bold text-white">Admin Dashboard</h1>
-                                <p className="text-xs text-gray-400">Welcome, {admin.display_name}</p>
+                                <h1 className="text-lg font-bold text-white tracking-tight">Admin Dashboard</h1>
+                                <p className="text-xs text-neutral-500 font-medium tracking-wide">Welcome, {admin.display_name}</p>
                             </div>
                         </div>
 
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-all text-sm font-medium"
                         >
                             <LogOut className="w-4 h-4" />
-                            <span className="hidden sm:inline">Logout</span>
+                            <span className="hidden sm:inline">Sign Out</span>
                         </button>
                     </div>
                 </div>
@@ -74,11 +77,14 @@ export default function AdminDashboard() {
                 <StatsSection />
 
                 {/* Create Post Button */}
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-white">Manage Posts</h2>
+                <div className="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Manage Posts</h2>
+                        <p className="text-neutral-500 text-sm mt-1">Create and manage your content</p>
+                    </div>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 hover:scale-105 active:scale-95 transition-all"
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-bold shadow-sm hover:shadow transition-all text-sm"
                     >
                         <Plus className="w-5 h-5" />
                         Create Post
@@ -100,56 +106,36 @@ export default function AdminDashboard() {
 function StatsSection() {
     const { data: statsData, isLoading } = useAdminPostStats();
 
-    const stats = [
-        {
-            label: 'Total Posts',
-            value: statsData?.data?.totalPosts || 0,
-            icon: FileText,
-            color: 'from-blue-500 to-cyan-500'
-        },
-        {
-            label: 'Today',
-            value: statsData?.data?.todayPosts || 0,
-            icon: Calendar,
-            color: 'from-emerald-500 to-teal-500'
-        },
-        {
-            label: 'This Week',
-            value: statsData?.data?.weeklyPosts || 0,
-            icon: TrendingUp,
-            color: 'from-purple-500 to-pink-500'
-        }
-    ];
-
     if (isLoading) {
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                 {[1, 2, 3].map(i => (
-                    <div key={i} className="h-24 rounded-2xl bg-white/5 animate-pulse" />
+                    <div key={i} className="h-32 rounded-xl bg-neutral-900 animate-pulse border border-neutral-800" />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {stats.map((stat, idx) => (
-                <div
-                    key={idx}
-                    className="relative overflow-hidden rounded-2xl bg-white/5 border border-white/10 p-6"
-                >
-                    <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${stat.color} opacity-20 blur-2xl`} />
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-400">{stat.label}</p>
-                            <p className="text-3xl font-bold text-white mt-1">{stat.value}</p>
-                        </div>
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.color}`}>
-                            <stat.icon className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                </div>
-            ))}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+            <StatCard
+                icon={<FileText className="w-5 h-5" />}
+                label="Total Posts"
+                value={statsData?.data?.totalPosts || 0}
+                color="white"
+            />
+            <StatCard
+                icon={<Calendar className="w-5 h-5" />}
+                label="Today"
+                value={statsData?.data?.todayPosts || 0}
+                color="neutral"
+            />
+            <StatCard
+                icon={<TrendingUp className="w-5 h-5" />}
+                label="This Week"
+                value={statsData?.data?.weeklyPosts || 0}
+                color="neutral"
+            />
         </div>
     );
 }
@@ -169,17 +155,11 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
         }
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
-            </div>
-        );
-    }
+    if (isLoading) return <LoadingState />;
 
     if (error) {
         return (
-            <div className="text-center py-12 text-red-400">
+            <div className="text-center py-12 text-red-500 border border-red-900/50 rounded-xl bg-red-950/10">
                 Failed to load posts. Please try again.
             </div>
         );
@@ -190,11 +170,11 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
 
     if (posts.length === 0) {
         return (
-            <div className="text-center py-16 rounded-2xl bg-white/5 border border-white/10">
-                <BarChart3 className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-white mb-2">No posts yet</h3>
-                <p className="text-gray-400">Create your first post to get started!</p>
-            </div>
+            <EmptyState
+                icon={<FileText className="w-8 h-8" />}
+                title="No posts yet"
+                description="Create your first post to get started!"
+            />
         );
     }
 
@@ -203,66 +183,68 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
             {posts.map((post: any) => (
                 <div
                     key={post._id}
-                    className="rounded-2xl bg-white/5 border border-white/10 p-4 hover:bg-white/[0.07] transition-colors"
+                    className="group rounded-xl bg-black border border-neutral-800 p-6 hover:border-neutral-600 transition-all"
                 >
                     <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-medium">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white flex items-center justify-center text-black font-bold text-sm">
                             {post.user?.display_name?.[0]?.toUpperCase() || 'A'}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-sm">
-                                    <span className="font-medium text-white">{post.user?.display_name || 'Admin'}</span>
-                                    <span className="text-gray-500">@{post.user?.username || 'admin'}</span>
-                                    <span className="text-gray-500">·</span>
-                                    <span className="text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</span>
+                            <div className="flex items-center justify-between mb-2">
+                                <div>
+                                    <h3 className="text-sm font-bold text-white">{post.user?.display_name || 'Admin'}</h3>
+                                    <div className="flex items-center gap-2 text-xs text-neutral-500 mt-0.5">
+                                        <span className="font-mono">@{post.user?.username || 'admin'}</span>
+                                        <span>•</span>
+                                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                                    </div>
                                 </div>
 
                                 {/* Status Badge */}
                                 <div className="flex items-center gap-2">
                                     {post.status === 'published' && (
-                                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs border border-emerald-500/20">
-                                            Published
+                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-white text-black border border-white flex items-center gap-1.5">
+                                            <CheckCircle2 className="w-3 h-3" /> Published
                                         </span>
                                     )}
                                     {post.status === 'pending' && (
-                                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs border border-amber-500/20">
-                                            Pending Approval
+                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-1.5">
+                                            <Clock className="w-3 h-3" /> Pending
                                         </span>
                                     )}
                                     {post.status === 'pending_trusted' && (
-                                        <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-xs border border-blue-500/20">
-                                            Pending (Trusted)
+                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-900 text-white border border-neutral-700 flex items-center gap-1.5">
+                                            <CheckCircle2 className="w-3 h-3" /> Trusted Pending
                                         </span>
                                     )}
                                     {post.status === 'rejected' && (
-                                        <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-xs border border-red-500/20">
-                                            Rejected
+                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-red-950 text-red-500 border border-red-900 flex items-center gap-1.5">
+                                            <AlertCircle className="w-3 h-3" /> Rejected
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            <p className="text-gray-200 mt-2 whitespace-pre-wrap">{post.content}</p>
+                            <p className="text-neutral-300 whitespace-pre-wrap text-sm leading-relaxed">{post.content}</p>
 
                             {post.image_url && (
-                                <div className="mt-3 rounded-xl overflow-hidden border border-white/10">
-                                    <img src={post.image_url} alt="" className="max-h-48 w-full object-cover" />
+                                <div className="mt-4 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900">
+                                    <img src={post.image_url} alt="" className="max-h-96 w-full object-contain" />
                                 </div>
                             )}
 
                             {post.video_url && (
-                                <div className="mt-3 rounded-xl overflow-hidden border border-white/10">
-                                    <video src={post.video_url} controls className="max-h-48 w-full" />
+                                <div className="mt-4 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900">
+                                    <video src={post.video_url} controls className="max-h-96 w-full" />
                                 </div>
                             )}
 
                             {/* Rejection Reason */}
                             {post.status === 'rejected' && post.rejectionReason && (
-                                <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
-                                    <p className="text-xs text-red-400 font-medium mb-1">Rejection Reason:</p>
-                                    <p className="text-sm text-gray-300">{post.rejectionReason}</p>
+                                <div className="mt-4 p-4 bg-neutral-900/50 border-l-2 border-red-500">
+                                    <p className="text-xs text-red-500 font-bold uppercase tracking-wide mb-1">Rejection Reason</p>
+                                    <p className="text-sm text-neutral-400">{post.rejectionReason}</p>
                                 </div>
                             )}
                         </div>
@@ -270,13 +252,9 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
                         <button
                             onClick={() => handleDelete(post._id)}
                             disabled={deletePost.isPending}
-                            className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                            className="p-2 rounded-lg text-neutral-500 hover:text-red-500 hover:bg-red-950/20 transition-colors opacity-0 group-hover:opacity-100"
                         >
-                            {deletePost.isPending ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <Trash2 className="w-5 h-5" />
-                            )}
+                            <Trash2 className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
@@ -284,21 +262,21 @@ function PostsList({ page, setPage }: { page: number; setPage: (p: number) => vo
 
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-6">
+                <div className="flex items-center justify-center gap-4 pt-8">
                     <button
                         onClick={() => setPage(page - 1)}
                         disabled={page === 1}
-                        className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <span className="text-gray-400">
-                        Page {page} of {pagination.totalPages}
+                    <span className="text-sm font-medium text-neutral-500">
+                        Page <span className="text-white">{page}</span> of {pagination.totalPages}
                     </span>
                     <button
                         onClick={() => setPage(page + 1)}
                         disabled={page === pagination.totalPages}
-                        className="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ChevronRight className="w-5 h-5" />
                     </button>
@@ -352,39 +330,37 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-
-            <div className="relative w-full max-w-lg rounded-2xl bg-slate-800 border border-white/10 shadow-2xl">
-                <div className="flex items-center justify-between p-4 border-b border-white/10">
-                    <h3 className="text-lg font-bold text-white">Create New Post</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+            <div className="relative w-full max-w-lg rounded-xl bg-black border border-neutral-800 shadow-2xl">
+                <div className="flex items-center justify-between p-6 border-b border-neutral-800">
+                    <h3 className="text-lg font-bold text-white tracking-tight">Create New Post</h3>
                     <button
                         onClick={onClose}
-                        className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        className="p-1 rounded-lg text-neutral-500 hover:text-white hover:bg-neutral-900 transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="p-4">
+                <div className="p-6">
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="What's happening?"
-                        className="w-full h-32 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                        className="w-full h-32 p-4 rounded-xl bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-600 focus:outline-none focus:border-white transition-colors resize-none text-sm"
                         maxLength={500}
                     />
 
                     {mediaPreview && (
-                        <div className="relative mt-4 rounded-xl overflow-hidden border border-white/10">
+                        <div className="relative mt-4 rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950">
                             {mediaType === 'video' ? (
-                                <video src={mediaPreview} controls className="w-full max-h-48 object-contain bg-black" />
+                                <video src={mediaPreview} controls className="w-full max-h-64 object-contain" />
                             ) : (
-                                <img src={mediaPreview} alt="Preview" className="w-full max-h-48 object-cover" />
+                                <img src={mediaPreview} alt="Preview" className="w-full max-h-64 object-contain" />
                             )}
                             <button
                                 onClick={removeMedia}
-                                className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+                                className="absolute top-2 right-2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors backdrop-blur-sm"
                             >
                                 <X className="w-4 h-4" />
                             </button>
@@ -401,39 +377,35 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
                         />
                         <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"
+                            className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
                             title="Add image"
                         >
                             <Image className="w-5 h-5" />
                         </button>
                         <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="p-2 rounded-lg text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 transition-colors"
+                            className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors"
                             title="Add video"
                         >
                             <Video className="w-5 h-5" />
                         </button>
-                        <span className="text-sm text-gray-500 ml-auto">{content.length}/500</span>
+                        <span className="text-xs font-medium text-neutral-600 ml-auto">{content.length}/500</span>
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 p-4 border-t border-white/10">
+                <div className="flex justify-end gap-3 p-6 border-t border-neutral-800 bg-neutral-950/50 rounded-b-xl">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                        className="px-4 py-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors text-sm font-medium"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={(!content.trim() && !mediaFile) || createPost.isPending}
-                        className="px-6 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium shadow-lg hover:shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        className="px-6 py-2 rounded-lg bg-white hover:bg-neutral-200 text-black font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     >
-                        {createPost.isPending ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                            'Post'
-                        )}
+                        {createPost.isPending ? 'Posting...' : 'Post'}
                     </button>
                 </div>
             </div>
