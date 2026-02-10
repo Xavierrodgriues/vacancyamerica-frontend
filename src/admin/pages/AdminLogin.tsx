@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAdminAuth } from '../lib/admin-auth-context';
 import { toast } from 'sonner';
@@ -13,11 +13,13 @@ export default function AdminLogin() {
     const { login, admin } = useAdminAuth();
     const navigate = useNavigate();
 
-    // Redirect if already logged in
-    if (admin) {
-        navigate('/admin/dashboard');
-        return null;
-    }
+    useEffect(() => {
+        if (admin) {
+            navigate('/admin/dashboard');
+        }
+    }, [admin, navigate]);
+
+    if (admin) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -72,8 +74,8 @@ export default function AdminLogin() {
                     {/* Status Messages */}
                     {statusMessage.type && (
                         <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${statusMessage.type === 'pending'
-                                ? 'bg-amber-500/10 border border-amber-500/20'
-                                : 'bg-red-500/10 border border-red-500/20'
+                            ? 'bg-amber-500/10 border border-amber-500/20'
+                            : 'bg-red-500/10 border border-red-500/20'
                             }`}>
                             {statusMessage.type === 'pending' ? (
                                 <Clock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
