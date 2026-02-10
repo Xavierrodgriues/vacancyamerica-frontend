@@ -26,7 +26,7 @@ export function AppSidebar() {
     <aside className="hidden md:flex flex-col w-[275px] h-screen sticky top-0 border-r border-post-border p-3">
       {/* Logo */}
       <div className="p-3 mb-2">
-        <span className="text-xl font-extrabold text-foreground tracking-tight">VacancyAmerica</span>
+        <img src="/logo1.png" alt="VacancyAmerica" className="h-16 w-auto" />
       </div>
 
       {/* Nav */}
