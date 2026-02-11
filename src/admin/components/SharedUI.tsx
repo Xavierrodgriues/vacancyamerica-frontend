@@ -1,22 +1,24 @@
 import { BarChart3, Loader2 } from 'lucide-react';
 
 export function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
-    const colors = {
-        amber: 'from-amber-500/20 to-amber-600/10 border-amber-500/20 text-amber-400',
-        emerald: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/20 text-emerald-400',
-        red: 'from-red-500/20 to-red-600/10 border-red-500/20 text-red-400',
-        blue: 'from-blue-500/20 to-blue-600/10 border-blue-500/20 text-blue-400',
-        indigo: 'from-indigo-500/20 to-indigo-600/10 border-indigo-500/20 text-indigo-400',
-        slate: 'from-slate-500/20 to-slate-600/10 border-slate-500/20 text-slate-400',
+    const colors: Record<string, { bg: string; iconBg: string; text: string }> = {
+        amber: { bg: 'bg-amber-50 border-amber-100', iconBg: 'bg-amber-100 text-amber-600', text: 'text-amber-600' },
+        emerald: { bg: 'bg-emerald-50 border-emerald-100', iconBg: 'bg-emerald-100 text-emerald-600', text: 'text-emerald-600' },
+        red: { bg: 'bg-red-50 border-red-100', iconBg: 'bg-red-100 text-red-600', text: 'text-red-600' },
+        blue: { bg: 'bg-blue-50 border-blue-100', iconBg: 'bg-blue-100 text-blue-600', text: 'text-blue-600' },
+        indigo: { bg: 'bg-indigo-50 border-indigo-100', iconBg: 'bg-indigo-100 text-indigo-600', text: 'text-indigo-600' },
+        slate: { bg: 'bg-slate-50 border-slate-100', iconBg: 'bg-slate-100 text-slate-600', text: 'text-slate-600' },
     };
 
+    const c = colors[color] || colors.slate;
+
     return (
-        <div className={`bg-gradient-to-br ${colors[color as keyof typeof colors] || colors.slate} rounded-xl border p-5 transition-transform hover:scale-[1.02]`}>
-            <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-slate-900/50 rounded-lg">{icon}</div>
+        <div className={`${c.bg} rounded-2xl border p-5 transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}>
+            <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-xl ${c.iconBg}`}>{icon}</div>
                 <div>
-                    <p className="text-slate-400 text-sm">{label}</p>
-                    <p className="text-2xl font-bold text-white">{value}</p>
+                    <p className="text-slate-500 text-sm font-medium">{label}</p>
+                    <p className={`text-2xl font-bold ${c.text}`}>{value}</p>
                 </div>
             </div>
         </div>
@@ -26,7 +28,7 @@ export function StatCard({ icon, label, value, color }: { icon: React.ReactNode;
 export function LoadingState() {
     return (
         <div className="flex justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
         </div>
     );
 }
@@ -34,19 +36,19 @@ export function LoadingState() {
 export function EmptyState({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
     return (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="text-slate-600 mb-4">{icon}</div>
-            <h3 className="text-lg font-medium text-slate-300">{title}</h3>
-            <p className="text-slate-500 mt-1">{description}</p>
+            <div className="text-slate-300 mb-4">{icon}</div>
+            <h3 className="text-lg font-semibold text-slate-700">{title}</h3>
+            <p className="text-slate-400 mt-1 text-sm">{description}</p>
         </div>
     );
 }
 
 export function ChartPlaceholder({ title }: { title: string }) {
     return (
-        <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-5">
-            <h3 className="font-medium text-white mb-4">{title}</h3>
-            <div className="h-40 flex items-center justify-center border-2 border-dashed border-slate-700 rounded-lg">
-                <div className="text-center text-slate-500">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h3 className="font-semibold text-slate-800 mb-4">{title}</h3>
+            <div className="h-40 flex items-center justify-center border-2 border-dashed border-slate-200 rounded-xl">
+                <div className="text-center text-slate-400">
                     <BarChart3 className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Chart coming soon</p>
                 </div>

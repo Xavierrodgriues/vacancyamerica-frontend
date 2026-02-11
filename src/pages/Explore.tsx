@@ -79,7 +79,7 @@ export default function Explore() {
                 </div>
               )}
               {filteredPosts?.map((post: any) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post._id} post={post} />
               ))}
             </div>
           )}
