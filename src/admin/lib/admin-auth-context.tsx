@@ -8,6 +8,7 @@ interface Admin {
     avatar_url: string | null;
     role: string;
     admin_level: number;
+    status: string;
     token: string;
 }
 
@@ -36,28 +37,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
                     // Verify with server to get latest data (including level changes)
                     if (parsedAdmin.token) {
-                        try {
-                            const res = await fetch(`${API_BASE}/me`, {
-                                headers: {
-                                    'Authorization': `Bearer ${parsedAdmin.token}`
-                                }
-                            });
-
-                            if (res.ok) {
-                                const data = await res.json();
-                                const updatedAdmin = { ...data.data, token: parsedAdmin.token };
-                                setAdmin(updatedAdmin);
-                                localStorage.setItem('admin', JSON.stringify(updatedAdmin));
-                            } else {
-                                // Token invalid or expired
-                                localStorage.removeItem('admin');
-                                setAdmin(null);
-                            }
-                        } catch (err) {
-                            // Network error, fall back to stored data but keep logged in
-                            console.error('Failed to refresh admin profile:', err);
-                            setAdmin(parsedAdmin);
-                        }
+                        await fetchProfile(parsedAdmin.token);
                     } else {
                         setAdmin(parsedAdmin);
                     }
@@ -71,6 +51,57 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
         checkAuth();
     }, []);
+
+    // Poll for updates every 30 seconds
+    // Poll for updates every 5 seconds
+    useEffect(() => {
+        if (!admin?.token) return;
+
+        // Initial fetch to ensure up-to-date
+        fetchProfile(admin.token);
+
+        const intervalId = setInterval(() => {
+            fetchProfile(admin.token);
+        }, 5000); // 5 seconds
+
+        return () => clearInterval(intervalId);
+    }, [admin?.token]);
+
+    const fetchProfile = async (token: string) => {
+        try {
+            const res = await fetch(`${API_BASE}/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                // Merge with existing token
+                const updatedAdmin = { ...data.data, token: token };
+
+                setAdmin(prev => {
+                    if (!prev) return updatedAdmin;
+
+                    // Only update state if data actually changed
+                    if (prev.admin_level !== updatedAdmin.admin_level ||
+                        prev.status !== updatedAdmin.status ||
+                        prev.role !== updatedAdmin.role ||
+                        prev.display_name !== updatedAdmin.display_name) {
+                        localStorage.setItem('admin', JSON.stringify(updatedAdmin));
+                        return updatedAdmin;
+                    }
+                    return prev;
+                });
+            } else if (res.status === 401) {
+                // Token invalid or expired
+                localStorage.removeItem('admin');
+                setAdmin(null);
+            }
+        } catch (err) {
+            console.error('Failed to refresh admin profile:', err);
+        }
+    };
 
     const login = async (email: string, password: string) => {
         const res = await fetch(`${API_BASE}/login`, {
