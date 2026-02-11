@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
+import { SupportChatbot } from "@/components/SupportChatbot";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Right spacer for desktop */}
       <div className="hidden lg:block flex-1" />
       <MobileNav />
+      <SupportChatbot />
     </div>
   );
 }
