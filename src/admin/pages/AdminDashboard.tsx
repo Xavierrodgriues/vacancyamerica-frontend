@@ -33,6 +33,8 @@ export default function AdminDashboard() {
     const [page, setPage] = useState(1);
     const [showCreateModal, setShowCreateModal] = useState(false);
 
+    const [activeTab, setActiveTab] = useState<'posts' | 'privileges'>('posts');
+
     // Redirect if not logged in
     if (!admin) {
         navigate('/admin/login');
@@ -57,7 +59,12 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                                 <h1 className="text-lg font-bold text-white tracking-tight">Admin Dashboard</h1>
-                                <p className="text-xs text-neutral-500 font-medium tracking-wide">Welcome, {admin.display_name}</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-xs text-neutral-500 font-medium tracking-wide">Welcome, {admin.display_name}</p>
+                                    <span className="px-1.5 py-0.5 rounded-md bg-neutral-800 text-neutral-400 text-[10px] font-bold border border-neutral-700 uppercase tracking-wider">
+                                        Level {admin.admin_level || 0}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
@@ -76,23 +83,51 @@ export default function AdminDashboard() {
                 {/* Stats Section */}
                 <StatsSection />
 
-                {/* Create Post Button */}
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h2 className="text-2xl font-bold text-white tracking-tight">Manage Posts</h2>
-                        <p className="text-neutral-500 text-sm mt-1">Create and manage your content</p>
-                    </div>
+                {/* Tab Navigation */}
+                <div className="flex items-center gap-1 p-1 mb-8 bg-neutral-900/50 rounded-xl border border-neutral-800 w-fit">
                     <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-bold shadow-sm hover:shadow transition-all text-sm"
+                        onClick={() => setActiveTab('posts')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'posts'
+                            ? 'bg-white text-black shadow-sm'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                            }`}
                     >
-                        <Plus className="w-5 h-5" />
-                        Create Post
+                        Manage Posts
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('privileges')}
+                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'privileges'
+                            ? 'bg-white text-black shadow-sm'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                            }`}
+                    >
+                        My Privileges
                     </button>
                 </div>
 
-                {/* Posts List */}
-                <PostsList page={page} setPage={setPage} />
+                {activeTab === 'posts' ? (
+                    <>
+                        {/* Create Post Button */}
+                        <div className="flex justify-between items-center mb-8">
+                            <div>
+                                <h2 className="text-2xl font-bold text-white tracking-tight">Manage Posts</h2>
+                                <p className="text-neutral-500 text-sm mt-1">Create and manage your content</p>
+                            </div>
+                            <button
+                                onClick={() => setShowCreateModal(true)}
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-bold shadow-sm hover:shadow transition-all text-sm"
+                            >
+                                <Plus className="w-5 h-5" />
+                                Create Post
+                            </button>
+                        </div>
+
+                        {/* Posts List */}
+                        <PostsList page={page} setPage={setPage} />
+                    </>
+                ) : (
+                    <PrivilegesTab level={admin.admin_level || 0} />
+                )}
 
                 {/* Create Modal */}
                 {showCreateModal && (
@@ -102,6 +137,161 @@ export default function AdminDashboard() {
         </div>
     );
 }
+
+function PrivilegesTab({ level }: { level: number }) {
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="space-y-6">
+                <div>
+                    <h2 className="text-2xl font-bold text-white tracking-tight">Your Privileges</h2>
+                    <p className="text-neutral-500 text-sm mt-1">Current capabilities based on your admin level</p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                            <span className="text-2xl font-bold text-white">{level}</span>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-white">
+                                {level === 0 && 'Standard Admin'}
+                                {level === 1 && 'Trusted Admin'}
+                                {level === 2 && 'Verified Partner'}
+                            </h3>
+                            <p className="text-sm text-neutral-400">Current Access Level</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {level === 0 && (
+                            <>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+                                        <Clock className="w-4 h-4 text-amber-500" /> Posting Rules
+                                    </h4>
+                                    <p className="text-sm text-neutral-400 leading-relaxed">
+                                        Your posts require approval. After submission, they enter a pending state and must be approved by a Super Admin before going live.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
+                                        <span>Submit</span>
+                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
+                                        <span>Pending Approval</span>
+                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
+                                        <span>Super Admin Review</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {level === 1 && (
+                            <>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-blue-500" /> Trusted Status
+                                    </h4>
+                                    <p className="text-sm text-neutral-400 leading-relaxed">
+                                        You have proven legitimacy. Your posts enter a priority review queue and are typically approved quickly by Super Admins.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
+                                        <span>Submit</span>
+                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
+                                        <span>Priority Review</span>
+                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
+                                        <span>Quick Approval</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        {level === 2 && (
+                            <>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Full Access
+                                    </h4>
+                                    <p className="text-sm text-neutral-400 leading-relaxed">
+                                        Verified Employer/Partner status. Your posts are published instantly without requiring approval.
+                                    </p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
+                                        <span>Submit</span>
+                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
+                                        <span>Published Instantly</span>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
+                    <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" />
+                        <div>
+                            <h4 className="text-sm font-bold text-white">Level Management</h4>
+                            <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
+                                Admin levels are managed by Super Admins based on platform behavior and verification status. Consistent positive contributions can lead to upgrades, while policy violations may result in downgrades.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Visual Representation / Sidebar Info */}
+            <div className="space-y-4">
+                <div className="p-6 rounded-2xl bg-neutral-900/30 border border-neutral-800 h-full">
+                    <h3 className="text-lg font-bold text-white mb-6">Level Hierarchy</h3>
+
+                    <div className="relative space-y-8 pl-8 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-neutral-800">
+                        <div className={`relative ${level === 2 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
+                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
+                                <span className="text-emerald-500 font-bold">2</span>
+                            </div>
+                            <h4 className="font-bold text-white">Verified Partner</h4>
+                            <p className="text-xs text-neutral-500 mt-1">Instant publishing, full features access</p>
+                        </div>
+
+                        <div className={`relative ${level === 1 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
+                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
+                                <span className="text-blue-500 font-bold">1</span>
+                            </div>
+                            <h4 className="font-bold text-white">Trusted Admin</h4>
+                            <p className="text-xs text-neutral-500 mt-1">Priority review, proven track record</p>
+                        </div>
+
+                        <div className={`relative ${level === 0 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
+                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
+                                <span className="text-amber-500 font-bold">0</span>
+                            </div>
+                            <h4 className="font-bold text-white">Standard Admin</h4>
+                            <p className="text-xs text-neutral-500 mt-1">Standard approval process</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
+
 
 function StatsSection() {
     const { data: statsData, isLoading } = useAdminPostStats();

@@ -7,6 +7,7 @@ interface Admin {
     display_name: string;
     avatar_url: string | null;
     role: string;
+    admin_level: number;
     token: string;
 }
 
@@ -27,17 +28,48 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check for existing admin session
-        const storedAdmin = localStorage.getItem('admin');
-        if (storedAdmin) {
-            try {
-                const parsedAdmin = JSON.parse(storedAdmin);
-                setAdmin(parsedAdmin);
-            } catch (e) {
-                localStorage.removeItem('admin');
+        const checkAuth = async () => {
+            const storedAdmin = localStorage.getItem('admin');
+            if (storedAdmin) {
+                try {
+                    const parsedAdmin = JSON.parse(storedAdmin);
+
+                    // Verify with server to get latest data (including level changes)
+                    if (parsedAdmin.token) {
+                        try {
+                            const res = await fetch(`${API_BASE}/me`, {
+                                headers: {
+                                    'Authorization': `Bearer ${parsedAdmin.token}`
+                                }
+                            });
+
+                            if (res.ok) {
+                                const data = await res.json();
+                                const updatedAdmin = { ...data.data, token: parsedAdmin.token };
+                                setAdmin(updatedAdmin);
+                                localStorage.setItem('admin', JSON.stringify(updatedAdmin));
+                            } else {
+                                // Token invalid or expired
+                                localStorage.removeItem('admin');
+                                setAdmin(null);
+                            }
+                        } catch (err) {
+                            // Network error, fall back to stored data but keep logged in
+                            console.error('Failed to refresh admin profile:', err);
+                            setAdmin(parsedAdmin);
+                        }
+                    } else {
+                        setAdmin(parsedAdmin);
+                    }
+                } catch (e) {
+                    localStorage.removeItem('admin');
+                    setAdmin(null);
+                }
             }
-        }
-        setLoading(false);
+            setLoading(false);
+        };
+
+        checkAuth();
     }, []);
 
     const login = async (email: string, password: string) => {
