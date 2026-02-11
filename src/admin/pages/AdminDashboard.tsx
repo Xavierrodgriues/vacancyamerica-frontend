@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../lib/admin-auth-context';
 import {
@@ -8,6 +8,7 @@ import {
     useDeleteAdminPost
 } from '../hooks/use-admin-posts';
 import { toast } from 'sonner';
+import confetti from 'canvas-confetti';
 import {
     LogOut,
     Plus,
@@ -34,6 +35,52 @@ export default function AdminDashboard() {
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const [activeTab, setActiveTab] = useState<'posts' | 'privileges'>('posts');
+
+    // Track previous level for animations
+    const prevLevelRef = useRef(admin?.admin_level);
+
+    useEffect(() => {
+        if (!admin) return;
+
+        // Check if level changed
+        if (prevLevelRef.current !== undefined && admin.admin_level !== prevLevelRef.current) {
+            if (admin.admin_level > prevLevelRef.current) {
+                // Upgrade - Party Popper!
+                const duration = 5 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                const randomInRange = (min: number, max: number) => {
+                    return Math.random() * (max - min) + min;
+                }
+
+                const interval: any = setInterval(function () {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+
+                    // since particles fall down, start a bit higher than random
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                    confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+                }, 250);
+
+                toast.success(`Congratulations! You've been upgraded to Level ${admin.admin_level}!`);
+            } else {
+                // Downgrade
+                toast.info(`Your admin level has changed to Level ${admin.admin_level}.`);
+            }
+
+            // Update ref
+            prevLevelRef.current = admin.admin_level;
+        } else if (prevLevelRef.current === undefined) {
+            prevLevelRef.current = admin.admin_level;
+        }
+
+    }, [admin?.admin_level]);
 
     // Redirect if not logged in
     if (!admin) {
@@ -106,372 +153,361 @@ export default function AdminDashboard() {
                 </div>
 
                 {activeTab === 'posts' ? (
-                    <>
-                        {/* Create Post Button */}
-                        <div className="flex justify-between items-center mb-8">
-                            <div>
-                                <h2 className="text-2xl font-bold text-white tracking-tight">Manage Posts</h2>
-                                <p className="text-neutral-500 text-sm mt-1">Create and manage your content</p>
-                            </div>
-                            <button
-                                onClick={() => setShowCreateModal(true)}
-                                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-bold shadow-sm hover:shadow transition-all text-sm"
-                            >
-                                <Plus className="w-5 h-5" />
-                                Create Post
-                            </button>
-                        </div>
-
-                        {/* Posts List */}
-                        <PostsList page={page} setPage={setPage} />
-                    </>
+                    <PostsView
+                        page={page}
+                        setPage={setPage}
+                        showCreateModal={showCreateModal}
+                        setShowCreateModal={setShowCreateModal}
+                    />
                 ) : (
-                    <PrivilegesTab level={admin.admin_level || 0} />
-                )}
-
-                {/* Create Modal */}
-                {showCreateModal && (
-                    <CreatePostModal onClose={() => setShowCreateModal(false)} />
+                    <PrivilegesView />
                 )}
             </main>
+
+            {/* Create Post Modal */}
+            {showCreateModal && (
+                <CreatePostModal onClose={() => setShowCreateModal(false)} />
+            )}
         </div>
     );
 }
 
-function PrivilegesTab({ level }: { level: number }) {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-6">
-                <div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">Your Privileges</h2>
-                    <p className="text-neutral-500 text-sm mt-1">Current capabilities based on your admin level</p>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                            <span className="text-2xl font-bold text-white">{level}</span>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-white">
-                                {level === 0 && 'Standard Admin'}
-                                {level === 1 && 'Trusted Admin'}
-                                {level === 2 && 'Verified Partner'}
-                            </h3>
-                            <p className="text-sm text-neutral-400">Current Access Level</p>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        {level === 0 && (
-                            <>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-amber-500" /> Posting Rules
-                                    </h4>
-                                    <p className="text-sm text-neutral-400 leading-relaxed">
-                                        Your posts require approval. After submission, they enter a pending state and must be approved by a Super Admin before going live.
-                                    </p>
-                                </div>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
-                                        <span>Submit</span>
-                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
-                                        <span>Pending Approval</span>
-                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
-                                        <span>Super Admin Review</span>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {level === 1 && (
-                            <>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-blue-500" /> Trusted Status
-                                    </h4>
-                                    <p className="text-sm text-neutral-400 leading-relaxed">
-                                        You have proven legitimacy. Your posts enter a priority review queue and are typically approved quickly by Super Admins.
-                                    </p>
-                                </div>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
-                                        <span>Submit</span>
-                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
-                                        <span>Priority Review</span>
-                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
-                                        <span>Quick Approval</span>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {level === 2 && (
-                            <>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <h4 className="font-bold text-white mb-1 flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Full Access
-                                    </h4>
-                                    <p className="text-sm text-neutral-400 leading-relaxed">
-                                        Verified Employer/Partner status. Your posts are published instantly without requiring approval.
-                                    </p>
-                                </div>
-                                <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                        <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Process Flow</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-sm text-neutral-300">
-                                        <span>Submit</span>
-                                        <ChevronRight className="w-4 h-4 text-neutral-600" />
-                                        <span>Published Instantly</span>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
-                    <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-neutral-500 flex-shrink-0 mt-0.5" />
-                        <div>
-                            <h4 className="text-sm font-bold text-white">Level Management</h4>
-                            <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
-                                Admin levels are managed by Super Admins based on platform behavior and verification status. Consistent positive contributions can lead to upgrades, while policy violations may result in downgrades.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Visual Representation / Sidebar Info */}
-            <div className="space-y-4">
-                <div className="p-6 rounded-2xl bg-neutral-900/30 border border-neutral-800 h-full">
-                    <h3 className="text-lg font-bold text-white mb-6">Level Hierarchy</h3>
-
-                    <div className="relative space-y-8 pl-8 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-neutral-800">
-                        <div className={`relative ${level === 2 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
-                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
-                                <span className="text-emerald-500 font-bold">2</span>
-                            </div>
-                            <h4 className="font-bold text-white">Verified Partner</h4>
-                            <p className="text-xs text-neutral-500 mt-1">Instant publishing, full features access</p>
-                        </div>
-
-                        <div className={`relative ${level === 1 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
-                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
-                                <span className="text-blue-500 font-bold">1</span>
-                            </div>
-                            <h4 className="font-bold text-white">Trusted Admin</h4>
-                            <p className="text-xs text-neutral-500 mt-1">Priority review, proven track record</p>
-                        </div>
-
-                        <div className={`relative ${level === 0 ? 'opacity-100' : 'opacity-40 grayscale'}`}>
-                            <div className="absolute -left-[39px] top-0 w-10 h-10 rounded-full bg-neutral-900 border-4 border-black flex items-center justify-center z-10">
-                                <span className="text-amber-500 font-bold">0</span>
-                            </div>
-                            <h4 className="font-bold text-white">Standard Admin</h4>
-                            <p className="text-xs text-neutral-500 mt-1">Standard approval process</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-}
-
-
-
-
+// Sub-components to keep the file clean-ish
 function StatsSection() {
-    const { data: statsData, isLoading } = useAdminPostStats();
+    const { data: statsData, isLoading: statsLoading, error: statsError } = useAdminPostStats();
 
-    if (isLoading) {
-        return (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                {[1, 2, 3].map(i => (
-                    <div key={i} className="h-32 rounded-xl bg-neutral-900 animate-pulse border border-neutral-800" />
-                ))}
-            </div>
-        );
-    }
+    const stats = statsData?.data;
+
+    if (statsLoading) return <LoadingState />;
+    if (statsError) return <div className="text-red-500">Failed to load stats</div>;
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <StatCard
-                icon={<FileText className="w-5 h-5" />}
                 label="Total Posts"
-                value={statsData?.data?.totalPosts || 0}
-                color="white"
+                value={stats?.totalPosts || 0}
+                icon={<FileText className="w-5 h-5 text-white" />}
+                color="indigo"
             />
             <StatCard
-                icon={<Calendar className="w-5 h-5" />}
                 label="Today"
-                value={statsData?.data?.todayPosts || 0}
-                color="neutral"
+                value={stats?.todayPosts || 0}
+                icon={<Calendar className="w-5 h-5 text-white" />}
+                color="amber"
             />
             <StatCard
-                icon={<TrendingUp className="w-5 h-5" />}
                 label="This Week"
-                value={statsData?.data?.weeklyPosts || 0}
-                color="neutral"
+                value={stats?.weekPosts || 0}
+                icon={<TrendingUp className="w-5 h-5 text-white" />}
+                color="emerald"
             />
         </div>
     );
 }
 
-function PostsList({ page, setPage }: { page: number; setPage: (p: number) => void }) {
-    const { data, isLoading, error } = useAdminPosts(page);
-    const deletePost = useDeleteAdminPost();
+function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) {
+    const { data, isLoading: loading, error } = useAdminPosts(page);
+    const deletePostCmd = useDeleteAdminPost();
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this post?')) return;
+    const posts = data?.data || [];
+    const totalPages = data?.pagination?.totalPages || 1;
 
-        try {
-            await deletePost.mutateAsync(id);
-            toast.success('Post deleted');
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to delete post');
+    const [deletingId, setDeletingId] = useState<string | null>(null);
+
+    const handleDelete = async (postId: string) => {
+        if (window.confirm('Are you sure you want to delete this post?')) {
+            setDeletingId(postId);
+            try {
+                await deletePostCmd.mutateAsync(postId);
+                toast.success('Post deleted successfully');
+            } catch (err) {
+                toast.error('Failed to delete post');
+            } finally {
+                setDeletingId(null);
+            }
         }
     };
 
-    if (isLoading) return <LoadingState />;
-
-    if (error) {
-        return (
-            <div className="text-center py-12 text-red-500 border border-red-900/50 rounded-xl bg-red-950/10">
-                Failed to load posts. Please try again.
-            </div>
-        );
-    }
-
-    const posts = data?.data || [];
-    const pagination = data?.pagination;
-
-    if (posts.length === 0) {
-        return (
-            <EmptyState
-                icon={<FileText className="w-8 h-8" />}
-                title="No posts yet"
-                description="Create your first post to get started!"
-            />
-        );
-    }
+    if (loading) return <LoadingState />;
+    if (error) return <div className="text-red-500">Failed to load posts</div>;
 
     return (
-        <div className="space-y-4">
-            {posts.map((post: any) => (
-                <div
-                    key={post._id}
-                    className="group rounded-xl bg-black border border-neutral-800 p-6 hover:border-neutral-600 transition-all"
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white tracking-tight">Recent Posts</h2>
+                <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg hover:bg-neutral-200 transition-all font-bold text-sm shadow-sm hover:shadow-md"
                 >
-                    <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white flex items-center justify-center text-black font-bold text-sm">
-                            {post.user?.display_name?.[0]?.toUpperCase() || 'A'}
-                        </div>
+                    <Plus className="w-4 h-4" />
+                    Create Post
+                </button>
+            </div>
 
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-2">
-                                <div>
-                                    <h3 className="text-sm font-bold text-white">{post.user?.display_name || 'Admin'}</h3>
-                                    <div className="flex items-center gap-2 text-xs text-neutral-500 mt-0.5">
-                                        <span className="font-mono">@{post.user?.username || 'admin'}</span>
-                                        <span>•</span>
-                                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+            {posts.length === 0 ? (
+                <EmptyState icon={<FileText className="w-8 h-8" />} title="No posts yet" description="Create your first post to get started!" />
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {posts.map((post) => (
+                        <div
+                            key={post._id}
+                            className="group bg-neutral-900/50 border border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-700 transition-all duration-300 hover:shadow-xl hover:shadow-neutral-900/50 hover:-translate-y-1"
+                        >
+                            <div className="aspect-video relative overflow-hidden bg-neutral-800">
+                                {post.type === 'video' ? (
+                                    <div className="w-full h-full flex items-center justify-center bg-neutral-900">
+                                        <Video className="w-8 h-8 text-neutral-600" />
+                                        {/* Video Preview or Thumbnail would go here if available */}
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <span className="text-xs font-bold px-2 py-1 bg-black/60 rounded text-white backdrop-blur-sm flex items-center gap-1">
+                                                <Video className="w-3 h-3" /> Video Post
+                                            </span>
+                                        </div>
                                     </div>
+                                ) : (
+                                    <img
+                                        src={post.media_url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"}
+                                        alt={post.caption}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                )}
+                                <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button
+                                        onClick={() => handleDelete(post._id)}
+                                        disabled={deletingId === post._id}
+                                        className="p-2 bg-red-500/90 text-white rounded-lg hover:bg-red-600 transition-colors backdrop-blur-sm"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
                                 </div>
-
-                                {/* Status Badge */}
-                                <div className="flex items-center gap-2">
-                                    {post.status === 'published' && (
-                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-white text-black border border-white flex items-center gap-1.5">
-                                            <CheckCircle2 className="w-3 h-3" /> Published
-                                        </span>
-                                    )}
-                                    {post.status === 'pending' && (
-                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-900 text-neutral-400 border border-neutral-800 flex items-center gap-1.5">
-                                            <Clock className="w-3 h-3" /> Pending
-                                        </span>
-                                    )}
-                                    {post.status === 'pending_trusted' && (
-                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-neutral-900 text-white border border-neutral-700 flex items-center gap-1.5">
-                                            <CheckCircle2 className="w-3 h-3" /> Trusted Pending
-                                        </span>
-                                    )}
-                                    {post.status === 'rejected' && (
-                                        <span className="px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-red-950 text-red-500 border border-red-900 flex items-center gap-1.5">
-                                            <AlertCircle className="w-3 h-3" /> Rejected
+                                <div className="absolute bottom-2 left-2">
+                                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${post.status === 'approved' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                        post.status === 'rejected' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                                            'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                                        }`}>
+                                        {post.status}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="p-4">
+                                <p className="text-sm text-neutral-300 line-clamp-2 font-medium leading-relaxed">
+                                    {post.caption}
+                                </p>
+                                <div className="mt-4 flex items-center justify-between text-xs text-neutral-500 font-medium">
+                                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                                    {post.scheduledFor && (
+                                        <span className="flex items-center gap-1 text-blue-400">
+                                            <Clock className="w-3 h-3" />
+                                            {new Date(post.scheduledFor).toLocaleDateString()}
                                         </span>
                                     )}
                                 </div>
                             </div>
-
-                            <p className="text-neutral-300 whitespace-pre-wrap text-sm leading-relaxed">{post.content}</p>
-
-                            {post.image_url && (
-                                <div className="mt-4 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900">
-                                    <img src={post.image_url} alt="" className="max-h-96 w-full object-contain" />
-                                </div>
-                            )}
-
-                            {post.video_url && (
-                                <div className="mt-4 rounded-lg overflow-hidden border border-neutral-800 bg-neutral-900">
-                                    <video src={post.video_url} controls className="max-h-96 w-full" />
-                                </div>
-                            )}
-
-                            {/* Rejection Reason */}
-                            {post.status === 'rejected' && post.rejectionReason && (
-                                <div className="mt-4 p-4 bg-neutral-900/50 border-l-2 border-red-500">
-                                    <p className="text-xs text-red-500 font-bold uppercase tracking-wide mb-1">Rejection Reason</p>
-                                    <p className="text-sm text-neutral-400">{post.rejectionReason}</p>
-                                </div>
-                            )}
                         </div>
-
-                        <button
-                            onClick={() => handleDelete(post._id)}
-                            disabled={deletePost.isPending}
-                            className="p-2 rounded-lg text-neutral-500 hover:text-red-500 hover:bg-red-950/20 transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                            <Trash2 className="w-5 h-5" />
-                        </button>
-                    </div>
+                    ))}
                 </div>
-            ))}
-
+            )}
             {/* Pagination */}
-            {pagination && pagination.totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-8">
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-8">
                     <button
-                        onClick={() => setPage(page - 1)}
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
                         disabled={page === 1}
-                        className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-2 rounded-lg bg-neutral-900 border border-neutral-800 disabled:opacity-50 hover:bg-neutral-800 transition-colors"
                     >
-                        <ChevronLeft className="w-5 h-5" />
+                        <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <span className="text-sm font-medium text-neutral-500">
-                        Page <span className="text-white">{page}</span> of {pagination.totalPages}
+                    <span className="flex items-center px-4 font-mono text-sm text-neutral-400">
+                        Page {page} of {totalPages}
                     </span>
                     <button
-                        onClick={() => setPage(page + 1)}
-                        disabled={page === pagination.totalPages}
-                        className="p-2 rounded-lg border border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="p-2 rounded-lg bg-neutral-900 border border-neutral-800 disabled:opacity-50 hover:bg-neutral-800 transition-colors"
                     >
-                        <ChevronRight className="w-5 h-5" />
+                        <ChevronRight className="w-4 h-4" />
                     </button>
                 </div>
             )}
+        </div>
+    );
+}
+
+function PrivilegesView() {
+    const { admin } = useAdminAuth();
+
+    if (!admin) return null;
+
+    const currentLevel = admin.admin_level || 0;
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+                <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6 lg:p-8">
+                    <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent">
+                        Your Privileges
+                    </h2>
+                    <p className="text-neutral-400 mb-8">Current capabilities based on your admin level</p>
+
+                    <div className="space-y-6">
+                        {/* Level 2 Content */}
+                        {currentLevel >= 2 && (
+                            <div className="bg-neutral-950/50 border border-neutral-800 rounded-xl p-6 relative overflow-hidden group hover:border-neutral-700 transition-all">
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex items-start gap-4/ relative z-10">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-900/20">
+                                        <span className="text-xl font-bold text-white">2</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-white mb-1">halPartner</h3>
+                                        <p className="text-neutral-400 text-sm">Current Access Level</p>
+                                    </div>
+                                </div>
+                                <div className="mt-6 space-y-4 relative z-10">
+                                    <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+                                        <div className="flex items-center gap-2 mb-2 text-green-400 font-bold text-sm">
+                                            <CheckCircle2 className="w-4 h-4" />
+                                            Full Access
+                                        </div>
+                                        <p className="text-neutral-400 text-xs leading-relaxed">
+                                            Verified Employer/Partner status. Your posts are published instantly without requiring approval.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+                                        <div className="flex items-center gap-2 mb-2 text-neutral-300 font-bold text-xs uppercase tracking-wider">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                                            Process Flow
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-neutral-400">
+                                            <span>Submit</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span className="text-white font-bold">Published Instantly</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Live</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Level 1 Content */}
+                        {currentLevel === 1 && (
+                            <div className="bg-neutral-950/50 border border-neutral-800 rounded-xl p-6 relative overflow-hidden group hover:border-neutral-700 transition-all">
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex items-start gap-4 relative z-10">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center shadow-lg shadow-blue-900/20">
+                                        <span className="text-xl font-bold text-white">1</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-white mb-1">Trusted Admin</h3>
+                                        <p className="text-neutral-400 text-sm">Current Access Level</p>
+                                    </div>
+                                </div>
+                                <div className="mt-6 space-y-4 relative z-10">
+                                    <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+                                        <div className="flex items-center gap-2 mb-2 text-blue-400 font-bold text-sm">
+                                            <CheckCircle2 className="w-4 h-4" />
+                                            Priority Review
+                                        </div>
+                                        <p className="text-neutral-400 text-xs leading-relaxed">
+                                            Trusted status. Your posts are reviewed with priority but still require approval from a Super Admin.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Level 0 Content */}
+                        {currentLevel === 0 && (
+                            <div className="bg-neutral-950/50 border border-neutral-800 rounded-xl p-6 relative overflow-hidden group hover:border-neutral-700 transition-all">
+                                <div className="absolute inset-0 bg-gradient-to-r from-neutral-500/10 to-stone-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="flex items-start gap-4 relative z-10">
+                                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-neutral-600 to-stone-600 flex items-center justify-center shadow-lg shadow-neutral-900/20">
+                                        <span className="text-xl font-bold text-white">0</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-white mb-1">Standard Admin</h3>
+                                        <p className="text-neutral-400 text-sm">Current Access Level</p>
+                                    </div>
+                                </div>
+                                <div className="mt-6 space-y-4 relative z-10">
+                                    <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+                                        <div className="flex items-center gap-2 mb-2 text-yellow-400 font-bold text-sm">
+                                            <AlertCircle className="w-4 h-4" />
+                                            Approval Required
+                                        </div>
+                                        <p className="text-neutral-400 text-xs leading-relaxed">
+                                            Standard status. All posts must be approved by a Super Admin before going live.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800">
+                                        <div className="flex items-center gap-2 mb-2 text-neutral-300 font-bold text-xs uppercase tracking-wider">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+                                            Process Flow
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-neutral-400">
+                                            <span>Submit</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span className="text-yellow-400 font-bold">Pending Approval</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Start 6hr Timer (If Approved)</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Live</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-6">
+                <div className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6">
+                    <h3 className="text-lg font-bold text-white mb-4">Level Hierarchy</h3>
+                    <div className="space-y-6 relative">
+                        {/* Connecting Line */}
+                        <div className="absolute left-[19px] top-4 bottom-4 w-0.5 bg-neutral-800" />
+
+                        {/* Level 2 Item */}
+                        <div className={`relative flex gap-4 transition-opacity duration-300 ${currentLevel === 2 ? 'opacity-100' : 'opacity-40'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center z-10 border-4 transition-colors ${currentLevel === 2 ? 'bg-purple-600 border-neutral-900 text-white' : 'bg-neutral-800 border-neutral-900 text-neutral-500'
+                                }`}>
+                                <span className="font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <h4 className={`font-bold text-sm ${currentLevel === 2 ? 'text-white' : 'text-neutral-400'}`}>Verified Partner</h4>
+                                <p className="text-xs text-neutral-500 mt-1">Instant publishing, full features access</p>
+                            </div>
+                        </div>
+
+                        {/* Level 1 Item */}
+                        <div className={`relative flex gap-4 transition-opacity duration-300 ${currentLevel === 1 ? 'opacity-100' : 'opacity-40'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center z-10 border-4 transition-colors ${currentLevel === 1 ? 'bg-blue-600 border-neutral-900 text-white' : 'bg-neutral-800 border-neutral-900 text-neutral-500'
+                                }`}>
+                                <span className="font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <h4 className={`font-bold text-sm ${currentLevel === 1 ? 'text-white' : 'text-neutral-400'}`}>Trusted Admin</h4>
+                                <p className="text-xs text-neutral-500 mt-1">Priority review, proven track record</p>
+                            </div>
+                        </div>
+
+                        {/* Level 0 Item */}
+                        <div className={`relative flex gap-4 transition-opacity duration-300 ${currentLevel === 0 ? 'opacity-100' : 'opacity-40'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center z-10 border-4 transition-colors ${currentLevel === 0 ? 'bg-neutral-600 border-neutral-900 text-white' : 'bg-neutral-800 border-neutral-900 text-neutral-500'
+                                }`}>
+                                <span className="font-bold text-sm">0</span>
+                            </div>
+                            <div>
+                                <h4 className={`font-bold text-sm ${currentLevel === 0 ? 'text-white' : 'text-neutral-400'}`}>Standard Admin</h4>
+                                <p className="text-xs text-neutral-500 mt-1">Standard approval process</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -602,3 +638,4 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
         </div>
     );
 }
+
