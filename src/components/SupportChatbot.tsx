@@ -10,65 +10,100 @@ interface FAQItem {
 }
 
 const FAQ_DATA: FAQItem[] = [
+    // ── 📌 About Vacancy America ──
     {
         id: '1',
-        category: 'Getting Started',
-        question: 'How do I create an account?',
-        answer: 'To create an account, click the "Sign Up" button on the login page. Fill in your details including username, email, and password. Once submitted, you\'ll be able to start using Vacancy America right away!'
+        category: '📌 About Vacancy America',
+        question: 'What is Vacancy America?',
+        answer: 'Vacancy America is a USA-focused professional platform where verified companies publish hiring updates, job openings, and career-related news in a trusted and moderated environment.'
     },
     {
         id: '2',
-        category: 'Getting Started',
-        question: 'How do I create a post?',
-        answer: 'Once logged in, you\'ll find a "Create Post" section at the top of your Home feed. Simply type your content, optionally attach an image or video, and click "Post" to share it with the community.'
+        category: '📌 About Vacancy America',
+        question: 'How is Vacancy America different from LinkedIn or Indeed?',
+        answer: 'Unlike open platforms, Vacancy America is curated. Posts are published only by verified admins and approved companies, which reduces spam, fake job listings, and low-quality content.'
     },
     {
         id: '3',
-        category: 'Account',
-        question: 'How do I edit my profile?',
-        answer: 'Navigate to your Profile page by clicking "Profile" in the sidebar. There you can update your display name, bio, avatar, and other profile information.'
+        category: '📌 About Vacancy America',
+        question: 'What kind of content is shared here?',
+        answer: 'You will find:\n\n• Verified job openings\n• Company hiring announcements\n• USA career news and articles\n• Professional community discussions'
     },
+    // ── 👥 Roles on Vacancy America ──
     {
         id: '4',
-        category: 'Account',
-        question: 'How do I change my password?',
-        answer: 'Go to your Profile settings and look for the password section. Enter your current password and your new password to update it. For security, make sure your new password is at least 8 characters long.'
+        category: '👥 Roles on Vacancy America',
+        question: 'What roles exist on this platform?',
+        answer: 'Vacancy America has three main roles:\n\n• Users: browse, comment, follow, and chat\n• Admins: create hiring/news posts (with approval workflow)\n• Super Admin: verifies admins and approves or rejects posts'
     },
     {
         id: '5',
-        category: 'Jobs',
-        question: 'How do I search for jobs?',
-        answer: 'Use the "Explore" page to discover job listings. You can filter by role, location, and keywords. Click on any listing to view full details and application instructions.'
+        category: '👥 Roles on Vacancy America',
+        question: 'Why can\'t normal users create posts?',
+        answer: 'To maintain trust and prevent spam, posting is limited to verified admins and companies. Users participate through comments, follows, and discussions.'
     },
     {
         id: '6',
-        category: 'Jobs',
-        question: 'How often are jobs updated?',
-        answer: 'Our job listings are updated regularly through automated scraping and manual curation. New positions are added daily, so check back frequently for the latest opportunities!'
+        category: '👥 Roles on Vacancy America',
+        question: 'Who controls what gets published?',
+        answer: 'The Super Admin ensures that only authentic and professional content becomes publicly visible.'
     },
+    // ── 🛡️ Becoming an Admin ──
     {
         id: '7',
-        category: 'Community',
-        question: 'How do I follow other users?',
-        answer: 'Visit any user\'s profile and click the "Follow" button. You can also follow users directly from their posts on your feed by clicking the follow icon.'
+        category: '🛡️ Becoming an Admin',
+        question: 'How can I become an admin on Vacancy America?',
+        answer: 'To become an admin, you must register through the Admin Panel. Your request will be reviewed and approved by the Super Admin before you can publish.'
     },
     {
         id: '8',
-        category: 'Community',
-        question: 'How do I report inappropriate content?',
-        answer: 'If you encounter inappropriate content, please contact our support team through this chatbot or via email. We take all reports seriously and will review them promptly.'
+        category: '🛡️ Becoming an Admin',
+        question: 'Why does admin registration require approval?',
+        answer: 'Admin approval ensures that only genuine companies and trusted publishers can post hiring content, keeping the platform reliable.'
     },
     {
         id: '9',
-        category: 'Admin',
-        question: 'How do I become an admin?',
-        answer: 'To become an admin, navigate to the Admin Registration page (/admin/register) and submit your application. A Super Admin will review and approve your request. Once approved, you\'ll be able to access the Admin Dashboard.'
+        category: '🛡️ Becoming an Admin',
+        question: 'What happens after I register as an admin?',
+        answer: 'Your admin account stays in "Pending" status until the Super Admin approves it. Once approved, you can start submitting posts.'
     },
+    // ── 📢 Admin Posting & Approval Workflow ──
     {
         id: '10',
-        category: 'Support',
-        question: 'How do I contact support?',
-        answer: 'You can reach our support team through this chatbot for common questions, or email us at support@vacancyamerica.com for more complex issues. We typically respond within 24 hours.'
+        category: '📢 Admin Posting & Approval',
+        question: 'Why are admin posts not published instantly?',
+        answer: 'Most admin posts require Super Admin verification to ensure authenticity and quality before appearing publicly.'
+    },
+    {
+        id: '11',
+        category: '📢 Admin Posting & Approval',
+        question: 'What are admin levels?',
+        answer: 'Admins have 3 levels:\n\n• Level 0: New admin (all posts require approval)\n• Level 1: Trusted admin (fast approval queue)\n• Level 2: Verified publisher (can post directly)'
+    },
+    {
+        id: '12',
+        category: '📢 Admin Posting & Approval',
+        question: 'What happens if my post is rejected?',
+        answer: 'Rejected posts include a clear reason from the Super Admin, and you can edit and resubmit the post.'
+    },
+    // ── 🎧 Support & Safety ──
+    {
+        id: '13',
+        category: '🎧 Support & Safety',
+        question: 'How do I contact Vacancy America support?',
+        answer: 'You can contact support through the Support section or the official email provided on the platform.'
+    },
+    {
+        id: '14',
+        category: '🎧 Support & Safety',
+        question: 'How do I report a suspicious job post?',
+        answer: 'If you see a post that looks fake or misleading, use the Report option. Our team will review it quickly.'
+    },
+    {
+        id: '15',
+        category: '🎧 Support & Safety',
+        question: 'How does Vacancy America prevent fake jobs?',
+        answer: 'We use verified admin onboarding, Super Admin approvals, and moderation controls to ensure trust and safety.'
     }
 ];
 
@@ -210,8 +245,8 @@ export function SupportChatbot() {
             {/* ──── Chat Window ──── */}
             <div
                 className={`fixed bottom-24 right-6 z-50 transition-all duration-300 ease-out ${isOpen
-                        ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
-                        : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
+                    ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+                    : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                     }`}
                 style={{ width: '380px', maxHeight: '560px' }}
             >
@@ -339,8 +374,8 @@ export function SupportChatbot() {
             <button
                 onClick={toggleChat}
                 className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${isOpen
-                        ? 'bg-[#1a1f25] border border-[#2f3336] rotate-0 hover:bg-[#22272d]'
-                        : 'bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600 hover:scale-110 hover:shadow-blue-500/30 hover:shadow-xl'
+                    ? 'bg-[#1a1f25] border border-[#2f3336] rotate-0 hover:bg-[#22272d]'
+                    : 'bg-gradient-to-br from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600 hover:scale-110 hover:shadow-blue-500/30 hover:shadow-xl'
                     }`}
                 aria-label={isOpen ? 'Close support chat' : 'Open support chat'}
             >
