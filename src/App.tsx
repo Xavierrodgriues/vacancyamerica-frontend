@@ -16,6 +16,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Explore = lazy(() => import("./pages/Explore"));
+const Messages = lazy(() => import("./pages/Messages"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminLogin = lazy(() => import("./admin/pages/AdminLogin"));
 const AdminRegister = lazy(() => import("./admin/pages/AdminRegister"));
@@ -113,6 +114,7 @@ const App = () => (
                   <Route path="/auth" element={<PublicRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Auth /></Suspense></PublicRoute>} />
                   <Route path="/" element={<ProtectedRoute><Suspense fallback={<div className="max-w-2xl mx-auto w-full pt-20 px-4"><FeedSkeleton /></div>}><Home /></Suspense></ProtectedRoute>} />
                   <Route path="/explore" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Explore /></Suspense></ProtectedRoute>} />
+                  <Route path="/messages" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Messages /></Suspense></ProtectedRoute>} />
                   <Route path="/profile/:username" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Profile /></Suspense></ProtectedRoute>} />
 
                   {/* Admin routes */}

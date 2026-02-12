@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useSearchUsers } from "@/hooks/use-search";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Link } from "react-router-dom";
@@ -8,7 +9,8 @@ import { FriendActionButtons } from "@/components/FriendActionButtons";
 
 export function SearchUsers() {
     const [query, setQuery] = useState("");
-    const { data: users, isLoading } = useSearchUsers(query);
+    const debouncedQuery = useDebounce(query, 500);
+    const { data: users, isLoading } = useSearchUsers(debouncedQuery);
 
     return (
         <div className="w-full space-y-4">

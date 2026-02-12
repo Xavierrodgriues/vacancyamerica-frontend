@@ -4,12 +4,11 @@ import { useProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { MobileChatPanel } from "./MobileChatPanel";
 
 const navItems = [
   { title: "Home", url: "/", icon: Home },
   { title: "Explore", url: "/explore", icon: Search },
-  { title: "Messages", url: "#messages", icon: MessageCircle },
+  { title: "Messages", url: "/messages", icon: MessageCircle },
   { title: "Profile", url: "/profile", icon: User },
 ];
 
@@ -28,22 +27,22 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile Chat Panel (full screen overlay) */}
-      {showChat && <MobileChatPanel onClose={() => setShowChat(false)} />}
+      {/* Mobile Chat Panel moved to AppLayout */}
 
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-post-border">
         <div className="flex items-center justify-around py-2">
           {navItems.map((item) => {
-            const isMessages = item.url === "#messages";
+            const isMessages = item.url === "/messages";
             const isActive = isMessages
-              ? showChat
+              ? location.pathname === "/messages"
               : item.url === "/"
                 ? location.pathname === "/"
                 : location.pathname.startsWith(item.url);
 
             return isMessages ? (
-              <button
+              <Link
                 key={item.title}
-                onClick={() => setShowChat(!showChat)}
+                to={item.url}
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors",
                   isActive ? "text-primary" : "text-muted-foreground"
@@ -51,7 +50,7 @@ export function MobileNav() {
               >
                 <item.icon className={cn("h-6 w-6", isActive && "stroke-[2.5]")} />
                 <span className="text-xs">{item.title}</span>
-              </button>
+              </Link>
             ) : (
               <Link
                 key={item.title}

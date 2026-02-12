@@ -1,5 +1,7 @@
 import { Search, Edit3, ArrowLeft, Send, Phone, Video, Image, Smile } from "lucide-react";
 import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useFriends } from "@/hooks/use-friends";
 import {
@@ -241,13 +243,15 @@ function MobileChatView({ conversation, otherUser, onBack }: {
 }
 
 // ─── Main Mobile Chat Panel ─────────────────────────────────────────────────
-export function MobileChatPanel({ onClose }: { onClose: () => void }) {
+export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: () => void; variant?: "overlay" | "page" }) {
     const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 300);
     const [activeConversation, setActiveConversation] = useState<ConversationData | null>(null);
     const { data: conversations, isLoading: convsLoading } = useConversations();
     const { data: friends } = useFriends();
     const startConversation = useStartConversation();
+    const navigate = useNavigate();
 
     const getOtherUser = (conv: ConversationData): Participant => {
         return conv.participants.find((p) => p._id !== user?._id) || conv.participants[0];
@@ -255,8 +259,8 @@ export function MobileChatPanel({ onClose }: { onClose: () => void }) {
 
     const filteredConversations = (conversations || []).filter((conv) => {
         const other = getOtherUser(conv);
-        return other.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            other.username.toLowerCase().includes(searchQuery.toLowerCase());
+        return other.display_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            other.username.toLowerCase().includes(debouncedSearch.toLowerCase());
     });
 
     const handleStartChat = async (friendId: string) => {
@@ -280,7 +284,10 @@ export function MobileChatPanel({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className={`fixed inset-0 bg-background flex flex-col ${activeConversation ? "z-[60]" : "z-40"}`}>
+        <div className={variant === "overlay"
+            ? `fixed inset-0 bg-background flex flex-col ${activeConversation ? "z-[60]" : "z-40"}`
+            : "flex flex-col h-[calc(100vh-4rem)] bg-background relative"
+        }>
             <style>{`
                 /* Hide support chatbot when chat panel is open */
                 button[aria-label*="support chat"] {
@@ -297,7 +304,14 @@ export function MobileChatPanel({ onClose }: { onClose: () => void }) {
                 <>
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-post-border flex-shrink-0">
-                        <h2 className="text-lg font-bold text-foreground">Messages</h2>
+                        <div className="flex items-center gap-2">
+                            {variant === "page" && (
+                                <button onClick={() => navigate(-1)} className="p-1.5 rounded-full hover:bg-muted transition-colors">
+                                    <ArrowLeft className="w-5 h-5 text-foreground" />
+                                </button>
+                            )}
+                            <h2 className="text-lg font-bold text-foreground">Messages</h2>
+                        </div>
                         <button className="p-2 rounded-full hover:bg-muted transition-colors">
                             <Edit3 className="w-5 h-5 text-foreground" />
                         </button>

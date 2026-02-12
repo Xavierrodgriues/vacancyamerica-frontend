@@ -1,4 +1,4 @@
-import { Home, Search, User, LogOut } from "lucide-react";
+import { Home, Search, User, LogOut, MessageCircle } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/use-profile";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { title: "Home", url: "/", icon: Home },
   { title: "Explore", url: "/explore", icon: Search },
+  { title: "Messages", url: "/messages", icon: MessageCircle, className: "lg:hidden" },
   { title: "Profile", url: "/profile", icon: User },
 ];
 
@@ -43,7 +44,8 @@ export function AppSidebar() {
               to={item.url === "/profile" && profile ? `/profile/${profile.username}` : item.url}
               className={cn(
                 "flex items-center gap-4 px-4 py-3 rounded-full text-lg transition-colors hover-card",
-                isActive ? "font-bold text-foreground" : "text-foreground/80"
+                isActive ? "font-bold text-foreground" : "text-foreground/80",
+                (item as any).className
               )}
             >
               <item.icon className={cn("h-6 w-6", isActive && "stroke-[2.5]")} />

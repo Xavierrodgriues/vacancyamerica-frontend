@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { AppLayout } from "@/components/AppLayout";
 import { PostCard } from "@/components/PostCard";
 import { usePosts } from "@/hooks/use-posts";
@@ -10,12 +11,13 @@ import { SearchUsers } from "@/components/SearchUsers";
 export default function Explore() {
   const { data: posts, isLoading } = usePosts();
   const [postSearch, setPostSearch] = useState("");
+  const debouncedPostSearch = useDebounce(postSearch, 300);
 
   const filteredPosts = posts?.filter(
     (post: any) =>
-      post.content.toLowerCase().includes(postSearch.toLowerCase()) ||
-      post.profiles.display_name.toLowerCase().includes(postSearch.toLowerCase()) ||
-      post.profiles.username.toLowerCase().includes(postSearch.toLowerCase())
+      post.content.toLowerCase().includes(debouncedPostSearch.toLowerCase()) ||
+      post.profiles.display_name.toLowerCase().includes(debouncedPostSearch.toLowerCase()) ||
+      post.profiles.username.toLowerCase().includes(debouncedPostSearch.toLowerCase())
   );
 
   return (

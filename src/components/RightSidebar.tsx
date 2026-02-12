@@ -1,5 +1,6 @@
 import { Search, Edit3, ArrowLeft, Send, Phone, Video, Image, Smile } from "lucide-react";
 import { useState, useRef, useEffect, lazy, Suspense } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useAuth } from "@/lib/auth-context";
 import { useFriends } from "@/hooks/use-friends";
 import {
@@ -263,6 +264,7 @@ function ChatView({ conversation, otherUser, onBack }: {
 export function RightSidebar() {
     const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState("");
+    const debouncedSearch = useDebounce(searchQuery, 300);
     const [activeConversation, setActiveConversation] = useState<ConversationData | null>(null);
     const { data: conversations, isLoading: convsLoading } = useConversations();
     const { data: friends } = useFriends();
@@ -274,8 +276,8 @@ export function RightSidebar() {
 
     const filteredConversations = (conversations || []).filter((conv) => {
         const other = getOtherUser(conv);
-        return other.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            other.username.toLowerCase().includes(searchQuery.toLowerCase());
+        return other.display_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+            other.username.toLowerCase().includes(debouncedSearch.toLowerCase());
     });
 
     const totalUnread = (conversations || []).reduce((sum, c) => sum + (c.unreadCount || 0), 0);
