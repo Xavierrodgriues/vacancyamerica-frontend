@@ -6,7 +6,7 @@ import { timeAgo } from "@/lib/time";
 import { MessageCircle, Heart, Share, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
-import { useQueryClient } from "@tanstack/react-query";
+import { useToggleLike } from "@/hooks/use-posts";
 import { toast } from "sonner";
 
 interface PostProfile {
@@ -26,16 +26,27 @@ interface Post {
   createdAt?: string;
   created_at?: string;
   profiles: PostProfile;
+  likesCount?: number;
+  likedByMe?: boolean;
 }
 
 export function PostCard({ post }: { post: Post }) {
   const [showComments, setShowComments] = useState(false);
-  const [liked, setLiked] = useState(false);
   const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const toggleLike = useToggleLike();
 
-  const postId = post._id || post.id;
+  const postId = post._id || post.id || "";
   const createdAt = post.createdAt || post.created_at || new Date().toISOString();
+  const liked = post.likedByMe || false;
+  const likesCount = post.likesCount || 0;
+
+  const handleLike = () => {
+    if (!user) {
+      toast.error("Sign in to like posts");
+      return;
+    }
+    toggleLike.mutate(postId);
+  };
 
   return (
     <article className="border-b border-post-border hover-card">
@@ -109,11 +120,20 @@ export function PostCard({ post }: { post: Post }) {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`rounded-full gap-1.5 px-2 ${liked ? "text-destructive hover:text-destructive/80" : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"}`}
-                onClick={() => setLiked(!liked)}
+                className={`rounded-full gap-1.5 px-2 transition-all duration-200 ${liked
+                    ? "text-destructive hover:text-destructive/80"
+                    : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  }`}
+                onClick={handleLike}
+                disabled={toggleLike.isPending}
               >
-                <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
-                <span className="text-sm">{liked ? 1 : ""}</span>
+                <Heart
+                  className={`h-4 w-4 transition-transform duration-200 ${liked ? "fill-current scale-110" : ""
+                    }`}
+                />
+                {likesCount > 0 && (
+                  <span className="text-sm tabular-nums">{likesCount}</span>
+                )}
               </Button>
               <Button
                 variant="ghost"

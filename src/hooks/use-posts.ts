@@ -1,17 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 
+const API = "http://localhost:5000/api/posts";
+
 export function usePosts() {
   const { user } = useAuth();
 
   const query = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/posts");
+      const headers: HeadersInit = {};
+      if (user?.token) {
+        headers["Authorization"] = `Bearer ${user.token}`;
+      }
+      const res = await fetch(API, { headers });
       if (!res.ok) throw new Error("Failed to fetch posts");
       const posts = await res.json();
 
-      // Map 'user' to 'profiles' to match existing UI expectations
       return posts.map((p: any) => ({
         ...p,
         profiles: p.user || { username: "unknown", display_name: "Unknown", avatar_url: null },
@@ -23,11 +28,17 @@ export function usePosts() {
 }
 
 export function useUserPosts(userId: string | undefined) {
+  const { user } = useAuth();
+
   const query = useQuery({
     queryKey: ["posts", "user", userId],
     queryFn: async () => {
       if (!userId) return [];
-      const res = await fetch(`http://localhost:5000/api/posts/user/${userId}`);
+      const headers: HeadersInit = {};
+      if (user?.token) {
+        headers["Authorization"] = `Bearer ${user.token}`;
+      }
+      const res = await fetch(`${API}/user/${userId}`, { headers });
       if (!res.ok) throw new Error("Failed to fetch user posts");
       const posts = await res.json();
 
@@ -58,15 +69,14 @@ export function useCreatePost() {
       if (mediaFile) {
         const formData = new FormData();
         formData.append('content', content);
-        formData.append('image', mediaFile); // Multer expects 'image' field based on middleware config, even for video
+        formData.append('image', mediaFile);
         body = formData;
-        // Content-Type header with FormData is set automatically by fetch to include boundary
       } else {
         body = JSON.stringify({ content, image_url: null });
         headers["Content-Type"] = "application/json";
       }
 
-      const res = await fetch("http://localhost:5000/api/posts", {
+      const res = await fetch(API, {
         method: "POST",
         headers: headers,
         body: body
@@ -81,6 +91,75 @@ export function useCreatePost() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+}
+
+// ─── Like toggle with optimistic update ─────────────────────────────────────
+export function useToggleLike() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (postId: string) => {
+      if (!user?.token) throw new Error("Not authenticated");
+
+      const res = await fetch(`${API}/${postId}/like`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      if (!res.ok) throw new Error("Failed to toggle like");
+      return res.json() as Promise<{ liked: boolean; likesCount: number }>;
+    },
+
+    // Optimistic update: instant UI feedback
+    onMutate: async (postId: string) => {
+      // Cancel any outgoing refetches so they don't overwrite optimistic update
+      await queryClient.cancelQueries({ queryKey: ["posts"] });
+
+      // Snapshot previous state for rollback
+      const previousPosts = queryClient.getQueryData(["posts"]);
+
+      // Optimistically toggle in cache
+      queryClient.setQueryData(["posts"], (old: any[] | undefined) => {
+        if (!old) return old;
+        return old.map((post: any) => {
+          if ((post._id || post.id) === postId) {
+            const wasLiked = post.likedByMe;
+            return {
+              ...post,
+              likedByMe: !wasLiked,
+              likesCount: Math.max(0, (post.likesCount || 0) + (wasLiked ? -1 : 1)),
+            };
+          }
+          return post;
+        });
+      });
+
+      return { previousPosts };
+    },
+
+    // On error: rollback to snapshot
+    onError: (_err, _postId, context) => {
+      if (context?.previousPosts) {
+        queryClient.setQueryData(["posts"], context.previousPosts);
+      }
+    },
+
+    // On success: update with server truth
+    onSettled: (_data, _error, postId) => {
+      // Sync server-side count to be safe
+      if (_data && !_error) {
+        queryClient.setQueryData(["posts"], (old: any[] | undefined) => {
+          if (!old) return old;
+          return old.map((post: any) => {
+            if ((post._id || post.id) === postId) {
+              return { ...post, liked: _data.liked, likesCount: _data.likesCount, likedByMe: _data.liked };
+            }
+            return post;
+          });
+        });
+      }
     },
   });
 }
