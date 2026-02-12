@@ -230,5 +230,15 @@ export function useTypingIndicator(conversationId: string | null) {
         lastEmitRef.current = 0;
     }, [socket, conversationId]);
 
+    // Cleanup: fire stopTyping + clear timers when component unmounts
+    useEffect(() => {
+        return () => {
+            if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
+            if (socket && conversationId) {
+                socket.emit("stopTyping", { conversationId });
+            }
+        };
+    }, [socket, conversationId]);
+
     return { sendTyping, stopTyping };
 }
