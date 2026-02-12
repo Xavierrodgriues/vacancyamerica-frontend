@@ -52,8 +52,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         checkAuth();
     }, []);
 
-    // Poll for updates every 30 seconds
-    // Poll for updates every 5 seconds
+    // Poll for updates every 60 seconds
+    // Purpose: Security measure. This ensures that if an Admin's role is changed (demoted) 
+    // or their account is suspended, they lose access within 60 seconds.
+    // Without this, they could remain logged in until their token expires (potentially days).
     useEffect(() => {
         if (!admin?.token) return;
 
@@ -62,7 +64,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
 
         const intervalId = setInterval(() => {
             fetchProfile(admin.token);
-        }, 5000); // 5 seconds
+        }, 60000); // 60 seconds
 
         return () => clearInterval(intervalId);
     }, [admin?.token]);

@@ -1,5 +1,5 @@
 import { Search, Edit3, ArrowLeft, Send, Phone, Video, Image, Smile } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useFriends } from "@/hooks/use-friends";
 import {
@@ -12,7 +12,9 @@ import {
     type Participant,
 } from "@/hooks/use-chat";
 import { useSocket } from "@/lib/socket-context";
-import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import { EmojiClickData, Theme } from "emoji-picker-react";
+const EmojiPicker = lazy(() => import("emoji-picker-react"));
+import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // ─── Avatar Colors ──────────────────────────────────────────────────────────
@@ -219,12 +221,14 @@ function ChatView({ conversation, otherUser, onBack }: {
                             </button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0 border-none bg-transparent shadow-none" side="top" align="start">
-                            <EmojiPicker
-                                onEmojiClick={(emojiData: EmojiClickData) => setNewMessage((prev) => prev + emojiData.emoji)}
-                                theme={Theme.AUTO}
-                                width={300}
-                                height={400}
-                            />
+                            <Suspense fallback={<Skeleton className="h-[400px] w-[300px] rounded-lg" />}>
+                                <EmojiPicker
+                                    onEmojiClick={(emojiData: EmojiClickData) => setNewMessage((prev) => prev + emojiData.emoji)}
+                                    theme={Theme.AUTO}
+                                    width={300}
+                                    height={400}
+                                />
+                            </Suspense>
                         </PopoverContent>
                     </Popover>
                     <div className="flex-1 relative">

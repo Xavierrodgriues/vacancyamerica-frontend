@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, lazy, Suspense, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserAvatar } from "@/components/UserAvatar";
-import { CommentSection } from "@/components/CommentSection";
+const CommentSection = lazy(() => import("@/components/CommentSection").then(module => ({ default: module.CommentSection })));
+import { CommentSkeleton } from "@/components/Skeletons";
 import { timeAgo } from "@/lib/time";
 import { MessageCircle, Heart, Share, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { useToggleLike } from "@/hooks/use-posts";
 import { toast } from "sonner";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 interface PostProfile {
   username: string;
@@ -30,7 +32,7 @@ interface Post {
   likedByMe?: boolean;
 }
 
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ post, priority = false }: { post: Post; priority?: boolean }) {
   const [showComments, setShowComments] = useState(false);
   const { user } = useAuth();
   const toggleLike = useToggleLike();
@@ -39,6 +41,20 @@ export function PostCard({ post }: { post: Post }) {
   const createdAt = post.createdAt || post.created_at || new Date().toISOString();
   const liked = post.likedByMe || false;
   const likesCount = post.likesCount || 0;
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { containerRef, isVisible } = useIntersectionObserver({ threshold: 0.5 });
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isVisible) {
+      video.play().catch(() => { });
+    } else {
+      video.pause();
+    }
+  }, [isVisible]);
 
   const handleLike = () => {
     if (!user) {
@@ -87,17 +103,19 @@ export function PostCard({ post }: { post: Post }) {
                   src={post.image_url}
                   alt="Post image"
                   className="max-h-[512px] w-full object-cover"
-                  loading="lazy"
+                  loading={priority ? "eager" : "lazy"}
+                  {...(priority ? { fetchPriority: "high" } : {})}
                 />
               </div>
             )}
 
             {post.video_url && (
-              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border">
+              <div ref={containerRef} className="mt-3 rounded-2xl overflow-hidden border border-post-border">
                 <video
+                  ref={videoRef}
                   src={post.video_url}
                   controls
-                  autoPlay
+                  /* autoPlay removed, managed by observer */
                   loop
                   muted
                   playsInline
@@ -121,8 +139,8 @@ export function PostCard({ post }: { post: Post }) {
                 variant="ghost"
                 size="sm"
                 className={`rounded-full gap-1.5 px-2 transition-all duration-200 ${liked
-                    ? "text-destructive hover:text-destructive/80"
-                    : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  ? "text-destructive hover:text-destructive/80"
+                  : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                   }`}
                 onClick={handleLike}
                 disabled={toggleLike.isPending}
@@ -163,7 +181,11 @@ export function PostCard({ post }: { post: Post }) {
           </div>
         </div>
       </div>
-      {showComments && <CommentSection postId={postId || ""} />}
+      {showComments && (
+        <Suspense fallback={<CommentSkeleton />}>
+          <CommentSection postId={postId || ""} />
+        </Suspense>
+      )}
     </article>
   );
 }

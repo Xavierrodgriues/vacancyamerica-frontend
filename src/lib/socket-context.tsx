@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/lib/auth-context";
 
@@ -12,39 +12,37 @@ export const useSocket = () => useContext(SocketContext);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
-    const socketRef = useRef<Socket | null>(null);
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        if (user?.token && !socketRef.current) {
-            const newSocket = io("http://localhost:5000", {
-                auth: { token: user.token },
-                transports: ["websocket", "polling"],
-                reconnection: true,
-                reconnectionAttempts: 10,
-                reconnectionDelay: 1000,
-            });
+        if (!user?.token) return;
 
-            newSocket.on("connect", () => {
-                console.log("[Socket] Connected:", newSocket.id);
-            });
+        const newSocket = io("http://localhost:5000", {
+            auth: { token: user.token },
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 10,
+            reconnectionDelay: 1000,
+        });
 
-            newSocket.on("connect_error", (err) => {
-                console.error("[Socket] Connection error:", err.message);
-            });
+        newSocket.on("connect", () => {
+            console.log("[Socket] Connected:", newSocket.id);
+        });
 
-            socketRef.current = newSocket;
-        }
+        newSocket.on("connect_error", (err) => {
+            console.error("[Socket] Connection error:", err.message);
+        });
+
+        setSocket(newSocket);
 
         return () => {
-            if (socketRef.current) {
-                socketRef.current.disconnect();
-                socketRef.current = null;
-            }
+            newSocket.disconnect();
+            setSocket(null);
         };
     }, [user?.token]);
 
     return (
-        <SocketContext.Provider value={{ socket: socketRef.current }}>
+        <SocketContext.Provider value={{ socket }}>
             {children}
         </SocketContext.Provider>
     );

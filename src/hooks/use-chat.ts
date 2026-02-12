@@ -53,7 +53,7 @@ export function useConversations() {
             return data.conversations as ConversationData[];
         },
         enabled: !!user,
-        refetchInterval: 30000, // Poll every 30s as fallback
+        // refetchInterval removed - using socket events for updates
     });
 
     // Listen for new messages to refresh the inbox
