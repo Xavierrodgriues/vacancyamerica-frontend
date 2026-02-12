@@ -54,7 +54,7 @@ function MobileChatView({ conversation, otherUser, onBack }: {
 }) {
     const { user } = useAuth();
     const [newMessage, setNewMessage] = useState("");
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
     const { data: msgData, isLoading } = useMessages(conversation._id);
     const sendMessage = useSendMessage();
     const { sendTyping, stopTyping } = useTypingIndicator(conversation._id);
@@ -63,8 +63,10 @@ function MobileChatView({ conversation, otherUser, onBack }: {
 
     const messages = msgData?.messages || [];
 
+    // Scroll only the chat container — not the main page
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        const el = messagesContainerRef.current;
+        if (el) el.scrollTop = el.scrollHeight;
     }, [messages]);
 
     useEffect(() => {
@@ -125,7 +127,7 @@ function MobileChatView({ conversation, otherUser, onBack }: {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-3 py-4 space-y-3" style={{ scrollbarWidth: "thin" }}>
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-3 py-4 space-y-3" style={{ scrollbarWidth: "thin" }}>
                 <div className="flex flex-col items-center py-4 mb-2">
                     <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="lg" />
                     <h4 className="text-sm font-bold text-foreground mt-2">{otherUser.display_name}</h4>
@@ -183,7 +185,7 @@ function MobileChatView({ conversation, otherUser, onBack }: {
                     </div>
                 )}
 
-                <div ref={messagesEndRef} />
+                <div />
             </div>
 
             {/* Input */}

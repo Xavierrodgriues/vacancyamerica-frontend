@@ -55,7 +55,7 @@ function ChatView({ conversation, otherUser, onBack }: {
 }) {
     const { user } = useAuth();
     const [newMessage, setNewMessage] = useState("");
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
     const { data: msgData, isLoading } = useMessages(conversation._id);
     const sendMessage = useSendMessage();
     const { sendTyping, stopTyping } = useTypingIndicator(conversation._id);
@@ -64,8 +64,10 @@ function ChatView({ conversation, otherUser, onBack }: {
 
     const messages = msgData?.messages || [];
 
+    // Scroll only the chat container to bottom — never the main page
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        const el = messagesContainerRef.current;
+        if (el) el.scrollTop = el.scrollHeight;
     }, [messages]);
 
     // Listen for typing indicators
@@ -137,7 +139,7 @@ function ChatView({ conversation, otherUser, onBack }: {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ scrollbarWidth: "thin" }}>
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ scrollbarWidth: "thin" }}>
                 {/* Profile card at top */}
                 <div className="flex flex-col items-center py-4 mb-2">
                     <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="lg" />
@@ -196,7 +198,7 @@ function ChatView({ conversation, otherUser, onBack }: {
                     </div>
                 )}
 
-                <div ref={messagesEndRef} />
+                <div />
             </div>
 
             {/* Input */}
