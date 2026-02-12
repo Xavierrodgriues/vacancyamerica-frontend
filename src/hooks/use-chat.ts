@@ -199,27 +199,35 @@ export function useStartConversation() {
     });
 }
 
-// ─── Typing indicator hook ──────────────────────────────────────────────────
+// ─── Typing indicator hook (throttled: 1 emit per 1.5s max) ────────────────
 export function useTypingIndicator(conversationId: string | null) {
     const { socket } = useSocket();
-    const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const stopTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const lastEmitRef = useRef<number>(0);
 
     const sendTyping = useCallback(() => {
         if (!socket || !conversationId) return;
 
-        socket.emit("typing", { conversationId });
+        // Throttle: only emit if 1.5s+ since the last emit
+        const now = Date.now();
+        if (now - lastEmitRef.current >= 1500) {
+            socket.emit("typing", { conversationId });
+            lastEmitRef.current = now;
+        }
 
-        // Auto-stop typing after 2 seconds of no input
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = setTimeout(() => {
+        // Reset the auto-stop timer on every keystroke
+        if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
+        stopTimeoutRef.current = setTimeout(() => {
             socket.emit("stopTyping", { conversationId });
+            lastEmitRef.current = 0; // allow immediate emit on next keypress
         }, 2000);
     }, [socket, conversationId]);
 
     const stopTyping = useCallback(() => {
         if (!socket || !conversationId) return;
-        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        if (stopTimeoutRef.current) clearTimeout(stopTimeoutRef.current);
         socket.emit("stopTyping", { conversationId });
+        lastEmitRef.current = 0;
     }, [socket, conversationId]);
 
     return { sendTyping, stopTyping };
