@@ -189,7 +189,7 @@ function MobileChatView({ conversation, otherUser, onBack }: {
             </div>
 
             {/* Input */}
-            <div className="px-3 py-2 border-t border-post-border flex-shrink-0 mb-16">
+            <div className="px-3 py-2 border-t border-post-border flex-shrink-0 mb-0">
                 <div className="flex items-center gap-2">
                     <button className="p-2 rounded-full hover:bg-muted transition-colors flex-shrink-0">
                         <Smile className="w-5 h-5 text-muted-foreground" />
@@ -262,7 +262,13 @@ export function MobileChatPanel({ onClose }: { onClose: () => void }) {
     };
 
     return (
-        <div className="fixed inset-0 z-40 bg-background flex flex-col">
+        <div className={`fixed inset-0 bg-background flex flex-col ${activeConversation ? "z-[60]" : "z-40"}`}>
+            <style>{`
+                /* Hide support chatbot when chat panel is open */
+                button[aria-label*="support chat"] {
+                    display: none !important;
+                }
+            `}</style>
             {activeConversation ? (
                 <MobileChatView
                     conversation={activeConversation}

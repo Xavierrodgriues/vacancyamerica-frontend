@@ -109,6 +109,12 @@ function ChatView({ conversation, otherUser, onBack }: {
 
     return (
         <div className="flex flex-col h-full">
+            <style>{`
+                /* Hide support chatbot when desktop chat view is active */
+                button[aria-label*="support chat"] {
+                    display: none !important;
+                }
+            `}</style>
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 border-b border-post-border flex-shrink-0">
                 <button onClick={onBack} className="p-1.5 rounded-full hover:bg-muted transition-colors">
