@@ -12,6 +12,8 @@ import {
     type Participant,
 } from "@/hooks/use-chat";
 import { useSocket } from "@/lib/socket-context";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // ─── Avatar ─────────────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
@@ -191,9 +193,21 @@ function MobileChatView({ conversation, otherUser, onBack }: {
             {/* Input */}
             <div className="px-3 py-2 border-t border-post-border flex-shrink-0 mb-0">
                 <div className="flex items-center gap-2">
-                    <button className="p-2 rounded-full hover:bg-muted transition-colors flex-shrink-0">
-                        <Smile className="w-5 h-5 text-muted-foreground" />
-                    </button>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <button className="p-2 rounded-full hover:bg-muted transition-colors flex-shrink-0">
+                                <Smile className="w-5 h-5 text-muted-foreground" />
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0 border-none bg-transparent shadow-none z-[70]" side="top" align="start">
+                            <EmojiPicker
+                                onEmojiClick={(emojiData: EmojiClickData) => setNewMessage((prev) => prev + emojiData.emoji)}
+                                theme={Theme.AUTO}
+                                width="100%"
+                                height={350}
+                            />
+                        </PopoverContent>
+                    </Popover>
                     <div className="flex-1 relative">
                         <input
                             type="text"
