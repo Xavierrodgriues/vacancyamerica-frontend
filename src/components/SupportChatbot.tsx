@@ -244,14 +244,17 @@ export function SupportChatbot() {
         <>
             {/* ──── Chat Window ──── */}
             <div
-                className={`fixed right-4 md:right-6 z-50 transition-all duration-300 ease-out bottom-36 md:bottom-24 ${isOpen
-                    ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
-                    : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
+                className={`fixed z-50 transition-all duration-300 ease-out
+                    top-3 bottom-[72px] left-2 right-2
+                    md:top-3 md:bottom-[72px] md:left-auto md:right-3 md:w-[400px]
+                    lg:top-0 lg:bottom-0 lg:left-auto lg:right-0 lg:w-[calc(100vw-875px)]
+                    ${isOpen
+                        ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+                        : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
                     }`}
-                style={{ width: 'min(380px, calc(100vw - 32px))', maxHeight: '480px' }}
+                style={{ minWidth: '0' }}
             >
-                <div className="flex flex-col bg-[#0f1419] border border-[#2f3336] rounded-2xl shadow-2xl shadow-black/50 overflow-hidden"
-                    style={{ height: '540px' }}
+                <div className="flex flex-col bg-[#0f1419] border border-[#2f3336] lg:border-l lg:border-y-0 lg:border-r-0 rounded-2xl lg:rounded-none shadow-2xl shadow-black/50 overflow-hidden h-full"
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-blue-600 to-blue-700 flex-shrink-0">

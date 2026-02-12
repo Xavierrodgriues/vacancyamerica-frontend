@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { SocketProvider } from "@/lib/socket-context";
 import { AdminAuthProvider, useAdminAuth } from "@/admin/lib/admin-auth-context";
 import { SuperAdminAuthProvider, useSuperAdminAuth } from "@/admin/lib/super-admin-auth-context";
 import Home from "./pages/Home";
@@ -100,29 +101,31 @@ const App = () => (
       <Sonner />
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
-          <AdminAuthProvider>
-            <SuperAdminAuthProvider>
-              <Routes>
-                {/* User routes */}
-                <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
-                <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
-                <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <SocketProvider>
+            <AdminAuthProvider>
+              <SuperAdminAuthProvider>
+                <Routes>
+                  {/* User routes */}
+                  <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
+                  <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                  <Route path="/explore" element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+                  <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
-                {/* Admin routes */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/register" element={<AdminRegister />} />
-                <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
+                  {/* Admin routes */}
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin/register" element={<AdminRegister />} />
+                  <Route path="/admin/dashboard" element={<AdminProtectedRoute><AdminDashboard /></AdminProtectedRoute>} />
 
-                {/* Super Admin routes */}
-                <Route path="/superadmin/login" element={<SuperAdminLogin />} />
-                <Route path="/superadmin/register" element={<SuperAdminRegister />} />
-                <Route path="/superadmin/dashboard" element={<SuperAdminProtectedRoute><SuperAdminDashboard /></SuperAdminProtectedRoute>} />
+                  {/* Super Admin routes */}
+                  <Route path="/superadmin/login" element={<SuperAdminLogin />} />
+                  <Route path="/superadmin/register" element={<SuperAdminRegister />} />
+                  <Route path="/superadmin/dashboard" element={<SuperAdminProtectedRoute><SuperAdminDashboard /></SuperAdminProtectedRoute>} />
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SuperAdminAuthProvider>
-          </AdminAuthProvider>
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SuperAdminAuthProvider>
+            </AdminAuthProvider>
+          </SocketProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
