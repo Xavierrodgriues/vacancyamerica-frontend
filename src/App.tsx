@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { SocketProvider } from "@/lib/socket-context";
 import { AdminAuthProvider, useAdminAuth } from "@/admin/lib/admin-auth-context";
 import { SuperAdminAuthProvider, useSuperAdminAuth } from "@/admin/lib/super-admin-auth-context";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Loader2 } from "lucide-react";
 import React, { Suspense, lazy } from "react";
 import { FeedSkeleton } from "@/components/Skeletons";
@@ -109,26 +110,28 @@ const App = () => (
           <SocketProvider>
             <AdminAuthProvider>
               <SuperAdminAuthProvider>
-                <Routes>
-                  {/* User routes */}
-                  <Route path="/auth" element={<PublicRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Auth /></Suspense></PublicRoute>} />
-                  <Route path="/" element={<ProtectedRoute><Suspense fallback={<div className="max-w-2xl mx-auto w-full pt-20 px-4"><FeedSkeleton /></div>}><Home /></Suspense></ProtectedRoute>} />
-                  <Route path="/explore" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Explore /></Suspense></ProtectedRoute>} />
-                  <Route path="/messages" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Messages /></Suspense></ProtectedRoute>} />
-                  <Route path="/profile/:username" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Profile /></Suspense></ProtectedRoute>} />
+                <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+                  <Routes>
+                    {/* User routes */}
+                    <Route path="/auth" element={<PublicRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Auth /></Suspense></PublicRoute>} />
+                    <Route path="/" element={<ProtectedRoute><Suspense fallback={<div className="max-w-2xl mx-auto w-full pt-20 px-4"><FeedSkeleton /></div>}><Home /></Suspense></ProtectedRoute>} />
+                    <Route path="/explore" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Explore /></Suspense></ProtectedRoute>} />
+                    <Route path="/messages" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Messages /></Suspense></ProtectedRoute>} />
+                    <Route path="/profile/:username" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Profile /></Suspense></ProtectedRoute>} />
 
-                  {/* Admin routes */}
-                  <Route path="/admin/login" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminLogin /></Suspense>} />
-                  <Route path="/admin/register" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminRegister /></Suspense>} />
-                  <Route path="/admin/dashboard" element={<AdminProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminDashboard /></Suspense></AdminProtectedRoute>} />
+                    {/* Admin routes */}
+                    <Route path="/admin/login" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminLogin /></Suspense>} />
+                    <Route path="/admin/register" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminRegister /></Suspense>} />
+                    <Route path="/admin/dashboard" element={<AdminProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminDashboard /></Suspense></AdminProtectedRoute>} />
 
-                  {/* Super Admin routes */}
-                  <Route path="/superadmin/login" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminLogin /></Suspense>} />
-                  <Route path="/superadmin/register" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminRegister /></Suspense>} />
-                  <Route path="/superadmin/dashboard" element={<SuperAdminProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminDashboard /></Suspense></SuperAdminProtectedRoute>} />
+                    {/* Super Admin routes */}
+                    <Route path="/superadmin/login" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminLogin /></Suspense>} />
+                    <Route path="/superadmin/register" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminRegister /></Suspense>} />
+                    <Route path="/superadmin/dashboard" element={<SuperAdminProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><SuperAdminDashboard /></Suspense></SuperAdminProtectedRoute>} />
 
-                  <Route path="*" element={<Suspense fallback={<div />}><NotFound /></Suspense>} />
-                </Routes>
+                    <Route path="*" element={<Suspense fallback={<div />}><NotFound /></Suspense>} />
+                  </Routes>
+                </GoogleOAuthProvider>
               </SuperAdminAuthProvider>
             </AdminAuthProvider>
           </SocketProvider>
