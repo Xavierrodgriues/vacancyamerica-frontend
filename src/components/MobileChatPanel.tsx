@@ -18,6 +18,8 @@ import { EmojiClickData, Theme } from "emoji-picker-react";
 const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useWebRTC } from "@/hooks/use-web-rtc";
+import { CallModal } from "./chat/CallModal";
 
 // ─── Avatar ─────────────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
@@ -53,10 +55,11 @@ function ChatAvatar({ name, avatarUrl, online, size = "md" }: { name: string; av
 }
 
 // ─── Mobile Chat View ───────────────────────────────────────────────────────
-function MobileChatView({ conversation, otherUser, onBack }: {
+function MobileChatView({ conversation, otherUser, onBack, onCall }: {
     conversation: ConversationData;
     otherUser: Participant;
     onBack: () => void;
+    onCall: () => void;
 }) {
     const { user } = useAuth();
     const [newMessage, setNewMessage] = useState("");
@@ -124,7 +127,7 @@ function MobileChatView({ conversation, otherUser, onBack }: {
                         ) : `@${otherUser.username}`}
                     </p>
                 </div>
-                <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                <button onClick={onCall} className="p-2 rounded-full hover:bg-muted transition-colors">
                     <Phone className="w-4 h-4 text-foreground" />
                 </button>
                 <button className="p-2 rounded-full hover:bg-muted transition-colors">
@@ -283,6 +286,20 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
         return `${Math.floor(hours / 24)}d`;
     };
 
+    // ─── WebRTC Call Integration ──────────────────────────────────────────────
+    const {
+        callStatus,
+        incomingCall,
+        localStream,
+        remoteStream,
+        isMuted,
+        callUser,
+        answerCall,
+        endCall,
+        rejectCall,
+        toggleMute
+    } = useWebRTC();
+
     return (
         <div className={variant === "overlay"
             ? `fixed inset-0 bg-background flex flex-col ${activeConversation ? "z-[60]" : "z-40"}`
@@ -294,11 +311,29 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
                     display: none !important;
                 }
             `}</style>
+
+            {/* Call Modal */}
+            {(callStatus !== "idle" || incomingCall) && (
+                <CallModal
+                    status={callStatus}
+                    incomingCall={incomingCall}
+                    otherUserName={activeConversation ? getOtherUser(activeConversation).display_name : incomingCall?.name}
+                    otherUserAvatar={activeConversation ? getOtherUser(activeConversation).avatar_url : null}
+                    remoteStream={remoteStream}
+                    isMuted={isMuted}
+                    onAnswer={answerCall}
+                    onReject={rejectCall}
+                    onEnd={endCall}
+                    onToggleMute={toggleMute}
+                />
+            )}
+
             {activeConversation ? (
                 <MobileChatView
                     conversation={activeConversation}
                     otherUser={getOtherUser(activeConversation)}
                     onBack={() => setActiveConversation(null)}
+                    onCall={() => callUser(getOtherUser(activeConversation)._id)}
                 />
             ) : (
                 <>

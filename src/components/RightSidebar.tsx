@@ -17,6 +17,8 @@ import { EmojiClickData, Theme } from "emoji-picker-react";
 const EmojiPicker = lazy(() => import("emoji-picker-react"));
 import { Skeleton } from "@/components/ui/skeleton";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useWebRTC } from "@/hooks/use-web-rtc";
+import { CallModal } from "./chat/CallModal";
 
 // ─── Avatar Colors ──────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
@@ -53,10 +55,11 @@ function ChatAvatar({ name, avatarUrl, online, size = "md" }: { name: string; av
 }
 
 // ─── Chat Conversation View ─────────────────────────────────────────────────
-function ChatView({ conversation, otherUser, onBack }: {
+function ChatView({ conversation, otherUser, onBack, onCall }: {
     conversation: ConversationData;
     otherUser: Participant;
     onBack: () => void;
+    onCall: () => void;
 }) {
     const { user } = useAuth();
     const [newMessage, setNewMessage] = useState("");
@@ -141,7 +144,7 @@ function ChatView({ conversation, otherUser, onBack }: {
                         ) : `@${otherUser.username}`}
                     </p>
                 </div>
-                <button className="p-2 rounded-full hover:bg-muted transition-colors">
+                <button onClick={onCall} className="p-2 rounded-full hover:bg-muted transition-colors">
                     <Phone className="w-4 h-4 text-foreground" />
                 </button>
                 <button className="p-2 rounded-full hover:bg-muted transition-colors">
@@ -305,13 +308,44 @@ export function RightSidebar() {
         return `${days}d`;
     };
 
+    // ─── WebRTC Call Integration ──────────────────────────────────────────────
+    const {
+        callStatus,
+        incomingCall,
+        localStream,
+        remoteStream,
+        isMuted,
+        callUser,
+        answerCall,
+        endCall,
+        rejectCall,
+        toggleMute
+    } = useWebRTC();
+
     return (
         <aside className="hidden lg:flex flex-col flex-1 h-screen sticky top-0 border-l border-post-border bg-background overflow-hidden">
+            {/* Call Modal */}
+            {(callStatus !== "idle" || incomingCall) && (
+                <CallModal
+                    status={callStatus}
+                    incomingCall={incomingCall}
+                    otherUserName={activeConversation ? getOtherUser(activeConversation).display_name : incomingCall?.name}
+                    otherUserAvatar={activeConversation ? getOtherUser(activeConversation).avatar_url : null}
+                    remoteStream={remoteStream}
+                    isMuted={isMuted}
+                    onAnswer={answerCall}
+                    onReject={rejectCall}
+                    onEnd={endCall}
+                    onToggleMute={toggleMute}
+                />
+            )}
+
             {activeConversation ? (
                 <ChatView
                     conversation={activeConversation}
                     otherUser={getOtherUser(activeConversation)}
                     onBack={() => setActiveConversation(null)}
+                    onCall={() => callUser(getOtherUser(activeConversation)._id)}
                 />
             ) : (
                 <>
