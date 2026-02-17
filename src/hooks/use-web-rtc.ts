@@ -203,6 +203,43 @@ export function useWebRTC() {
         }
     };
 
+    const switchInputDevice = async (deviceId: string) => {
+        try {
+            const newStream = await navigator.mediaDevices.getUserMedia({
+                audio: { deviceId: { exact: deviceId } },
+                video: false
+            });
+
+            const newTrack = newStream.getAudioTracks()[0];
+
+            // Replace track in local stream
+            if (localStreamRef.current) {
+                const oldTrack = localStreamRef.current.getAudioTracks()[0];
+                if (oldTrack) {
+                    localStreamRef.current.removeTrack(oldTrack);
+                    oldTrack.stop();
+                }
+                localStreamRef.current.addTrack(newTrack);
+                setLocalStream(newStream); // Trigger re-render if needed
+            }
+
+            // Replace track in PeerConnection
+            if (peerConnection.current) {
+                const sender = peerConnection.current.getSenders().find(s => s.track?.kind === 'audio');
+                if (sender) {
+                    await sender.replaceTrack(newTrack);
+                }
+            }
+
+            // Ensure mute state is preserved
+            newTrack.enabled = !isMuted;
+
+        } catch (err) {
+            console.error("Error switching input device:", err);
+            toast.error("Failed to switch microphone");
+        }
+    };
+
     return {
         callStatus,
         incomingCall,
@@ -213,6 +250,7 @@ export function useWebRTC() {
         answerCall,
         endCall,
         rejectCall,
-        toggleMute
+        toggleMute,
+        switchInputDevice
     };
 }

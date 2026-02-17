@@ -38,7 +38,7 @@ export default function Auth() {
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/auth/google", {
+        const res = await fetch("https://vacancyamerica-backend.onrender.com/api/auth/google", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ access_token: tokenResponse.access_token })
@@ -68,7 +68,7 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const res = await fetch("http://localhost:5000/api/auth/login", {
+        const res = await fetch("https://vacancyamerica-backend.onrender.com/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
@@ -91,7 +91,7 @@ export default function Auth() {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/api/auth/signup", {
+        const res = await fetch("https://vacancyamerica-backend.onrender.com/api/auth/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

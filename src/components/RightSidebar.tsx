@@ -319,7 +319,8 @@ export function RightSidebar() {
         answerCall,
         endCall,
         rejectCall,
-        toggleMute
+        toggleMute,
+        switchInputDevice
     } = useWebRTC();
 
     return (
@@ -331,12 +332,14 @@ export function RightSidebar() {
                     incomingCall={incomingCall}
                     otherUserName={activeConversation ? getOtherUser(activeConversation).display_name : incomingCall?.name}
                     otherUserAvatar={activeConversation ? getOtherUser(activeConversation).avatar_url : null}
+                    localStream={localStream}
                     remoteStream={remoteStream}
                     isMuted={isMuted}
                     onAnswer={answerCall}
                     onReject={rejectCall}
                     onEnd={endCall}
                     onToggleMute={toggleMute}
+                    onSwitchInput={switchInputDevice}
                 />
             )}
 

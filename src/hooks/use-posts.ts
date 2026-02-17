@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 
-const API = "http://localhost:5000/api/posts";
+const API = "https://vacancyamerica-backend.onrender.com/api/posts";
 
 export function usePosts() {
   const { user } = useAuth();

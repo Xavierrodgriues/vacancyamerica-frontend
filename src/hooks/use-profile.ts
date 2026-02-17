@@ -12,7 +12,7 @@ export function useProfile() {
       const token = localStorage.getItem('token');
       if (!token) return null;
 
-      const res = await fetch('http://localhost:5000/api/auth/me', {
+      const res = await fetch('https://vacancyamerica-backend.onrender.com/api/auth/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -30,7 +30,7 @@ export function useProfileByUsername(username: string) {
   return useQuery({
     queryKey: ["profile", "username", username],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/api/auth/user/${username}`);
+      const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/auth/user/${username}`);
       if (!res.ok) throw new Error("User not found");
       const data = await res.json();
       // Map _id to id and user_id for compatibility
