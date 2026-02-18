@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../lib/admin-auth-context';
 import {
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans flex">
-            {/* ─── Sidebar ─── */}
+            {/* --- Sidebar --- */}
             <aside className="w-64 bg-white border-r border-slate-200 flex flex-col min-h-screen fixed left-0 top-0 z-40">
                 {/* Logo / Brand */}
                 <div className="px-6 py-6 border-b border-slate-100">
@@ -117,8 +117,8 @@ export default function AdminDashboard() {
                                     key={item.id}
                                     onClick={() => setActiveTab(item.id)}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                                            ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                                            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                                        ? 'bg-indigo-50 text-indigo-700 shadow-sm'
+                                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
                                         }`}
                                 >
                                     <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-indigo-600' : ''}`} />
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
                 </div>
             </aside>
 
-            {/* ─── Main Content ─── */}
+            {/* --- Main Content --- */}
             <div className="flex-1 ml-64">
                 {/* Top Header */}
                 <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
     );
 }
 
-// ─── Stats Section ──────────────────────────────────────────────────────────
+// --- Stats Section ----------------------------------------------------------
 function StatsSection() {
     const { data: statsData, isLoading: statsLoading, error: statsError } = useAdminPostStats();
     const stats = statsData?.data;
@@ -234,7 +234,7 @@ function StatsSection() {
     );
 }
 
-// ─── Posts View ─────────────────────────────────────────────────────────────
+// --- Posts View -------------------------------------------------------------
 function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) {
     const { data, isLoading: loading, error } = useAdminPosts(page);
     const deletePostCmd = useDeleteAdminPost();
@@ -287,7 +287,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
                             className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1"
                         >
                             <div className="aspect-video relative overflow-hidden bg-slate-100">
-                                {post.type === 'video' ? (
+                                {post.video_url ? (
                                     <div className="w-full h-full flex items-center justify-center bg-slate-50">
                                         <Video className="w-8 h-8 text-slate-300" />
                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -296,12 +296,16 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
                                             </span>
                                         </div>
                                     </div>
-                                ) : (
+                                ) : post.image_url ? (
                                     <img
-                                        src={post.media_url || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"}
-                                        alt={post.caption}
+                                        src={post.image_url}
+                                        alt={post.content || 'Post image'}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-slate-50">
+                                        <FileText className="w-8 h-8 text-slate-300" />
+                                    </div>
                                 )}
                                 <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                     <button
@@ -314,8 +318,8 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
                                 </div>
                                 <div className="absolute bottom-3 left-3">
                                     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm ${post.status === 'published' ? 'bg-green-100/90 text-green-700 border border-green-200' :
-                                            post.status === 'rejected' ? 'bg-red-100/90 text-red-700 border border-red-200' :
-                                                'bg-amber-100/90 text-amber-700 border border-amber-200'
+                                        post.status === 'rejected' ? 'bg-red-100/90 text-red-700 border border-red-200' :
+                                            'bg-amber-100/90 text-amber-700 border border-amber-200'
                                         }`}>
                                         {post.status}
                                     </span>
@@ -366,7 +370,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
     );
 }
 
-// ─── Privileges View ────────────────────────────────────────────────────────
+// --- Privileges View --------------------------------------------------------
 function PrivilegesView() {
     const { admin } = useAdminAuth();
 
@@ -543,7 +547,7 @@ function PrivilegesView() {
     );
 }
 
-// ─── Create Post Modal ──────────────────────────────────────────────────────
+// --- Create Post Modal ------------------------------------------------------
 function CreatePostModal({ onClose }: { onClose: () => void }) {
     const [content, setContent] = useState('');
     const [mediaFile, setMediaFile] = useState<File | null>(null);

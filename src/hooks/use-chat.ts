@@ -4,7 +4,7 @@ import { useSocket } from "@/lib/socket-context";
 import { useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
 
-const API = "https://vacancyamerica-backend.onrender.com/api/chat";
+const API = "http://localhost:5000/api/chat";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 export interface Participant {

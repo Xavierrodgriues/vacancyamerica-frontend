@@ -32,7 +32,7 @@ export function useFriends() {
     return useQuery({
         queryKey: ["friends", user?._id],
         queryFn: async () => {
-            const res = await fetch("https://vacancyamerica-backend.onrender.com/api/friends", {
+            const res = await fetch("http://localhost:5000/api/friends", {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch friends");
@@ -47,7 +47,7 @@ export function useFriendRequests() {
     return useQuery({
         queryKey: ["friend-requests", user?._id],
         queryFn: async () => {
-            const res = await fetch("https://vacancyamerica-backend.onrender.com/api/friends/requests", {
+            const res = await fetch("http://localhost:5000/api/friends/requests", {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch friend requests");
@@ -63,7 +63,7 @@ export function useSendFriendRequest() {
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/friends/request/${userId}`, {
+            const res = await fetch(`http://localhost:5000/api/friends/request/${userId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -90,7 +90,7 @@ export function useAcceptFriendRequest() {
 
     return useMutation({
         mutationFn: async (requestId: string) => {
-            const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/friends/accept/${requestId}`, {
+            const res = await fetch(`http://localhost:5000/api/friends/accept/${requestId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -112,7 +112,7 @@ export function useCancelFriendRequest() {
 
     return useMutation({
         mutationFn: async (requestId: string) => {
-            const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/friends/request/${requestId}`, {
+            const res = await fetch(`http://localhost:5000/api/friends/request/${requestId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -133,7 +133,7 @@ export function useUnfriendUser() {
 
     return useMutation({
         mutationFn: async (friendId: string) => {
-            const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/friends/${friendId}`, {
+            const res = await fetch(`http://localhost:5000/api/friends/${friendId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -154,7 +154,7 @@ export function useBlockUser() {
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/friends/block/${userId}`, {
+            const res = await fetch(`http://localhost:5000/api/friends/block/${userId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
