@@ -319,6 +319,7 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
                     incomingCall={incomingCall}
                     otherUserName={activeConversation ? getOtherUser(activeConversation).display_name : incomingCall?.name}
                     otherUserAvatar={activeConversation ? getOtherUser(activeConversation).avatar_url : null}
+                    localStream={localStream}
                     remoteStream={remoteStream}
                     isMuted={isMuted}
                     onAnswer={answerCall}
