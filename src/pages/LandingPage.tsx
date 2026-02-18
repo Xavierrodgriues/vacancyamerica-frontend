@@ -204,10 +204,10 @@ export default function LandingPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-white text-gray-900 font-sans antialiased overflow-x-hidden">
+        <div className="min-h-screen bg-[#FAFAFA] text-[#102A43] font-sans antialiased overflow-x-hidden">
             {/* ─── NAVBAR ─── */}
             <nav
-                className={`landing-navbar fixed top-0 left-0 right-0 z-50 bg-white/80 ${scrolled ? "scrolled" : ""
+                className={`landing-navbar fixed top-0 left-0 right-0 z-50 bg-[#FAFAFA]/80 ${scrolled ? "scrolled" : ""
                     }`}
             >
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -227,7 +227,7 @@ export default function LandingPage() {
                                 <a
                                     key={link.label}
                                     href={link.href}
-                                    className="landing-nav-link text-sm font-medium text-gray-600 hover:text-black"
+                                    className="landing-nav-link text-sm font-medium text-[#64748B] hover:text-[#102A43]"
                                 >
                                     {link.label}
                                 </a>
@@ -238,19 +238,19 @@ export default function LandingPage() {
                         <div className="hidden lg:flex items-center gap-4">
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-sm font-medium text-gray-600 hover:text-black transition-colors"
+                                className="text-sm font-medium text-[#64748B] hover:text-[#102A43] transition-colors"
                             >
                                 Login
                             </button>
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-sm font-medium text-gray-900 hover:text-black transition-colors"
+                                className="text-sm font-medium text-[#102A43] hover:text-[#102A43] transition-colors"
                             >
                                 Sign Up
                             </button>
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="landing-btn-primary bg-black text-white text-sm font-medium px-5 py-2.5 rounded-full"
+                                className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full"
                             >
                                 Post a Job
                             </button>
@@ -275,13 +275,13 @@ export default function LandingPage() {
                         className={`landing-mobile-menu lg:hidden ${mobileOpen ? "open" : ""
                             }`}
                     >
-                        <div className="pb-4 pt-2 space-y-1 border-t border-gray-100">
+                        <div className="pb-4 pt-2 space-y-1 border-t border-[#E5E7EB]">
                             {navLinks.map((link) => (
                                 <a
                                     key={link.label}
                                     href={link.href}
                                     onClick={() => setMobileOpen(false)}
-                                    className="block px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-colors"
+                                    className="block px-3 py-2.5 text-sm font-medium text-[#64748B] hover:text-[#102A43] hover:bg-white rounded-lg transition-colors"
                                 >
                                     {link.label}
                                 </a>
@@ -289,13 +289,13 @@ export default function LandingPage() {
                             <div className="flex flex-col gap-2 pt-3 px-3">
                                 <button
                                     onClick={() => navigate("/auth")}
-                                    className="text-sm font-medium text-gray-700 py-2"
+                                    className="text-sm font-medium text-[#102A43] py-2"
                                 >
                                     Login
                                 </button>
                                 <button
                                     onClick={() => navigate("/auth")}
-                                    className="landing-btn-primary bg-black text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
+                                    className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
                                 >
                                     Post a Job
                                 </button>
@@ -312,7 +312,7 @@ export default function LandingPage() {
             >
                 <div className="max-w-4xl mx-auto text-center">
                     {/* Badge */}
-                    <div className="landing-hero-animate inline-flex items-center gap-2 bg-gray-100 text-gray-700 text-xs font-medium tracking-wide uppercase px-4 py-1.5 rounded-full mb-8">
+                    <div className="landing-hero-animate inline-flex items-center gap-2 bg-[#102A43]/10 text-[#102A43] text-xs font-medium tracking-wide uppercase px-4 py-1.5 rounded-full mb-8">
                         <CheckShield className="w-3.5 h-3.5" />
                         USA-Only Verified Platform
                     </div>
@@ -320,10 +320,10 @@ export default function LandingPage() {
                     <h1 className="landing-hero-animate text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
                         Real Jobs. Always Free.
                         <br />
-                        <span className="text-gray-400">Zero Fake Listings.</span>
+                        <span className="text-[#64748B]">Zero Fake Listings.</span>
                     </h1>
 
-                    <p className="landing-hero-animate-delay text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-10">
+                    <p className="landing-hero-animate-delay text-lg sm:text-xl text-[#64748B] max-w-2xl mx-auto leading-relaxed mb-10">
                         VacancyAmerica is a completely free platform — no charges for job seekers,
                         no charges for companies. Every listing is verified by our team, so you
                         only see real opportunities from real employers across the United States.
@@ -332,14 +332,14 @@ export default function LandingPage() {
                     <div className="landing-hero-animate-delay-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button
                             onClick={() => navigate("/auth")}
-                            className="landing-btn-primary bg-black text-white font-medium px-8 py-3.5 rounded-full text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
+                            className="landing-btn-primary bg-[#E63946] text-white font-medium px-8 py-3.5 rounded-full text-sm flex items-center gap-2 w-full sm:w-auto justify-center"
                         >
                             Explore Verified Jobs
                             <ArrowRight className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => navigate("/auth")}
-                            className="landing-btn-secondary bg-white text-black font-medium px-8 py-3.5 rounded-full text-sm border border-gray-200 w-full sm:w-auto"
+                            className="landing-btn-secondary bg-white text-[#102A43] font-medium px-8 py-3.5 rounded-full text-sm border border-[#E5E7EB] w-full sm:w-auto"
                         >
                             Company Hiring Portal
                         </button>
@@ -351,14 +351,14 @@ export default function LandingPage() {
                     className="absolute inset-0 -z-10 opacity-[0.03]"
                     style={{
                         backgroundImage:
-                            "radial-gradient(circle, #000 1px, transparent 1px)",
+                            "radial-gradient(circle, #102A43 1px, transparent 1px)",
                         backgroundSize: "24px 24px",
                     }}
                 />
             </section>
 
             {/* ─── STATS BAR ─── */}
-            <RevealSection className="border-y border-gray-100 py-12 px-6 lg:px-8">
+            <RevealSection className="border-y border-[#E5E7EB] py-12 px-6 lg:px-8">
                 <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
                     {[
                         { value: "100%", label: "Verified Jobs" },
@@ -370,7 +370,7 @@ export default function LandingPage() {
                             <div className="text-3xl lg:text-4xl font-bold tracking-tight">
                                 {stat.value}
                             </div>
-                            <div className="text-sm text-gray-500 mt-1 font-medium">
+                            <div className="text-sm text-[#64748B] mt-1 font-medium">
                                 {stat.label}
                             </div>
                         </div>
@@ -384,15 +384,15 @@ export default function LandingPage() {
                 className="py-24 lg:py-32 px-6 lg:px-8"
             >
                 <RevealSection className="max-w-4xl mx-auto text-center mb-16">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-4">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-4">
                         For Companies &amp; Hiring Teams
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
                         Post where applicants
                         <br />
-                        <span className="text-gray-400">actually trust the listing.</span>
+                        <span className="text-[#64748B]">actually trust the listing.</span>
                     </h2>
-                    <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-[#64748B] text-lg max-w-2xl mx-auto leading-relaxed">
                         On other platforms, job seekers scroll past hundreds of ghost jobs and scams.
                         They get exhausted. They stop applying. On VacancyAmerica, every listing is verified —
                         so when someone sees your job, they apply with confidence because they know it's real.
@@ -433,12 +433,12 @@ export default function LandingPage() {
                         },
                     ].map((item) => (
                         <RevealSection key={item.title}>
-                            <div className="landing-card bg-gray-50 rounded-2xl p-8 h-full">
-                                <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-5">
+                            <div className="landing-card bg-white rounded-2xl p-8 h-full border border-[#E5E7EB]">
+                                <div className="w-12 h-12 bg-[#102A43] text-white rounded-xl flex items-center justify-center mb-5">
                                     {item.icon}
                                 </div>
                                 <h3 className="text-lg font-semibold mb-3">{item.title}</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">
+                                <p className="text-[#64748B] text-sm leading-relaxed">
                                     {item.desc}
                                 </p>
                             </div>
@@ -448,7 +448,7 @@ export default function LandingPage() {
 
                 {/* More advantages */}
                 <RevealSection className="max-w-4xl mx-auto mb-16">
-                    <div className="bg-gray-50 rounded-2xl p-10 lg:p-14">
+                    <div className="bg-white rounded-2xl p-10 lg:p-14 border border-[#E5E7EB]">
                         <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-10">
                             What you get that other platforms don't
                         </h3>
@@ -476,12 +476,12 @@ export default function LandingPage() {
                                 },
                             ].map((item) => (
                                 <div key={item.title} className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <div className="w-10 h-10 bg-[#102A43] text-white rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                                         {item.icon}
                                     </div>
                                     <div>
                                         <h4 className="font-semibold mb-1">{item.title}</h4>
-                                        <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                                        <p className="text-[#64748B] text-sm leading-relaxed">{item.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -493,8 +493,8 @@ export default function LandingPage() {
                 <RevealSection className="max-w-4xl mx-auto mb-16">
                     <div className="grid md:grid-cols-2 gap-8">
                         {/* Traditional */}
-                        <div className="landing-card bg-white rounded-2xl p-8 border border-gray-100">
-                            <div className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-6">
+                        <div className="landing-card bg-white rounded-2xl p-8 border border-[#E5E7EB]">
+                            <div className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-6">
                                 Other Job Boards
                             </div>
                             <ul className="space-y-4">
@@ -506,9 +506,9 @@ export default function LandingPage() {
                                     "Your listing buried under sponsored posts",
                                     "Candidates distrust postings — lower apply rates",
                                 ].map((item) => (
-                                    <li key={item} className="flex items-start gap-3 text-sm text-gray-500">
-                                        <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="block w-1.5 h-1.5 rounded-full bg-gray-400" />
+                                    <li key={item} className="flex items-start gap-3 text-sm text-[#64748B]">
+                                        <span className="w-5 h-5 rounded-full bg-[#E5E7EB] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="block w-1.5 h-1.5 rounded-full bg-[#64748B]" />
                                         </span>
                                         {item}
                                     </li>
@@ -517,7 +517,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* VacancyAmerica */}
-                        <div className="landing-card bg-black text-white rounded-2xl p-8 border-2 border-black">
+                        <div className="landing-card bg-[#102A43] text-white rounded-2xl p-8 border-2 border-[#102A43]">
                             <div className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-6">
                                 VacancyAmerica
                             </div>
@@ -544,12 +544,12 @@ export default function LandingPage() {
 
                 {/* Company CTA */}
                 <RevealSection className="max-w-4xl mx-auto">
-                    <div className="bg-black text-white rounded-3xl p-10 lg:p-14">
+                    <div className="bg-[#102A43] text-white rounded-3xl p-10 lg:p-14">
                         <div className="text-center mb-10">
                             <h3 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3">
                                 Start hiring in three steps
                             </h3>
-                            <p className="text-gray-400 text-sm max-w-lg mx-auto">
+                            <p className="text-gray-300 text-sm max-w-lg mx-auto">
                                 No credit card. No sales calls. No contracts. Just post your real job and reach real people.
                             </p>
                         </div>
@@ -573,11 +573,11 @@ export default function LandingPage() {
                                 },
                             ].map((item) => (
                                 <div key={item.step} className="text-center">
-                                    <div className="w-10 h-10 rounded-full bg-white text-black font-bold text-lg flex items-center justify-center mx-auto mb-4">
+                                    <div className="w-10 h-10 rounded-full bg-white text-[#102A43] font-bold text-lg flex items-center justify-center mx-auto mb-4">
                                         {item.step}
                                     </div>
                                     <h4 className="font-semibold mb-2">{item.title}</h4>
-                                    <p className="text-gray-400 text-sm leading-relaxed">
+                                    <p className="text-gray-300 text-sm leading-relaxed">
                                         {item.desc}
                                     </p>
                                 </div>
@@ -587,7 +587,7 @@ export default function LandingPage() {
                         <div className="text-center mt-10">
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="landing-btn-primary bg-white text-black font-medium px-8 py-3.5 rounded-full text-sm inline-flex items-center gap-2"
+                                className="landing-btn-primary bg-[#E63946] text-white font-medium px-8 py-3.5 rounded-full text-sm inline-flex items-center gap-2"
                             >
                                 Post Your First Job — Free
                                 <ArrowRight className="w-4 h-4" />
@@ -600,13 +600,13 @@ export default function LandingPage() {
             {/* ─── MISSION ─── */}
             <section id="mission" className="py-24 lg:py-32 px-6 lg:px-8">
                 <RevealSection className="max-w-4xl mx-auto text-center mb-16">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-4">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-4">
                         Our Mission
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-6">
                         To make job searching in America
                         <br />
-                        <span className="text-gray-400">
+                        <span className="text-[#64748B]">
                             transparent, trustworthy, and scam-free.
                         </span>
                     </h2>
@@ -632,14 +632,14 @@ export default function LandingPage() {
                     ].map((item, i) => (
                         <RevealSection key={item.title}>
                             <div
-                                className={`landing-card bg-gray-50 rounded-2xl p-8 h-full stagger-${i + 1
+                                className={`landing-card bg-white rounded-2xl p-8 h-full border border-[#E5E7EB] stagger-${i + 1
                                     }`}
                             >
-                                <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-5">
+                                <div className="w-12 h-12 bg-[#102A43] text-white rounded-xl flex items-center justify-center mb-5">
                                     {item.icon}
                                 </div>
                                 <h3 className="text-lg font-semibold mb-3">{item.title}</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">
+                                <p className="text-[#64748B] text-sm leading-relaxed">
                                     {item.desc}
                                 </p>
                             </div>
@@ -649,14 +649,14 @@ export default function LandingPage() {
             </section>
 
             {/* ─── VISION ─── */}
-            <section className="py-24 lg:py-32 px-6 lg:px-8 bg-black text-white">
+            <section className="py-24 lg:py-32 px-6 lg:px-8 bg-[#102A43] text-white">
                 <RevealSection className="max-w-4xl mx-auto text-center">
                     <p className="text-xs font-semibold tracking-widest uppercase text-gray-500 mb-4">
                         Our Vision
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight tracking-tight mb-8">
                         A future where job seekers never waste time on ghost jobs
-                        <span className="text-gray-500">
+                        <span className="text-gray-300">
                             {" "}
                             and companies connect with real talent instantly.
                         </span>
@@ -695,13 +695,13 @@ export default function LandingPage() {
                 className="py-24 lg:py-32 px-6 lg:px-8"
             >
                 <RevealSection className="max-w-4xl mx-auto text-center mb-16">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-4">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-4">
                         How It Works
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
                         Three simple steps.
                         <br />
-                        <span className="text-gray-400">Real results.</span>
+                        <span className="text-[#64748B]">Real results.</span>
                     </h2>
                 </RevealSection>
 
@@ -727,18 +727,18 @@ export default function LandingPage() {
                         },
                     ].map((item) => (
                         <RevealSection key={item.step}>
-                            <div className="landing-card bg-white border border-gray-100 rounded-2xl p-8 h-full relative overflow-hidden group">
+                            <div className="landing-card bg-white border border-[#E5E7EB] rounded-2xl p-8 h-full relative overflow-hidden group">
                                 {/* Step number watermark */}
-                                <span className="absolute top-4 right-6 text-6xl font-bold text-gray-100 group-hover:text-gray-200 transition-colors select-none">
+                                <span className="absolute top-4 right-6 text-6xl font-bold text-[#E5E7EB] group-hover:text-[#E5E7EB]/60 transition-colors select-none">
                                     {item.step}
                                 </span>
 
                                 <div className="relative z-10">
-                                    <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-5">
+                                    <div className="w-12 h-12 bg-[#102A43] text-white rounded-xl flex items-center justify-center mb-5">
                                         {item.icon}
                                     </div>
                                     <h3 className="text-lg font-semibold mb-3">{item.title}</h3>
-                                    <p className="text-gray-500 text-sm leading-relaxed">
+                                    <p className="text-[#64748B] text-sm leading-relaxed">
                                         {item.desc}
                                     </p>
                                 </div>
@@ -749,15 +749,15 @@ export default function LandingPage() {
             </section>
 
             {/* ─── TRUST & SAFETY ─── */}
-            <section id="trust" className="py-24 lg:py-32 px-6 lg:px-8 bg-gray-50">
+            <section id="trust" className="py-24 lg:py-32 px-6 lg:px-8 bg-white">
                 <RevealSection className="max-w-4xl mx-auto text-center mb-16">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-4">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-4">
                         Trust &amp; Safety
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
                         Every job is reviewed.
                         <br />
-                        <span className="text-gray-400">Every opportunity is real.</span>
+                        <span className="text-[#64748B]">Every opportunity is real.</span>
                     </h2>
                 </RevealSection>
 
@@ -785,13 +785,13 @@ export default function LandingPage() {
                         },
                     ].map((item) => (
                         <RevealSection key={item.title}>
-                            <div className="landing-card bg-white rounded-2xl p-6 flex items-start gap-4 border border-gray-100 h-full">
-                                <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="landing-card bg-[#FAFAFA] rounded-2xl p-6 flex items-start gap-4 border border-[#E5E7EB] h-full">
+                                <div className="w-10 h-10 bg-[#102A43] text-white rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                                     {item.icon}
                                 </div>
                                 <div>
                                     <h3 className="font-semibold mb-1">{item.title}</h3>
-                                    <p className="text-gray-500 text-sm leading-relaxed">
+                                    <p className="text-[#64748B] text-sm leading-relaxed">
                                         {item.desc}
                                     </p>
                                 </div>
@@ -807,51 +807,51 @@ export default function LandingPage() {
                 className="py-24 lg:py-32 px-6 lg:px-8"
             >
                 <RevealSection className="max-w-4xl mx-auto text-center">
-                    <p className="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-4">
+                    <p className="text-xs font-semibold tracking-widest uppercase text-[#64748B] mb-4">
                         Pricing
                     </p>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
                         Completely free.
                         <br />
-                        <span className="text-gray-400">For everyone. Forever.</span>
+                        <span className="text-[#64748B]">For everyone. Forever.</span>
                     </h2>
-                    <p className="text-gray-500 text-lg max-w-xl mx-auto mb-12">
+                    <p className="text-[#64748B] text-lg max-w-xl mx-auto mb-12">
                         No charges for job seekers. No charges for companies. No
                         subscriptions. No hidden fees. No paid promotions. Built purely
                         for trust and transparency.
                     </p>
 
                     {/* $0 Card */}
-                    <div className="landing-price-card inline-block bg-white border-2 border-black rounded-3xl px-12 py-10 text-center">
+                    <div className="landing-price-card inline-block bg-white border-2 border-[#102A43] rounded-3xl px-12 py-10 text-center">
                         <div className="text-6xl lg:text-7xl font-bold tracking-tighter mb-2">
                             $0
                         </div>
-                        <div className="text-sm font-medium text-gray-500 uppercase tracking-widest">
+                        <div className="text-sm font-medium text-[#64748B] uppercase tracking-widest">
                             Forever
                         </div>
-                        <div className="w-12 h-px bg-gray-200 mx-auto my-6" />
-                        <ul className="space-y-3 text-sm text-gray-600">
+                        <div className="w-12 h-px bg-[#E5E7EB] mx-auto my-6" />
+                        <ul className="space-y-3 text-sm text-[#64748B]">
                             <li className="flex items-center gap-2 justify-center">
-                                <CheckShield className="w-4 h-4 text-black" />
+                                <CheckShield className="w-4 h-4 text-[#102A43]" />
                                 Free for job seekers
                             </li>
                             <li className="flex items-center gap-2 justify-center">
-                                <CheckShield className="w-4 h-4 text-black" />
+                                <CheckShield className="w-4 h-4 text-[#102A43]" />
                                 Free for companies
                             </li>
                             <li className="flex items-center gap-2 justify-center">
-                                <CheckShield className="w-4 h-4 text-black" />
+                                <CheckShield className="w-4 h-4 text-[#102A43]" />
                                 No subscriptions ever
                             </li>
                             <li className="flex items-center gap-2 justify-center">
-                                <CheckShield className="w-4 h-4 text-black" />
+                                <CheckShield className="w-4 h-4 text-[#102A43]" />
                                 No hidden charges
                             </li>
                         </ul>
 
                         <button
                             onClick={() => navigate("/auth")}
-                            className="landing-btn-primary bg-black text-white text-sm font-medium px-8 py-3 rounded-full mt-8 w-full"
+                            className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-8 py-3 rounded-full mt-8 w-full"
                         >
                             Get Started — It's Free
                         </button>
@@ -860,19 +860,19 @@ export default function LandingPage() {
             </section>
 
             {/* ─── CTA BAND ─── */}
-            <section className="py-20 lg:py-24 px-6 lg:px-8 bg-black text-white">
+            <section className="py-20 lg:py-24 px-6 lg:px-8 bg-[#102A43] text-white">
                 <RevealSection className="max-w-3xl mx-auto text-center">
                     <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
                         Ready to find your next opportunity?
                     </h2>
-                    <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">
+                    <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto">
                         Join thousands of Americans who trust VacancyAmerica for real,
                         verified job opportunities.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button
                             onClick={() => navigate("/auth")}
-                            className="landing-btn-primary bg-white text-black font-medium px-8 py-3.5 rounded-full text-sm flex items-center gap-2"
+                            className="landing-btn-primary bg-[#E63946] text-white font-medium px-8 py-3.5 rounded-full text-sm flex items-center gap-2"
                         >
                             Explore Verified Jobs
                             <ArrowRight className="w-4 h-4" />
@@ -888,7 +888,7 @@ export default function LandingPage() {
             </section>
 
             {/* ─── FOOTER ─── */}
-            <footer className="py-16 px-6 lg:px-8 border-t border-gray-100">
+            <footer className="py-16 px-6 lg:px-8 border-t border-[#E5E7EB]">
                 <div className="max-w-6xl mx-auto">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
                         {/* Brand */}
@@ -900,21 +900,21 @@ export default function LandingPage() {
                                     className="h-12 lg:h-14 w-auto"
                                 />
                             </a>
-                            <p className="text-sm text-gray-400 leading-relaxed">
+                            <p className="text-sm text-[#64748B] leading-relaxed">
                                 Verified job opportunities across the United States.
                             </p>
                         </div>
 
                         {/* Platform */}
                         <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                            <h4 className="text-xs font-semibold uppercase tracking-widest text-[#64748B] mb-4">
                                 Platform
                             </h4>
                             <ul className="space-y-3">
                                 <li>
                                     <a
                                         href="#hero"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Verified Jobs
                                     </a>
@@ -922,7 +922,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#how-it-works"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         How It Works
                                     </a>
@@ -930,7 +930,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#free"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         For Companies
                                     </a>
@@ -940,14 +940,14 @@ export default function LandingPage() {
 
                         {/* Company */}
                         <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                            <h4 className="text-xs font-semibold uppercase tracking-widest text-[#64748B] mb-4">
                                 Company
                             </h4>
                             <ul className="space-y-3">
                                 <li>
                                     <a
                                         href="#mission"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         About
                                     </a>
@@ -955,7 +955,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#mission"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Mission
                                     </a>
@@ -963,7 +963,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#trust"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Trust & Safety
                                     </a>
@@ -973,14 +973,14 @@ export default function LandingPage() {
 
                         {/* Legal */}
                         <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                            <h4 className="text-xs font-semibold uppercase tracking-widest text-[#64748B] mb-4">
                                 Legal
                             </h4>
                             <ul className="space-y-3">
                                 <li>
                                     <a
                                         href="#"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Privacy Policy
                                     </a>
@@ -988,7 +988,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Terms of Service
                                     </a>
@@ -996,7 +996,7 @@ export default function LandingPage() {
                                 <li>
                                     <a
                                         href="#"
-                                        className="text-sm text-gray-600 hover:text-black transition-colors"
+                                        className="text-sm text-[#64748B] hover:text-[#102A43] transition-colors"
                                     >
                                         Contact
                                     </a>
@@ -1006,20 +1006,20 @@ export default function LandingPage() {
                     </div>
 
                     {/* Bottom bar */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between pt-8 border-t border-gray-100 gap-4">
-                        <p className="text-xs text-gray-400">
+                    <div className="flex flex-col sm:flex-row items-center justify-between pt-8 border-t border-[#E5E7EB] gap-4">
+                        <p className="text-xs text-[#64748B]">
                             © {new Date().getFullYear()} VacancyAmerica. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6">
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-xs text-gray-500 hover:text-black transition-colors"
+                                className="text-xs text-[#64748B] hover:text-[#102A43] transition-colors"
                             >
                                 Login
                             </button>
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-xs text-gray-500 hover:text-black transition-colors"
+                                className="text-xs text-[#64748B] hover:text-[#102A43] transition-colors"
                             >
                                 Sign Up
                             </button>
