@@ -49,7 +49,7 @@ export default function Auth() {
 
         login(data);
         toast.success("Welcome back!");
-        navigate("/");
+        navigate("/home");
       } catch (error: any) {
         toast.error(error.message || "Google login failed");
       } finally {
@@ -78,7 +78,7 @@ export default function Auth() {
 
         login(data);
         toast.success("Welcome back!");
-        navigate("/");
+        navigate("/home");
       } else {
         if (!username.trim() || !displayName.trim()) {
           toast.error("Please fill in all fields");
@@ -107,7 +107,7 @@ export default function Auth() {
 
         signup(data);
         toast.success("Welcome aboard!");
-        navigate("/");
+        navigate("/home");
       }
     } catch (error: any) {
       toast.error(error.message || "Something went wrong");

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 const navItems = [
-  { title: "Home", url: "/", icon: Home },
+  { title: "Home", url: "/home", icon: Home },
   { title: "Explore", url: "/explore", icon: Search },
   { title: "Messages", url: "/messages", icon: MessageCircle },
   { title: "Profile", url: "/profile", icon: User },
@@ -35,8 +35,8 @@ export function MobileNav() {
             const isMessages = item.url === "/messages";
             const isActive = isMessages
               ? location.pathname === "/messages"
-              : item.url === "/"
-                ? location.pathname === "/"
+              : item.url === "/home"
+                ? location.pathname === "/home"
                 : location.pathname.startsWith(item.url);
 
             return isMessages ? (

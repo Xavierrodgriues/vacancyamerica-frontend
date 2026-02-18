@@ -85,7 +85,7 @@ export default function Profile() {
     return (
       <AppLayout>
         <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-post-border p-4 flex items-center gap-4">
-          <Link to="/" className="hover:bg-secondary rounded-full p-2 transition-colors">
+          <Link to="/home" className="hover:bg-secondary rounded-full p-2 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-xl font-bold">Profile</h1>
@@ -104,7 +104,7 @@ export default function Profile() {
     <AppLayout>
       {/* Header */}
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-post-border p-4 flex items-center gap-4">
-        <Link to="/" className="hover:bg-secondary rounded-full p-2 transition-colors">
+        <Link to="/home" className="hover:bg-secondary rounded-full p-2 transition-colors">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>

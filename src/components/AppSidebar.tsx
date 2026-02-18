@@ -6,7 +6,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { title: "Home", url: "/", icon: Home },
+  { title: "Home", url: "/home", icon: Home },
   { title: "Explore", url: "/explore", icon: Search },
   { title: "Messages", url: "/messages", icon: MessageCircle, className: "lg:hidden" },
   { title: "Profile", url: "/profile", icon: User },
@@ -34,8 +34,8 @@ export function AppSidebar() {
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
           const isActive =
-            item.url === "/"
-              ? location.pathname === "/"
+            item.url === "/home"
+              ? location.pathname === "/home"
               : location.pathname.startsWith(item.url);
 
           return (
