@@ -560,6 +560,13 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
         const file = e.target.files?.[0];
         if (file) {
             const isVideo = file.type.startsWith('video/');
+            const limit = isVideo ? 25 * 1024 * 1024 : 10 * 1024 * 1024;
+
+            if (file.size > limit) {
+                toast.error(`${isVideo ? 'Video' : 'Image'} must be less than ${isVideo ? '25MB' : '10MB'}`);
+                if (fileInputRef.current) fileInputRef.current.value = '';
+                return;
+            }
             setMediaFile(file);
             setMediaType(isVideo ? 'video' : 'image');
 

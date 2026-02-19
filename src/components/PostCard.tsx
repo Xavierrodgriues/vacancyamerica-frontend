@@ -98,11 +98,11 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
             </p>
 
             {post.image_url && (
-              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border">
+              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-black/5 dark:bg-white/5">
                 <img
                   src={post.image_url}
                   alt="Post image"
-                  className="max-h-[512px] w-full object-cover"
+                  className="max-h-[512px] w-full object-contain"
                   loading={priority ? "eager" : "lazy"}
                   {...(priority ? { fetchPriority: "high" } : {})}
                 />
