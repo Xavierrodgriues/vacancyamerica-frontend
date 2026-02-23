@@ -269,6 +269,7 @@ export function RightSidebar() {
     const [searchQuery, setSearchQuery] = useState("");
     const debouncedSearch = useDebounce(searchQuery, 300);
     const [activeConversation, setActiveConversation] = useState<ConversationData | null>(null);
+    const [showNewChat, setShowNewChat] = useState(false);
     const { data: conversations, isLoading: convsLoading } = useConversations();
     const { data: friends } = useFriends();
     const startConversation = useStartConversation();
@@ -283,7 +284,11 @@ export function RightSidebar() {
             other.username.toLowerCase().includes(debouncedSearch.toLowerCase());
     });
 
-    const totalUnread = (conversations || []).reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+    const filteredFriends = (friends || []).filter((friend) => {
+        const nameMatch = friend.display_name?.toLowerCase().includes(debouncedSearch.toLowerCase()) || false;
+        const userMatch = friend.username?.toLowerCase().includes(debouncedSearch.toLowerCase()) || false;
+        return nameMatch || userMatch;
+    });
 
     const handleStartChat = async (friendId: string) => {
         try {
@@ -354,19 +359,30 @@ export function RightSidebar() {
                 <>
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-4 border-b border-post-border flex-shrink-0">
-                        <h2 className="text-lg font-bold text-foreground">Messages</h2>
-                        <button className="p-2 rounded-full hover:bg-muted transition-colors">
-                            <Edit3 className="w-5 h-5 text-foreground" />
-                        </button>
+                        {showNewChat ? (
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => { setShowNewChat(false); setSearchQuery(""); }} className="p-1.5 -ml-1.5 rounded-full hover:bg-muted transition-colors">
+                                    <ArrowLeft className="w-5 h-5 text-foreground" />
+                                </button>
+                                <h2 className="text-lg font-bold text-foreground">New Message</h2>
+                            </div>
+                        ) : (
+                            <>
+                                <h2 className="text-lg font-bold text-foreground">Messages</h2>
+                                <button onClick={() => { setShowNewChat(true); setSearchQuery(""); }} className="p-2 rounded-full hover:bg-muted transition-colors">
+                                    <Edit3 className="w-5 h-5 text-foreground" />
+                                </button>
+                            </>
+                        )}
                     </div>
 
                     {/* Search */}
-                    <div className="px-4 py-2 flex-shrink-0">
+                    <div className="px-4 py-2 flex-shrink-0 border-b border-post-border">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                                 type="text"
-                                placeholder="Search messages..."
+                                placeholder={showNewChat ? "Search friends..." : "Search messages..."}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-all"
@@ -374,40 +390,42 @@ export function RightSidebar() {
                         </div>
                     </div>
 
-                    {/* Tabs */}
-                    <div className="flex border-b border-post-border flex-shrink-0">
-                        <button className="flex-1 px-4 py-2.5 text-sm font-semibold text-blue-400 border-b-2 border-blue-400">
-                            Primary {totalUnread > 0 && (
-                                <span className="ml-1.5 px-1.5 py-0.5 bg-blue-500 text-white text-[10px] font-bold rounded-full">
-                                    {totalUnread}
-                                </span>
-                            )}
-                        </button>
-                        <button className="flex-1 px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                            General
-                        </button>
-                    </div>
-
-                    {/* Friends List */}
-                    {friends && friends.length > 0 && (
-                        <div className="px-4 py-2 border-b border-post-border flex-shrink-0">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Friends</p>
-                            <div className="flex gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: "thin" }}>
-                                {friends.map((friend) => (
-                                    <button key={friend._id} onClick={() => handleStartChat(friend._id)} className="flex flex-col items-center gap-1 group">
-                                        <ChatAvatar name={friend.display_name} avatarUrl={friend.avatar_url} size="sm" />
-                                        <span className="text-[10px] text-muted-foreground group-hover:text-foreground truncate w-12 text-center">
-                                            {friend.display_name.split(" ")[0]}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Conversations List */}
+                    {/* Lists */}
                     <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
-                        {convsLoading ? (
+                        {showNewChat ? (
+                            filteredFriends.length > 0 ? (
+                                filteredFriends.map((friend) => (
+                                    <button
+                                        key={friend._id}
+                                        onClick={() => {
+                                            handleStartChat(friend._id);
+                                            setShowNewChat(false);
+                                            setSearchQuery("");
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
+                                    >
+                                        <ChatAvatar name={friend.display_name} avatarUrl={friend.avatar_url} />
+                                        <div className="flex-1 min-w-0 text-left">
+                                            <span className="text-sm font-medium text-foreground truncate block">
+                                                {friend.display_name}
+                                            </span>
+                                            {friend.username && (
+                                                <span className="text-xs text-muted-foreground truncate block mt-0.5">
+                                                    @{friend.username}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </button>
+                                ))
+                            ) : (
+                                <div className="flex flex-col items-center justify-center py-12 px-6">
+                                    <Search className="w-10 h-10 text-muted-foreground/50 mb-3" />
+                                    <p className="text-sm text-muted-foreground">
+                                        {searchQuery ? "No friends found matching search" : "No friends found"}
+                                    </p>
+                                </div>
+                            )
+                        ) : convsLoading ? (
                             <div className="flex justify-center py-8">
                                 <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                             </div>

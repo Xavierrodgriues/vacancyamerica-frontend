@@ -117,6 +117,16 @@ export function useMessages(conversationId: string | null) {
 
         socket.on("newMessage", handleNewMessage);
 
+        // Optimistically clear unread count for this conversation in the inbox list
+        if (user?._id) {
+            queryClient.setQueryData(["conversations", user._id], (old: any) => {
+                if (!old) return old;
+                return old.map((conv: ConversationData) =>
+                    conv._id === conversationId ? { ...conv, unreadCount: 0 } : conv
+                );
+            });
+        }
+
         // Mark messages as read when opening the conversation
         socket.emit("markRead", { conversationId });
 
