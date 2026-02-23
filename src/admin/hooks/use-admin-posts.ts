@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSuperAdminAuth } from '../lib/super-admin-auth-context';
 import { useAdminAuth } from '../lib/admin-auth-context';
 
-const API_URL = 'https://vacancyamerica-backend.onrender.com/api/admin/posts';
+const API_URL = 'http://localhost:5000/api/admin/posts';
 
 export interface AdminPost {
     _id: string;

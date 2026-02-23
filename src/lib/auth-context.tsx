@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem('token');
     if (token) {
       // Here we should validate the token with the backend /me endpoint
-      fetch('https://vacancyamerica-backend.onrender.com/api/auth/me', {
+      fetch('http://localhost:5000/api/auth/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }

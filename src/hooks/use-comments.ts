@@ -5,7 +5,7 @@ export function useComments(postId: string) {
   const query = useQuery({
     queryKey: ["comments", postId],
     queryFn: async () => {
-      const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/comments/${postId}`);
+      const res = await fetch(`http://localhost:5000/api/comments/${postId}`);
       if (!res.ok) throw new Error("Failed to fetch comments");
       const comments = await res.json();
 
@@ -28,7 +28,7 @@ export function useCreateComment() {
     mutationFn: async ({ postId, content, parentId }: { postId: string; content: string; parentId?: string }) => {
       if (!user || !user.token) throw new Error("Not authenticated");
 
-      const res = await fetch("https://vacancyamerica-backend.onrender.com/api/comments", {
+      const res = await fetch("http://localhost:5000/api/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export function useDeleteComment() {
     mutationFn: async (commentId: string) => {
       if (!user || !user.token) throw new Error("Not authenticated");
 
-      const res = await fetch(`https://vacancyamerica-backend.onrender.com/api/comments/${commentId}`, {
+      const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${user.token}`

@@ -22,7 +22,7 @@ interface AdminAuthContextType {
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-const API_BASE = 'https://vacancyamerica-backend.onrender.com/api/admin/auth';
+const API_BASE = 'http://localhost:5000/api/admin/auth';
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
     const [admin, setAdmin] = useState<Admin | null>(null);

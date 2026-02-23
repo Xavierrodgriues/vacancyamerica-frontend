@@ -15,95 +15,311 @@ const FAQ_DATA: FAQItem[] = [
         id: '1',
         category: '📌 About Vacancy America',
         question: 'What is Vacancy America?',
-        answer: 'Vacancy America is a USA-focused professional platform where verified companies publish hiring updates, job openings, and career-related news in a trusted and moderated environment.'
+        answer: `Vacancy America is a professionally structured, USA-focused hiring and career intelligence platform built to deliver verified, trustworthy, and high-quality employment information. The platform was designed with one core mission: eliminate spam, reduce fake job listings, and create a secure ecosystem where professionals can confidently explore career opportunities.
+
+Unlike traditional open job boards, Vacancy America operates under a controlled publishing model. All hiring announcements, career updates, and company communications are submitted by verified entities and pass through a structured moderation workflow before becoming publicly visible.
+
+The platform serves multiple purposes:
+
+• Providing authentic job openings from verified companies
+• Publishing official hiring updates and announcements
+• Sharing USA-focused employment news and labor market insights
+• Facilitating professional-level discussions in a moderated environment
+• Creating a trusted bridge between employers and job seekers
+
+Vacancy America prioritizes quality over quantity. Every visible post reflects credibility, review, and accountability, making it a safer alternative to open-content platforms.`
     },
     {
         id: '2',
         category: '📌 About Vacancy America',
         question: 'How is Vacancy America different from LinkedIn or Indeed?',
-        answer: 'Unlike open platforms, Vacancy America is curated. Posts are published only by verified admins and approved companies, which reduces spam, fake job listings, and low-quality content.'
+        answer: `Vacancy America differs fundamentally in its publishing structure, content governance model, and verification process.
+
+On platforms like LinkedIn or Indeed, content publishing is largely open, allowing individual users, recruiters, and automated systems to post freely. While this creates volume and scale, it can also introduce spam, duplicate listings, misleading opportunities, and unverified claims.
+
+Vacancy America operates differently through a curated and approval-driven ecosystem. Key distinctions include:
+
+• Restricted publishing rights – Only approved and verified admins can create posts.
+• Structured moderation – Most posts require review by a Super Admin before going live.
+• Multi-level admin trust system – Admin levels determine publishing authority based on reliability history.
+• Reduced noise – No irrelevant content, promotional spam, or unverified posts.
+• Focused content strategy – Strictly USA-based career and hiring information.
+
+This controlled structure ensures higher signal-to-noise ratio, improved credibility, and a professional environment tailored for serious hiring communication rather than social networking.`
     },
     {
         id: '3',
         category: '📌 About Vacancy America',
         question: 'What kind of content is shared here?',
-        answer: 'You will find:\n\n• Verified job openings\n• Company hiring announcements\n• USA career news and articles\n• Professional community discussions'
+        answer: `Vacancy America is strictly focused on professional and career-oriented content relevant to the United States employment ecosystem. The platform does not allow unrelated promotional, personal, or entertainment-based content.
+
+Types of content include:
+
+• Verified job openings from approved employers
+• Company hiring announcements and recruitment campaigns
+• Official internship and graduate program postings
+• USA labor market updates and employment trends
+• Career growth resources and structured professional insights
+• Moderated discussions around hiring practices and industry updates
+
+Every piece of content undergoes quality control measures to ensure:
+
+• Accuracy
+• Professional tone
+• Relevance to U.S. employment standards
+• Compliance with platform policies
+
+The result is a highly focused environment where job seekers can trust what they see, and employers can communicate professionally.`
     },
+
     // ── 👥 Roles on Vacancy America ──
     {
         id: '4',
         category: '👥 Roles on Vacancy America',
         question: 'What roles exist on this platform?',
-        answer: 'Vacancy America has three main roles:\n\n• Users: browse, comment, follow, and chat\n• Admins: create hiring/news posts (with approval workflow)\n• Super Admin: verifies admins and approves or rejects posts'
+        answer: `Vacancy America operates using a clearly defined role-based access system to maintain governance, quality, and accountability.
+
+There are three primary roles:
+
+1. Users  
+Users are general members who can:
+• Browse job listings and announcements  
+• Comment on posts  
+• Follow companies  
+• Engage in moderated discussions  
+• Connect via chat (where applicable)
+
+Users cannot create public posts, ensuring content integrity.
+
+2. Admins  
+Admins represent verified companies or authorized publishers. Their responsibilities include:
+• Creating hiring and career-related posts  
+• Submitting content for approval (depending on level)  
+• Maintaining professional communication standards  
+• Following platform publishing policies  
+
+Admins operate under an approval workflow and trust-level system.
+
+3. Super Admin  
+The Super Admin oversees the entire platform governance structure. Responsibilities include:
+• Verifying admin registration requests  
+• Reviewing and approving submitted posts  
+• Assigning admin levels  
+• Rejecting low-quality or misleading content  
+• Maintaining safety and compliance standards  
+
+This structured hierarchy ensures clarity of responsibility and maintains platform credibility.`
     },
+
     {
         id: '5',
         category: '👥 Roles on Vacancy America',
         question: 'Why can\'t normal users create posts?',
-        answer: 'To maintain trust and prevent spam, posting is limited to verified admins and companies. Users participate through comments, follows, and discussions.'
+        answer: `Vacancy America intentionally restricts public posting rights to prevent spam, misinformation, fraudulent job listings, and content clutter.
+
+Open publishing platforms often face challenges such as:
+• Fake recruiters
+• Scam job postings
+• Duplicate listings
+• Unverified salary claims
+• Promotional spam
+
+By limiting posting privileges to verified admins only, Vacancy America ensures:
+
+• Content authenticity
+• Reduced fraudulent activity
+• Professional-grade communication
+• Higher trust for job seekers
+• Controlled information flow
+
+Users still play an important role by engaging in discussions, commenting, and reporting suspicious content, but the publishing gatekeeping structure ensures that only credible sources can create official posts.`
     },
+
     {
         id: '6',
         category: '👥 Roles on Vacancy America',
         question: 'Who controls what gets published?',
-        answer: 'The Super Admin ensures that only authentic and professional content becomes publicly visible.'
+        answer: `The Super Admin oversees the publishing workflow and ensures that only authentic, relevant, and professionally appropriate content becomes publicly visible.
+
+Every submitted post is evaluated based on:
+
+• Accuracy and clarity
+• Compliance with platform standards
+• Professional tone
+• Relevance to USA job market
+• Absence of misleading or exaggerated claims
+
+Depending on an admin’s trust level, posts may require mandatory review or may be auto-approved under supervision. This layered review system preserves platform integrity while maintaining publishing efficiency.`
     },
+
     // ── 🛡️ Becoming an Admin ──
     {
         id: '7',
         category: '🛡️ Becoming an Admin',
         question: 'How can I become an admin on Vacancy America?',
-        answer: 'To become an admin, you must register through the Admin Panel. Your request will be reviewed and approved by the Super Admin before you can publish.'
+        answer: `To become an admin, applicants must register through the dedicated Admin Panel and provide accurate company or organizational information.
+
+The registration process typically involves:
+
+• Providing business or organizational details
+• Verifying professional credentials
+• Submitting contact information
+• Agreeing to publishing guidelines
+
+Once submitted, the application enters a review stage. The Super Admin evaluates the request to ensure legitimacy and alignment with platform standards.
+
+Only after approval does the account gain admin-level publishing access. This verification process prevents unauthorized or fraudulent entities from posting.`
     },
+
     {
         id: '8',
         category: '🛡️ Becoming an Admin',
         question: 'Why does admin registration require approval?',
-        answer: 'Admin approval ensures that only genuine companies and trusted publishers can post hiring content, keeping the platform reliable.'
+        answer: `Admin approval is essential to preserve the trust ecosystem of Vacancy America.
+
+Without verification, open admin access could lead to:
+• Fake company accounts
+• Impersonation of legitimate brands
+• Fraudulent hiring campaigns
+• Misleading job advertisements
+
+By requiring approval, Vacancy America ensures that:
+• Only genuine organizations publish content
+• Hiring information remains reliable
+• Job seekers interact with legitimate entities
+• Platform credibility remains intact
+
+The approval step is a core part of the platform’s safety infrastructure.`
     },
+
     {
         id: '9',
         category: '🛡️ Becoming an Admin',
         question: 'What happens after I register as an admin?',
-        answer: 'Your admin account stays in "Pending" status until the Super Admin approves it. Once approved, you can start submitting posts.'
+        answer: `After registering, your account enters a "Pending Review" status.
+
+During this stage:
+• Your submitted details are verified
+• Credentials may be cross-checked
+• Platform compliance is evaluated
+
+If approved:
+• You receive admin-level access
+• You can begin submitting posts
+• Your publishing authority is assigned based on initial trust level (Level 0 by default)
+
+If rejected:
+• You may receive clarification or feedback
+• You can correct information and reapply
+
+This structured onboarding ensures professional standards from day one.`
     },
-    // ── 📢 Admin Posting & Approval Workflow ──
+
+    // ── 📢 Admin Posting & Approval ──
     {
         id: '10',
         category: '📢 Admin Posting & Approval',
         question: 'Why are admin posts not published instantly?',
-        answer: 'Most admin posts require Super Admin verification to ensure authenticity and quality before appearing publicly.'
+        answer: `To maintain content quality and prevent misinformation, most new admin posts require Super Admin verification before going live.
+
+This review process ensures:
+
+• Accurate job descriptions
+• Clear employment terms
+• No misleading salary claims
+• Compliance with platform guidelines
+• Absence of spam or promotional abuse
+
+As admins demonstrate reliability over time, their trust level increases, potentially reducing approval delays. The system balances speed with integrity.`
     },
+
     {
         id: '11',
         category: '📢 Admin Posting & Approval',
         question: 'What are admin levels?',
-        answer: 'Admins have 3 levels:\n\n• Level 0: New admin (all posts require approval)\n• Level 1: Trusted admin (fast approval queue)\n• Level 2: Verified publisher (can post directly)'
+        answer: `Vacancy America uses a structured three-level admin trust system:
+
+Level 0 – New Admin  
+• All posts require manual approval  
+• Closely monitored publishing  
+
+Level 1 – Trusted Admin  
+• Faster review process  
+• Priority moderation queue  
+
+Level 2 – Verified Publisher  
+• Direct publishing capability  
+• Subject to random audits  
+
+Admin levels are determined based on:
+• Posting history
+• Compliance record
+• Content quality
+• Professional conduct
+
+This tiered structure encourages responsible publishing behavior.`
     },
+
     {
         id: '12',
         category: '📢 Admin Posting & Approval',
         question: 'What happens if my post is rejected?',
-        answer: 'Rejected posts include a clear reason from the Super Admin, and you can edit and resubmit the post.'
+        answer: `If a post is rejected, the Super Admin provides a clear reason explaining the issue.
+
+Common reasons may include:
+• Incomplete job information
+• Policy violations
+• Misleading details
+• Formatting issues
+• Irrelevant content
+
+Admins can revise the post and resubmit it for approval. Rejections are part of the quality control system and are intended to improve content standards, not penalize publishers unfairly.`
     },
+
     // ── 🎧 Support & Safety ──
     {
         id: '13',
         category: '🎧 Support & Safety',
         question: 'How do I contact Vacancy America support?',
-        answer: 'You can contact support through the Support section or the official email provided on the platform.'
+        answer: `Users and admins can contact support through the designated Support section on the platform or via the official contact email listed in the footer.
+
+Support handles:
+• Technical issues
+• Account-related queries
+• Content disputes
+• Reporting concerns
+• Admin onboarding questions
+
+The support team operates with professional response standards and prioritizes user safety and platform reliability.`
     },
+
     {
         id: '14',
         category: '🎧 Support & Safety',
         question: 'How do I report a suspicious job post?',
-        answer: 'If you see a post that looks fake or misleading, use the Report option. Our team will review it quickly.'
+        answer: `Each post includes a reporting mechanism. If you encounter suspicious or potentially misleading content:
+
+• Click the “Report” option
+• Provide brief details explaining your concern
+• Submit the report
+
+The moderation team reviews reports promptly. If the post violates policies, corrective action is taken, including removal or admin review. User reports play a critical role in maintaining safety.`
     },
+
     {
         id: '15',
         category: '🎧 Support & Safety',
         question: 'How does Vacancy America prevent fake jobs?',
-        answer: 'We use verified admin onboarding, Super Admin approvals, and moderation controls to ensure trust and safety.'
+        answer: `Vacancy America employs multiple safety layers to prevent fraudulent job listings:
+
+• Verified admin onboarding
+• Super Admin post approval workflow
+• Multi-level admin trust system
+• Community reporting tools
+• Content audits and monitoring
+• Strict policy enforcement
+
+By combining structured moderation with verification controls, the platform significantly reduces the risk of fake job postings compared to open publishing systems. Trust and safety are foundational principles of Vacancy America.`
     }
 ];
 
