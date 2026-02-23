@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <AppLayout>
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-post-border">
-        <h1 className="text-xl font-bold p-4">Home</h1>
+      <header className="border-b border-post-border">
+        <h1 className="text-xl font-bold p-4 text-foreground">Home</h1>
       </header>
 
       {/* Feed */}

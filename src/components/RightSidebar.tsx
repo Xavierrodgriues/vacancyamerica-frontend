@@ -168,6 +168,17 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                 )}
 
                 {messages.map((msg) => {
+                    if (msg.type === 'system') {
+                        return (
+                            <div key={msg._id} className="flex justify-center my-6">
+                                <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
+                                    <Phone className="w-4 h-4" />
+                                    <span>{msg.text} · {new Date(msg.createdAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</span>
+                                </div>
+                            </div>
+                        );
+                    }
+
                     const isMine = msg.sender._id === user?._id || msg.sender.toString() === user?._id;
                     return (
                         <div key={msg._id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
@@ -273,6 +284,7 @@ export function RightSidebar() {
     const { data: conversations, isLoading: convsLoading } = useConversations();
     const { data: friends } = useFriends();
     const startConversation = useStartConversation();
+    const sendMessage = useSendMessage();
 
     const getOtherUser = (conv: ConversationData): Participant => {
         return conv.participants.find((p) => p._id !== user?._id) || conv.participants[0];
@@ -326,7 +338,20 @@ export function RightSidebar() {
         rejectCall,
         toggleMute,
         switchInputDevice
-    } = useWebRTC();
+    } = useWebRTC({
+        onCallEnd: async (reason, otherUserId) => {
+            try {
+                const conv = await startConversation.mutateAsync(otherUserId);
+                sendMessage.mutate({
+                    conversationId: conv._id,
+                    text: reason,
+                    type: 'system'
+                });
+            } catch (err) {
+                console.error("Failed to send system message for call end", err);
+            }
+        }
+    });
 
     return (
         <aside className="hidden lg:flex flex-col flex-1 h-screen sticky top-0 border-l border-post-border bg-background overflow-hidden">

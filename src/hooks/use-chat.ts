@@ -32,6 +32,7 @@ export interface MessageData {
     conversationId: string;
     sender: Participant;
     text: string;
+    type?: 'text' | 'system';
     readBy: string[];
     createdAt: string;
 }
@@ -142,14 +143,14 @@ export function useSendMessage() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ conversationId, text }: { conversationId: string; text: string }) => {
+        mutationFn: async ({ conversationId, text, type = 'text' }: { conversationId: string; text: string; type?: 'text' | 'system' }) => {
             const res = await fetch(`${API}/conversations/${conversationId}/messages`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${user?.token}`,
                 },
-                body: JSON.stringify({ text }),
+                body: JSON.stringify({ text, type }),
             });
             if (!res.ok) {
                 const err = await res.json();

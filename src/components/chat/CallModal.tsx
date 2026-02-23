@@ -151,46 +151,60 @@ export function CallModal({
     const displayName = status === "receiving" ? incomingCall?.name : otherUserName;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-            <div className="bg-background w-full max-w-sm rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-6 animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+            <div className="bg-zinc-950/80 backdrop-blur-xl border border-white/10 w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center gap-8 animate-in fade-in zoom-in-95 duration-300">
                 {/* Audio Element (Hidden) */}
                 <audio ref={audioRef} autoPlay playsInline className="hidden" />
 
                 {/* Avatar / User Info */}
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center overflow-hidden border-4 border-background shadow-lg">
-                        {otherUserAvatar ? (
-                            <img src={otherUserAvatar} alt={displayName} className="w-full h-full object-cover" />
-                        ) : (
-                            <User className="w-10 h-10 text-muted-foreground" />
-                        )}
+                <div className="flex flex-col items-center gap-6 mt-2">
+                    <div className="relative">
+                        {status === "calling" || status === "receiving" ? (
+                            <>
+                                <div className="absolute inset-0 rounded-full border-2 border-blue-500/30 animate-ping opacity-75" style={{ animationDuration: '2s' }} />
+                                <div className="absolute inset-[-15px] rounded-full border-2 border-blue-500/20 animate-ping opacity-50" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
+                                <div className="absolute inset-[-30px] rounded-full border-2 border-blue-500/10 animate-ping opacity-25" style={{ animationDuration: '2s', animationDelay: '1s' }} />
+                            </>
+                        ) : null}
+                        <div className="relative w-32 h-32 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] z-10">
+                            {otherUserAvatar ? (
+                                <img src={otherUserAvatar} alt={displayName} className="w-full h-full object-cover" />
+                            ) : (
+                                <User className="w-12 h-12 text-zinc-400" />
+                            )}
+                        </div>
                     </div>
-                    <div className="text-center">
-                        <h3 className="text-xl font-bold text-foreground">{displayName}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">
+                    <div className="text-center space-y-1.5">
+                        <h3 className="text-2xl font-bold text-white tracking-wide">{displayName}</h3>
+                        <p className="text-sm font-medium text-zinc-400 uppercase tracking-widest flex items-center justify-center gap-2">
                             {status === "calling" && "Calling..."}
                             {status === "receiving" && "Incoming call..."}
-                            {status === "connected" && formatTime(duration)}
+                            {status === "connected" && (
+                                <>
+                                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-green-400">{formatTime(duration)}</span>
+                                </>
+                            )}
                             {status === "ended" && "Call ended"}
                         </p>
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-6 w-full justify-center">
+                <div className="flex items-center gap-5 w-full justify-center mb-2">
                     {status === "receiving" ? (
                         <>
                             <button
                                 onClick={onReject}
-                                className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white transition-transform hover:scale-105"
+                                className="w-16 h-16 rounded-full bg-red-500/20 hover:bg-red-500 flex items-center justify-center text-red-500 hover:text-white transition-all hover:scale-105 backdrop-blur-md border border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
                             >
-                                <PhoneOff className="w-6 h-6" />
+                                <PhoneOff className="w-7 h-7" />
                             </button>
                             <button
                                 onClick={onAnswer}
-                                className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center text-white transition-transform hover:scale-105 animate-pulse"
+                                className="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center text-white transition-all hover:scale-105 animate-pulse shadow-[0_0_20px_rgba(34,197,94,0.5)]"
                             >
-                                <Phone className="w-6 h-6" />
+                                <Phone className="w-7 h-7" />
                             </button>
                         </>
                     ) : (
@@ -200,39 +214,38 @@ export function CallModal({
                                     <button
                                         onClick={onToggleMute}
                                         className={cn(
-                                            "w-12 h-12 rounded-full flex items-center justify-center transition-colors",
-                                            isMuted ? "bg-white text-black" : "bg-muted text-foreground hover:bg-muted/80"
+                                            "w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-105",
+                                            isMuted ? "bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]" : "bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5"
                                         )}
                                     >
-                                        {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                                        {isMuted ? <MicOff className="w-6 h-6" /> : <Mic className="w-6 h-6" />}
                                     </button>
 
                                     {/* Mic Selection (Input) */}
                                     {onSwitchInput && audioInputDevices.length > 0 && (
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button className="w-12 h-12 rounded-full flex items-center justify-center transition-colors bg-muted text-foreground hover:bg-muted/80">
-                                                    <Mic2 className="w-5 h-5" />
+                                                <button className="w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-105 bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5">
+                                                    <Mic2 className="w-6 h-6" />
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-64 p-2" align="center">
+                                            <PopoverContent className="w-64 p-2 bg-zinc-900 border-zinc-800 text-zinc-100" align="center">
                                                 <div className="space-y-1">
-                                                    <h4 className="font-medium text-xs text-muted-foreground px-2 py-1.5 uppercase tracking-wider">Select Microphone</h4>
+                                                    <h4 className="font-medium text-xs text-zinc-500 px-2 py-1.5 uppercase tracking-wider">Select Microphone</h4>
                                                     {audioInputDevices.map((device) => {
-                                                        // Explicit check for undefined or empty label
                                                         const label = device.label ? device.label : `Microphone ${device.deviceId.slice(0, 5)}...`;
                                                         return (
                                                             <button
                                                                 key={device.deviceId}
                                                                 onClick={() => handleMicChange(device.deviceId)}
                                                                 className={cn(
-                                                                    "w-full flex items-center justify-between px-2 py-2 rounded-md text-sm transition-colors hover:bg-muted",
-                                                                    selectedMicId === device.deviceId && "bg-muted font-medium"
+                                                                    "w-full flex items-center justify-between px-2 py-2 rounded-md text-sm transition-colors hover:bg-zinc-800",
+                                                                    selectedMicId === device.deviceId && "bg-zinc-800 font-medium text-white"
                                                                 )}
                                                             >
                                                                 <span className="truncate text-left flex-1">{label}</span>
                                                                 {selectedMicId === device.deviceId && (
-                                                                    <Check className="w-4 h-4 ml-2 text-primary" />
+                                                                    <Check className="w-4 h-4 ml-2 text-blue-400" />
                                                                 )}
                                                             </button>
                                                         );
@@ -246,13 +259,13 @@ export function CallModal({
                                     {isSpeakerSupported && audioOutputDevices.length > 0 && (
                                         <Popover>
                                             <PopoverTrigger asChild>
-                                                <button className="w-12 h-12 rounded-full flex items-center justify-center transition-colors bg-muted text-foreground hover:bg-muted/80">
-                                                    <Volume2 className="w-5 h-5" />
+                                                <button className="w-14 h-14 rounded-full flex items-center justify-center transition-all hover:scale-105 bg-zinc-800 text-white hover:bg-zinc-700 border border-white/5">
+                                                    <Volume2 className="w-6 h-6" />
                                                 </button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-56 p-2" align="center">
+                                            <PopoverContent className="w-56 p-2 bg-zinc-900 border-zinc-800 text-zinc-100" align="center">
                                                 <div className="space-y-1">
-                                                    <h4 className="font-medium text-xs text-muted-foreground px-2 py-1.5 uppercase tracking-wider">Select Speaker</h4>
+                                                    <h4 className="font-medium text-xs text-zinc-500 px-2 py-1.5 uppercase tracking-wider">Select Speaker</h4>
                                                     {audioOutputDevices.map((device) => {
                                                         const label = device.label ? device.label : `Speaker ${device.deviceId.slice(0, 5)}...`;
                                                         return (
@@ -260,13 +273,13 @@ export function CallModal({
                                                                 key={device.deviceId}
                                                                 onClick={() => handleSpeakerChange(device.deviceId)}
                                                                 className={cn(
-                                                                    "w-full flex items-center justify-between px-2 py-2 rounded-md text-sm transition-colors hover:bg-muted",
-                                                                    selectedSpeakerId === device.deviceId && "bg-muted font-medium"
+                                                                    "w-full flex items-center justify-between px-2 py-2 rounded-md text-sm transition-colors hover:bg-zinc-800",
+                                                                    selectedSpeakerId === device.deviceId && "bg-zinc-800 font-medium text-white"
                                                                 )}
                                                             >
                                                                 <span className="truncate text-left flex-1">{label}</span>
                                                                 {selectedSpeakerId === device.deviceId && (
-                                                                    <Check className="w-4 h-4 ml-2 text-primary" />
+                                                                    <Check className="w-4 h-4 ml-2 text-blue-400" />
                                                                 )}
                                                             </button>
                                                         );
@@ -280,7 +293,7 @@ export function CallModal({
 
                             <button
                                 onClick={onEnd}
-                                className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white transition-transform hover:scale-105"
+                                className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white transition-all hover:scale-105 shadow-[0_0_15px_rgba(239,68,68,0.3)] ml-2"
                             >
                                 <PhoneOff className="w-7 h-7" />
                             </button>

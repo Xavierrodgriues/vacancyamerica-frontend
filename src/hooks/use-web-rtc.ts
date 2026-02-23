@@ -11,7 +11,11 @@ export interface IncomingCallData {
     signal: any;
 }
 
-export function useWebRTC() {
+interface UseWebRTCOptions {
+    onCallEnd?: (reason: string, otherUserId: string) => void;
+}
+
+export function useWebRTC(options?: UseWebRTCOptions) {
     const { socket } = useSocket();
     const { user } = useAuth();
 
@@ -21,6 +25,12 @@ export function useWebRTC() {
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [localStream, setLocalStream] = useState<MediaStream | null>(null);
     const [isMuted, setIsMuted] = useState(false);
+
+    // Track latest callStatus for cleanup without dependency loops
+    const callStatusRef = useRef(callStatus);
+    useEffect(() => {
+        callStatusRef.current = callStatus;
+    }, [callStatus]);
 
     // Refs
     const peerConnection = useRef<RTCPeerConnection | null>(null);
@@ -73,6 +83,13 @@ export function useWebRTC() {
 
     // Cleanup resources
     const cleanup = useCallback(() => {
+        if (options?.onCallEnd && otherUserId.current) {
+            let reason = "Audio call ended";
+            if (callStatusRef.current === "calling") reason = "Audio call canceled";
+            if (callStatusRef.current === "receiving") reason = "Missed audio call";
+            options.onCallEnd(reason, otherUserId.current);
+        }
+
         if (localStreamRef.current) {
             localStreamRef.current.getTracks().forEach(track => track.stop());
             localStreamRef.current = null;
@@ -87,7 +104,7 @@ export function useWebRTC() {
         setIncomingCall(null);
         otherUserId.current = null;
         setIsMuted(false);
-    }, []);
+    }, [options]);
 
     // ─── Socket Event Handlers ────────────────────────────────────────────────
 
