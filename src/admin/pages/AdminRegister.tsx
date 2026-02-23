@@ -83,7 +83,7 @@ export default function AdminRegister() {
 
         setIsLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/admin/auth/register', {
+            const res = await fetch('https://vacancyamerica-backend.onrender.com/api/admin/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

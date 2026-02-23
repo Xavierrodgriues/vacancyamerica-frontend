@@ -17,7 +17,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!user?.token) return;
 
-        const newSocket = io("http://localhost:5000", {
+        const newSocket = io("https://vacancyamerica-backend.onrender.com", {
             auth: { token: user.token },
             transports: ["websocket", "polling"],
             reconnection: true,
