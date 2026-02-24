@@ -254,6 +254,12 @@ export default function LandingPage() {
                             >
                                 Post a Job
                             </button>
+                            <button
+                                onClick={() => navigate("/contact")}
+                                className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full"
+                            >
+                                Contact Us
+                            </button>
                         </div>
 
                         {/* Mobile hamburger */}
@@ -298,6 +304,12 @@ export default function LandingPage() {
                                     className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
                                 >
                                     Post a Job
+                                </button>
+                                <button
+                                    onClick={() => navigate("/contact")}
+                                    className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
+                                >
+                                    Contact Us
                                 </button>
                             </div>
                         </div>
@@ -813,7 +825,7 @@ export default function LandingPage() {
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
                         Completely free.
                         <br />
-                        <span className="text-[#64748B]">For everyone. Forever.</span>
+                        <span className="text-[#64748B]">For everyone.</span>
                     </h2>
                     <p className="text-[#64748B] text-lg max-w-xl mx-auto mb-12">
                         No charges for job seekers. No charges for companies. No

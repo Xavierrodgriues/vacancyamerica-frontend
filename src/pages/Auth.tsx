@@ -206,7 +206,12 @@ export default function Auth() {
 
           {/* Logo */}
           <div className="relative z-10">
-            <img src="/logo1.png" alt="VacancyAmerica" className="h-14 w-auto" />
+            <img
+              src="/logo1.png"
+              alt="VacancyAmerica"
+              className="h-14 w-auto cursor-pointer"
+              onClick={() => navigate("/")}
+            />
           </div>
 
           {/* Main content */}

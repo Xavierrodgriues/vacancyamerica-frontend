@@ -20,6 +20,7 @@ const Explore = lazy(() => import("./pages/Explore"));
 const Messages = lazy(() => import("./pages/Messages"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
 const AdminLogin = lazy(() => import("./admin/pages/AdminLogin"));
 const AdminRegister = lazy(() => import("./admin/pages/AdminRegister"));
 const AdminDashboard = lazy(() => import("./admin/pages/AdminDashboard"));
@@ -115,6 +116,7 @@ const App = () => (
                   <Routes>
                     {/* Landing page (default) */}
                     <Route path="/" element={<Suspense fallback={<div />}><LandingPage /></Suspense>} />
+                    <Route path="/contact" element={<Suspense fallback={<div />}><ContactUs /></Suspense>} />
 
                     {/* User routes */}
                     <Route path="/auth" element={<PublicRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Auth /></Suspense></PublicRoute>} />
