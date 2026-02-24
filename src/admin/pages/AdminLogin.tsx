@@ -128,7 +128,7 @@ export default function AdminLogin() {
                 {/* Back to home */}
                 <Link
                     to="/"
-                    className="absolute top-5 right-5 md:top-7 md:right-7 z-20 inline-flex items-center gap-2 bg-white text-[#102A43] text-sm font-semibold px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm hover:shadow-md hover:border-[#102A43]/30 transition-all group"
+                    className="absolute top-5 right-5 md:top-7 md:right-7 z-20 inline-flex items-center gap-2 bg-[#E63946] text-white text-sm font-semibold px-4 py-2 rounded-full shadow-sm hover:shadow-md hover:bg-[#d32f3f] transition-all group"
                 >
                     <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
@@ -142,9 +142,9 @@ export default function AdminLogin() {
                     <div className="absolute bottom-[-60px] left-[-60px] w-48 h-48 bg-white rounded-full blur-[100px] opacity-[0.06]" />
 
                     {/* Logo */}
-                    <div className="relative z-10">
+                    <Link to="/" className="relative z-10 block cursor-pointer hover:opacity-90 transition-opacity">
                         <img src="/logo1.png" alt="VacancyAmerica" className="h-14 w-auto" />
-                    </div>
+                    </Link>
 
                     {/* Main content */}
                     <div className="relative z-10 -mt-4">
@@ -184,9 +184,9 @@ export default function AdminLogin() {
                 <div className="w-full lg:w-[55%] p-8 md:p-12 lg:p-14 flex flex-col justify-center bg-white relative">
 
                     {/* Mobile logo */}
-                    <div className="lg:hidden flex justify-center mb-6">
+                    <Link to="/" className="lg:hidden flex justify-center mb-6 cursor-pointer hover:opacity-90 transition-opacity">
                         <img src="/logo1.png" alt="VacancyAmerica" className="h-10 w-auto" />
-                    </div>
+                    </Link>
 
                     <div className="max-w-[420px] w-full mx-auto">
                         <div className="text-center mb-8">
@@ -214,7 +214,7 @@ export default function AdminLogin() {
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-1.5">
                                 <label className="block text-[#102A43] font-semibold text-xs uppercase ml-1">
-                                    Email Address
+                                    Business Email
                                 </label>
                                 <input
                                     type="email"
@@ -222,7 +222,7 @@ export default function AdminLogin() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all font-medium"
-                                    placeholder="admin@company.com"
+                                    placeholder="contact@company.com"
                                     disabled={isLoading}
                                 />
                             </div>

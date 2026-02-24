@@ -188,7 +188,7 @@ export default function Auth() {
       {/* Back to home */}
       <button
         onClick={() => navigate("/")}
-        className="absolute top-5 right-5 md:top-7 md:right-7 z-20 inline-flex items-center gap-2 bg-white text-[#102A43] text-sm font-semibold px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm hover:shadow-md hover:border-[#102A43]/30 transition-all group"
+        className="absolute top-5 right-5 md:top-7 md:right-7 z-20 inline-flex items-center gap-2 bg-[#E63946] text-white text-sm font-semibold px-4 py-2 rounded-full shadow-sm hover:shadow-md hover:bg-[#d32f3f] transition-all group"
       >
         <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
