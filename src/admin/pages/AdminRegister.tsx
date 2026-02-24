@@ -288,6 +288,7 @@ export default function AdminRegister() {
                                     </div>
                                     <input
                                         type="tel"
+                                        name="phone_number"
                                         value={formData.phone_number}
                                         onChange={(e) => handlePhoneChange(e.target.value)}
                                         className="w-full pl-[72px] pr-4 py-2.5 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all font-medium text-sm"

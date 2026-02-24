@@ -156,6 +156,7 @@ function CommentItem({
               size="sm"
             />
             <Input
+              name="replyText"
               placeholder={`Reply to @${comment.profiles.username}...`}
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
@@ -257,6 +258,7 @@ export function CommentSection({ postId }: { postId: string }) {
           size="sm"
         />
         <Input
+          name="commentText"
           placeholder="Post your reply..."
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}

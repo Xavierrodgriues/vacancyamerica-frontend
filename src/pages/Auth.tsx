@@ -305,6 +305,7 @@ export default function Auth() {
                     <Label htmlFor="displayName" className="text-[#102A43] font-semibold text-xs uppercase ml-1">Name</Label>
                     <Input
                       id="displayName"
+                      name="displayName"
                       type="text"
                       placeholder="John"
                       value={displayName}
@@ -317,6 +318,7 @@ export default function Auth() {
                     <Label htmlFor="username" className="text-[#102A43] font-semibold text-xs uppercase ml-1">Username</Label>
                     <Input
                       id="username"
+                      name="username"
                       type="text"
                       placeholder="johndoe"
                       value={username}
@@ -333,6 +335,7 @@ export default function Auth() {
                   <Label htmlFor="phone" className="text-[#102A43] font-semibold text-xs uppercase ml-1">Phone Number <span className="text-[#94A3B8] font-normal normal-case">(optional)</span></Label>
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
                     placeholder="1234567890"
                     value={phoneNumber}
@@ -352,6 +355,7 @@ export default function Auth() {
                 <Label htmlFor="email" className="text-[#102A43] font-semibold text-xs uppercase ml-1">Email Address</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="hello@example.com"
                   value={email}
@@ -364,6 +368,7 @@ export default function Auth() {
                 <Label htmlFor="password" className="text-[#102A43] font-semibold text-xs uppercase ml-1">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}

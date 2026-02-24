@@ -91,6 +91,7 @@ export function AdminPostCard({ post, onApprove, onReject, isTrusted, isRejected
                         <div className="flex items-center gap-3 w-full animate-fadeIn">
                             <input
                                 type="text"
+                                name="postRejectReason"
                                 value={rejectReason}
                                 onChange={(e) => setRejectReason(e.target.value)}
                                 placeholder="Why are you rejecting this post?"

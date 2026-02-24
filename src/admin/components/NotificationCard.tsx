@@ -49,7 +49,7 @@ export function NotificationCard({ notification, onApprove, onReject, rejectingI
                             <div className="flex items-center gap-2">
                                 {rejectingId === notification._id ? (
                                     <div className="flex items-center gap-2">
-                                        <input type="text" value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="Reason (optional)" className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm w-40 focus:outline-none focus:border-amber-500" />
+                                        <input type="text" name="rejectReason" value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} placeholder="Reason (optional)" className="px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm w-40 focus:outline-none focus:border-amber-500" />
                                         <button onClick={() => onReject(notification._id)} disabled={isLoading} className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm font-medium disabled:opacity-50">Confirm</button>
                                         <button onClick={() => { setRejectingId(null); setRejectReason(''); }} className="px-3 py-1.5 bg-slate-700 text-slate-300 rounded-lg text-sm">Cancel</button>
                                     </div>

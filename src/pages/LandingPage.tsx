@@ -213,13 +213,13 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
-                        <a href="#hero" className="flex items-center group">
+                        <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center group cursor-pointer focus:outline-none">
                             <img
                                 src="/logo1.png"
                                 alt="VacancyAmerica"
                                 className="h-12 lg:h-14 w-auto"
                             />
-                        </a>
+                        </div>
 
                         {/* Desktop Nav Links */}
                         <div className="hidden lg:flex items-center gap-8">
@@ -413,7 +413,7 @@ export default function LandingPage() {
                         },
                         {
                             icon: <Briefcase className="w-6 h-6" />,
-                            title: "$0 to Post — Forever",
+                            title: "$0 to Post",
                             desc: "No pay-per-click, no subscriptions, no premium tiers. Post unlimited jobs without spending a dollar. Your competitors are paying $300+ per listing elsewhere.",
                         },
                         {
@@ -523,7 +523,7 @@ export default function LandingPage() {
                             </div>
                             <ul className="space-y-4">
                                 {[
-                                    "$0 per listing — free forever",
+                                    "$0 per listing — completely free",
                                     "Applicants who are engaged and ready to apply",
                                     "Every listing manually verified by SuperAdmin",
                                     "Serious candidates who read your actual job post",
@@ -826,9 +826,9 @@ export default function LandingPage() {
                         <div className="text-6xl lg:text-7xl font-bold tracking-tighter mb-2">
                             $0
                         </div>
-                        <div className="text-sm font-medium text-[#64748B] uppercase tracking-widest">
+                        {/* <div className="text-sm font-medium text-[#64748B] uppercase tracking-widest">
                             Forever
-                        </div>
+                        </div> */}
                         <div className="w-12 h-px bg-[#E5E7EB] mx-auto my-6" />
                         <ul className="space-y-3 text-sm text-[#64748B]">
                             <li className="flex items-center gap-2 justify-center">
@@ -893,13 +893,13 @@ export default function LandingPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
                         {/* Brand */}
                         <div className="col-span-2 md:col-span-1">
-                            <a href="#hero" className="flex items-center mb-4">
+                            <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center mb-4 cursor-pointer focus:outline-none">
                                 <img
                                     src="/logo1.png"
                                     alt="VacancyAmerica"
                                     className="h-12 lg:h-14 w-auto"
                                 />
-                            </a>
+                            </div>
                             <p className="text-sm text-[#64748B] leading-relaxed">
                                 Verified job opportunities across the United States.
                             </p>

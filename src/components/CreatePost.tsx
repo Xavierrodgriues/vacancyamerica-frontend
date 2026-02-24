@@ -64,6 +64,7 @@ export function CreatePost() {
         />
         <div className="flex-1 min-w-0">
           <Textarea
+            name="postContent"
             placeholder="What's happening?"
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -93,6 +94,7 @@ export function CreatePost() {
             <div className="flex items-center gap-1">
               <input
                 ref={fileInputRef}
+                name="mediaFile"
                 type="file"
                 accept="image/*,video/mp4,video/webm"
                 onChange={handleMediaSelect}

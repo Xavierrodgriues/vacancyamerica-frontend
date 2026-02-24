@@ -249,6 +249,7 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                     <div className="flex-1 relative">
                         <input
                             type="text"
+                            name="messageInput"
                             placeholder="Message..."
                             value={newMessage}
                             onChange={handleInputChange}
@@ -407,6 +408,7 @@ export function RightSidebar() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                                 type="text"
+                                name="searchQuery"
                                 placeholder={showNewChat ? "Search friends..." : "Search messages..."}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}

@@ -63,6 +63,7 @@ export default function SuperAdminLogin() {
                             </label>
                             <input
                                 type="email"
+                                name="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all"
@@ -77,6 +78,7 @@ export default function SuperAdminLogin() {
                             <div className="relative">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
+                                    name="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="w-full px-4 py-3 bg-slate-800/50 border border-amber-500/20 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-transparent transition-all pr-12"

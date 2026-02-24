@@ -175,7 +175,7 @@ export default function AdminLogin() {
                     </div>
 
                     <div className="relative z-10 flex flex-wrap gap-2">
-                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">Free Forever</span>
+                        <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">Free</span>
                         <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">Verified Platform</span>
                     </div>
                 </div>
@@ -218,6 +218,7 @@ export default function AdminLogin() {
                                 </label>
                                 <input
                                     type="email"
+                                    name="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all font-medium"
@@ -233,6 +234,7 @@ export default function AdminLogin() {
                                 <div className="relative">
                                     <input
                                         type={showPassword ? 'text' : 'password'}
+                                        name="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all pr-12 font-medium"

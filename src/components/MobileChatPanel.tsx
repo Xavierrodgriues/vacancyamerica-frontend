@@ -220,6 +220,7 @@ function MobileChatView({ conversation, otherUser, onBack, onCall }: {
                     <div className="flex-1 relative">
                         <input
                             type="text"
+                            name="messageInput"
                             placeholder="Message..."
                             value={newMessage}
                             onChange={handleInputChange}
@@ -359,6 +360,7 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                                 type="text"
+                                name="searchQuery"
                                 placeholder="Search messages..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}

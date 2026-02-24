@@ -159,6 +159,7 @@ export default function Profile() {
         {editing ? (
           <div className="space-y-3">
             <Input
+              name="displayName"
               placeholder="Display name"
               value={editDisplayName}
               onChange={(e) => setEditDisplayName(e.target.value)}
@@ -166,6 +167,7 @@ export default function Profile() {
               className="rounded-lg"
             />
             <Textarea
+              name="bio"
               placeholder="Bio"
               value={editBio}
               onChange={(e) => setEditBio(e.target.value)}

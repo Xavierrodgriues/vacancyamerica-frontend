@@ -613,6 +613,7 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
 
                 <div className="p-6">
                     <textarea
+                        name="postContent"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="What's happening?"
@@ -639,6 +640,7 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
                     <div className="flex items-center gap-2 mt-4">
                         <input
                             ref={fileInputRef}
+                            name="mediaFile"
                             type="file"
                             accept="image/*,video/mp4,video/webm"
                             onChange={handleMediaSelect}
