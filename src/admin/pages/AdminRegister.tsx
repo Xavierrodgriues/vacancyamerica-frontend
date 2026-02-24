@@ -34,9 +34,9 @@ export default function AdminRegister() {
     // Sanitize text input — strip HTML tags and dangerous chars
     const sanitize = (str: string) => str.trim().replace(/<[^>]*>/g, '').replace(/[<>"'`;()]/g, '');
 
-    // Phone: allow only digits, max 15
+    // Phone: allow only digits, max 10 for US
     const handlePhoneChange = (val: string) => {
-        const digits = val.replace(/\D/g, '').slice(0, 15);
+        const digits = val.replace(/\D/g, '').slice(0, 10);
         setFormData(prev => ({ ...prev, phone_number: digits }));
     };
 
@@ -61,7 +61,7 @@ export default function AdminRegister() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.username || !formData.email || !formData.password || !formData.display_name) {
+        if (!formData.username || !formData.email || !formData.password || !formData.display_name || !formData.phone_number) {
             toast.error('Please fill in all fields');
             return;
         }
@@ -76,8 +76,8 @@ export default function AdminRegister() {
             return;
         }
 
-        if (formData.phone_number && formData.phone_number.length < 10) {
-            toast.error('Phone number must be at least 10 digits');
+        if (formData.phone_number.length !== 10) {
+            toast.error('US phone numbers must be exactly 10 digits');
             return;
         }
 
@@ -91,7 +91,7 @@ export default function AdminRegister() {
                     email: sanitize(formData.email),
                     password: formData.password,
                     display_name: sanitize(formData.display_name),
-                    phone_number: formData.phone_number || undefined
+                    phone_number: formData.phone_number ? `+1${formData.phone_number}` : undefined
                 })
             });
 
@@ -280,21 +280,26 @@ export default function AdminRegister() {
 
                             <div className="space-y-1.5">
                                 <label className="block text-[#102A43] font-semibold text-xs uppercase ml-1">
-                                    Phone Number <span className="text-[#94A3B8] font-normal normal-case">(optional)</span>
+                                    Phone Number
                                 </label>
-                                <input
-                                    type="tel"
-                                    value={formData.phone_number}
-                                    onChange={(e) => handlePhoneChange(e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all font-medium text-sm"
-                                    placeholder="1234567890"
-                                    disabled={isLoading}
-                                    maxLength={15}
-                                    inputMode="numeric"
-                                    pattern="[0-9]*"
-                                />
-                                {formData.phone_number && formData.phone_number.length < 10 && (
-                                    <p className="text-xs text-amber-600 ml-1">Must be at least 10 digits</p>
+                                <div className="relative flex items-center">
+                                    <div className="absolute left-0 top-0 bottom-0 flex items-center pl-3 pointer-events-none text-[#102A43] font-medium text-sm">
+                                        <img src="https://flagcdn.com/w20/us.png" alt="US" className="w-[18px] h-auto mr-1.5 shadow-[0_0_1px_rgba(0,0,0,0.3)] rounded-[1px] object-cover" /> +1
+                                    </div>
+                                    <input
+                                        type="tel"
+                                        value={formData.phone_number}
+                                        onChange={(e) => handlePhoneChange(e.target.value)}
+                                        className="w-full pl-[72px] pr-4 py-2.5 rounded-xl bg-[#FAFAFA] border border-[#E5E7EB] text-[#102A43] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#102A43]/10 focus:border-[#102A43] transition-all font-medium text-sm"
+                                        placeholder="(555) 123-XXXX"
+                                        disabled={isLoading}
+                                        maxLength={10}
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
+                                    />
+                                </div>
+                                {formData.phone_number && formData.phone_number.length !== 10 && (
+                                    <p className="text-xs text-amber-600 ml-1">Must be exactly 10 digits for US numbers</p>
                                 )}
                             </div>
 
