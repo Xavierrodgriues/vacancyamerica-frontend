@@ -16,15 +16,26 @@ import { toast } from "sonner";
 import { FriendActionButtons } from "@/components/FriendActionButtons";
 import { FriendsList } from "@/components/FriendsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect } from "react";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
   const { data: visitedProfile, isLoading } = useProfileByUsername(username || "");
   const { data: myProfile } = useProfile();
   // Ensure we pass the correct ID form
-  const { data: posts, isLoading: postsLoading } = useUserPosts(visitedProfile?.user_id);
+  const { data, isLoading: postsLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useUserPosts(visitedProfile?.user_id);
+  const posts = data?.pages.flatMap((page: any) => page.posts) || null;
   const { user, login } = useAuth(); // login function updates the context state
   const queryClient = useQueryClient();
+
+  const { containerRef, isVisible } = useIntersectionObserver({ rootMargin: "400px" });
+
+  useEffect(() => {
+    if (isVisible && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [isVisible, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const isOwnProfile = user && visitedProfile && (user._id === visitedProfile.user_id || user.username === visitedProfile.username);
   const [editing, setEditing] = useState(false);
@@ -221,7 +232,13 @@ export default function Profile() {
               ) : posts.length === 0 ? (
                 <p className="text-center py-12 text-muted-foreground">No posts yet</p>
               ) : (
-                posts.map((post: any) => <PostCard key={post._id} post={post} />)
+                <div className="pb-8">
+                  {posts.map((post: any) => <PostCard key={post._id} post={post} />)}
+
+                  <div ref={containerRef} className="h-10 mt-4 flex justify-center items-center">
+                    {isFetchingNextPage && <Loader2 className="h-6 w-6 animate-spin text-primary" />}
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>

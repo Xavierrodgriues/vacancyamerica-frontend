@@ -34,6 +34,7 @@ interface Post {
 
 export function PostCard({ post, priority = false }: { post: Post; priority?: boolean }) {
   const [showComments, setShowComments] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { user } = useAuth();
   const toggleLike = useToggleLike();
 
@@ -98,12 +99,17 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
             </p>
 
             {post.image_url && (
-              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-black/5 dark:bg-white/5">
+              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-muted/30 relative flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-muted animate-pulse" />
+                )}
                 <img
                   src={post.image_url}
-                  alt="Post image"
-                  className="max-h-[512px] w-full object-contain"
+                  alt="Post"
+                  className={`max-h-[512px] w-full object-contain transition-opacity duration-300 relative z-10 ${imageLoaded ? "opacity-100" : "opacity-0"
+                    }`}
                   loading={priority ? "eager" : "lazy"}
+                  onLoad={() => setImageLoaded(true)}
                   {...(priority ? { fetchPriority: "high" } : {})}
                 />
               </div>

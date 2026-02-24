@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 
 const API = "http://localhost:5000/api/posts";
@@ -6,22 +6,33 @@ const API = "http://localhost:5000/api/posts";
 export function usePosts() {
   const { user } = useAuth();
 
-  const query = useQuery({
+  const query = useInfiniteQuery({
     queryKey: ["posts"],
-    queryFn: async () => {
+    initialPageParam: null as string | null,
+    queryFn: async ({ pageParam }) => {
       const headers: HeadersInit = {};
       if (user?.token) {
         headers["Authorization"] = `Bearer ${user.token}`;
       }
-      const res = await fetch(API, { headers });
-      if (!res.ok) throw new Error("Failed to fetch posts");
-      const posts = await res.json();
 
-      return posts.map((p: any) => ({
-        ...p,
-        profiles: p.user || { username: "unknown", display_name: "Unknown", avatar_url: null },
-      }));
+      const url = new URL(API);
+      if (pageParam) {
+        url.searchParams.append("cursor", pageParam);
+      }
+
+      const res = await fetch(url.toString(), { headers });
+      if (!res.ok) throw new Error("Failed to fetch posts");
+      const data = await res.json();
+
+      return {
+        ...data,
+        posts: data.posts.map((p: any) => ({
+          ...p,
+          profiles: p.user || { username: "unknown", display_name: "Unknown", avatar_url: null },
+        }))
+      };
     },
+    getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : null,
   });
 
   return query;
@@ -30,23 +41,34 @@ export function usePosts() {
 export function useUserPosts(userId: string | undefined) {
   const { user } = useAuth();
 
-  const query = useQuery({
+  const query = useInfiniteQuery({
     queryKey: ["posts", "user", userId],
-    queryFn: async () => {
-      if (!userId) return [];
+    initialPageParam: null as string | null,
+    queryFn: async ({ pageParam }) => {
+      if (!userId) return { posts: [], nextCursor: null, hasMore: false };
       const headers: HeadersInit = {};
       if (user?.token) {
         headers["Authorization"] = `Bearer ${user.token}`;
       }
-      const res = await fetch(`${API}/user/${userId}`, { headers });
-      if (!res.ok) throw new Error("Failed to fetch user posts");
-      const posts = await res.json();
 
-      return posts.map((p: any) => ({
-        ...p,
-        profiles: p.user || { username: "unknown", display_name: "Unknown", avatar_url: null },
-      }));
+      const url = new URL(`${API}/user/${userId}`);
+      if (pageParam) {
+        url.searchParams.append("cursor", pageParam);
+      }
+
+      const res = await fetch(url.toString(), { headers });
+      if (!res.ok) throw new Error("Failed to fetch user posts");
+      const data = await res.json();
+
+      return {
+        ...data,
+        posts: data.posts.map((p: any) => ({
+          ...p,
+          profiles: p.user || { username: "unknown", display_name: "Unknown", avatar_url: null },
+        }))
+      };
     },
+    getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.nextCursor : null,
     enabled: !!userId,
   });
 
@@ -116,24 +138,31 @@ export function useToggleLike() {
     onMutate: async (postId: string) => {
       // Cancel any outgoing refetches so they don't overwrite optimistic update
       await queryClient.cancelQueries({ queryKey: ["posts"] });
+      // We could also cancel specific user queries, but let's keep it simple
 
       // Snapshot previous state for rollback
       const previousPosts = queryClient.getQueryData(["posts"]);
 
       // Optimistically toggle in cache
-      queryClient.setQueryData(["posts"], (old: any[] | undefined) => {
-        if (!old) return old;
-        return old.map((post: any) => {
-          if ((post._id || post.id) === postId) {
-            const wasLiked = post.likedByMe;
-            return {
-              ...post,
-              likedByMe: !wasLiked,
-              likesCount: Math.max(0, (post.likesCount || 0) + (wasLiked ? -1 : 1)),
-            };
-          }
-          return post;
-        });
+      queryClient.setQueryData(["posts"], (old: any) => {
+        if (!old || !old.pages) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            posts: page.posts.map((post: any) => {
+              if ((post._id || post.id) === postId) {
+                const wasLiked = post.likedByMe;
+                return {
+                  ...post,
+                  likedByMe: !wasLiked,
+                  likesCount: Math.max(0, (post.likesCount || 0) + (wasLiked ? -1 : 1)),
+                };
+              }
+              return post;
+            }),
+          })),
+        };
       });
 
       return { previousPosts };
@@ -150,14 +179,20 @@ export function useToggleLike() {
     onSettled: (_data, _error, postId) => {
       // Sync server-side count to be safe
       if (_data && !_error) {
-        queryClient.setQueryData(["posts"], (old: any[] | undefined) => {
-          if (!old) return old;
-          return old.map((post: any) => {
-            if ((post._id || post.id) === postId) {
-              return { ...post, liked: _data.liked, likesCount: _data.likesCount, likedByMe: _data.liked };
-            }
-            return post;
-          });
+        queryClient.setQueryData(["posts"], (old: any) => {
+          if (!old || !old.pages) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => {
+                if ((post._id || post.id) === postId) {
+                  return { ...post, liked: _data.liked, likesCount: _data.likesCount, likedByMe: _data.liked };
+                }
+                return post;
+              }),
+            })),
+          };
         });
       }
     },

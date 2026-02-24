@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { AppLayout } from "@/components/AppLayout";
 import { PostCard } from "@/components/PostCard";
@@ -7,13 +7,24 @@ import { Input } from "@/components/ui/input";
 import { Search, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SearchUsers } from "@/components/SearchUsers";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 export default function Explore() {
-  const { data: posts, isLoading } = usePosts();
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = usePosts();
+  const rawPosts = data?.pages.flatMap((page: any) => page.posts) || [];
+
   const [postSearch, setPostSearch] = useState("");
   const debouncedPostSearch = useDebounce(postSearch, 300);
 
-  const filteredPosts = posts?.filter(
+  const { containerRef, isVisible } = useIntersectionObserver({ rootMargin: "400px" });
+
+  useEffect(() => {
+    if (isVisible && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [isVisible, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const filteredPosts = rawPosts.filter(
     (post: any) =>
       post.content.toLowerCase().includes(debouncedPostSearch.toLowerCase()) ||
       post.profiles.display_name.toLowerCase().includes(debouncedPostSearch.toLowerCase()) ||
@@ -74,15 +85,19 @@ export default function Explore() {
               </p>
             </div>
           ) : (
-            <div>
+            <div className="pb-8">
               {!postSearch && (
                 <div className="p-4 border-b border-post-border">
                   <h2 className="text-xl font-extrabold text-foreground">Trending Posts</h2>
                 </div>
               )}
-              {filteredPosts?.map((post: any) => (
+              {filteredPosts.map((post: any) => (
                 <PostCard key={post._id} post={post} />
               ))}
+
+              <div ref={containerRef} className="h-10 mt-4 flex justify-center items-center">
+                {isFetchingNextPage && <Loader2 className="h-6 w-6 animate-spin text-primary" />}
+              </div>
             </div>
           )}
         </TabsContent>
