@@ -106,7 +106,7 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
                 <img
                   src={post.image_url}
                   alt="Post"
-                  className={`max-h-[512px] w-full object-contain transition-opacity duration-300 relative z-10 ${imageLoaded ? "opacity-100" : "opacity-0"
+                  className={`max-h-[512px] w-full object-contain transition-opacity duration-300 relative ${imageLoaded ? "opacity-100" : "opacity-0"
                     }`}
                   loading={priority ? "eager" : "lazy"}
                   onLoad={() => setImageLoaded(true)}
