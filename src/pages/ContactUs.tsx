@@ -213,8 +213,8 @@ export default function ContactUs() {
                                 <h3 className="font-bold mb-1 text-lg">Office</h3>
                                 <p className="text-[#64748B] mb-1">Come say hello at our headquarters.</p>
                                 <p className="text-[#102A43] font-medium mt-1">
-                                    123 Employment Ave, Suite 100<br />
-                                    Chicago, IL 60601
+                                    1007 N Orange St. 4th Floor Ste 1382<br />
+                                    Wilmington, DE 19801
                                 </p>
                             </div>
                         </div>
