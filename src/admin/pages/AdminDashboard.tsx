@@ -40,7 +40,8 @@ export default function AdminDashboard() {
     const [page, setPage] = useState(1);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
-    const [activeTab, setActiveTab] = useState<'posts' | 'privileges'>('posts');
+    const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges'>('overview');
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     // Track previous level for animations
     const prevLevelRef = useRef(admin?.admin_level);
@@ -80,7 +81,6 @@ export default function AdminDashboard() {
         navigate('/admin/login');
         return null;
     }
-
     const handleLogout = () => {
         logout();
         toast.success('Logged out successfully');
@@ -88,30 +88,42 @@ export default function AdminDashboard() {
     };
 
     const sidebarItems = [
-        { id: 'posts' as const, label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
+        { id: 'posts' as const, label: 'Manage Posts', icon: FileText },
         { id: 'privileges' as const, label: 'Privileges', icon: Shield },
     ];
+
+    const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
+    const mainMargin = isCollapsed ? 'ml-20' : 'ml-64';
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans flex">
             {/* --- Sidebar --- */}
-            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col min-h-screen fixed left-0 top-0 z-40">
+            <aside className={`${sidebarWidth} bg-white border-r border-slate-200 flex flex-col min-h-screen fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out`}>
                 {/* Logo / Brand */}
-                <div className="px-6 py-6 border-b border-slate-100">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-200">
+                <div className="px-6 py-6 border-b border-slate-100 flex items-center justify-between">
+                    <div className={`flex items-center gap-3 transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
+                        <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-200 flex-shrink-0">
                             <LayoutDashboard className="w-5 h-5 text-white" />
                         </div>
-                        <div>
+                        <div className="truncate">
                             <h1 className="text-lg font-bold text-slate-800 tracking-tight">Admin</h1>
                             <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Dashboard</p>
                         </div>
                     </div>
+                    <button 
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={`p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
+                    >
+                        {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+                    </button>
                 </div>
 
                 {/* Navigation */}
                 <nav className="flex-1 px-4 py-6">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-3">General</p>
+                    <p className={`text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-3 transition-opacity ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                        {isCollapsed ? '•' : 'General'}
+                    </p>
                     <div className="space-y-1">
                         {sidebarItems.map((item) => {
                             const Icon = item.icon;
@@ -120,13 +132,16 @@ export default function AdminDashboard() {
                                 <button
                                     key={item.id}
                                     onClick={() => setActiveTab(item.id)}
+                                    title={isCollapsed ? item.label : ''}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
                                         ? 'bg-indigo-50 text-indigo-700 shadow-sm'
                                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
-                                        }`}
+                                        } ${isCollapsed ? 'justify-center' : ''}`}
                                 >
-                                    <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-indigo-600' : ''}`} />
-                                    {item.label}
+                                    <Icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-indigo-600' : ''}`} />
+                                    <span className={`transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+                                        {item.label}
+                                    </span>
                                 </button>
                             );
                         })}
@@ -135,38 +150,43 @@ export default function AdminDashboard() {
 
                 {/* Bottom: User Card + Logout */}
                 <div className="px-4 py-4 border-t border-slate-100">
-                    <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 mb-3">
-                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <div className={`flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 mb-3 transition-colors ${isCollapsed ? 'bg-transparent' : ''}`}>
+                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
                             <User className="w-4 h-4 text-indigo-600" />
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div className={`flex-1 min-w-0 transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}`}>
                             <p className="text-sm font-semibold text-slate-700 truncate">{admin.display_name}</p>
                             <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] text-slate-400 font-medium">Level {admin.admin_level || 0}</span>
+                                <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">Level {admin.admin_level || 0}</span>
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
                             </div>
                         </div>
                     </div>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
+                        title={isCollapsed ? 'Log out' : ''}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''}`}
                     >
-                        <LogOut className="w-[18px] h-[18px]" />
-                        Log out
+                        <LogOut className="w-[18px] h-[18px] flex-shrink-0" />
+                        <span className={`transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+                            Log out
+                        </span>
                     </button>
                 </div>
             </aside>
 
             {/* --- Main Content --- */}
-            <div className="flex-1 ml-64">
+            <div className={`flex-1 ${mainMargin} transition-all duration-300 ease-in-out`}>
                 {/* Top Header */}
                 <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
                     <div className="px-8 py-5 flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-800">
-                                Welcome, {admin.display_name}!
+                                {activeTab === 'overview' ? 'Overview' : activeTab === 'posts' ? 'Manage Posts' : 'My Privileges'}
                             </h2>
-                            <p className="text-sm text-slate-400 mt-0.5">Manage your content and view your privileges</p>
+                            <p className="text-sm text-slate-400 mt-0.5">
+                                {activeTab === 'overview' ? 'System stats & quick summary' : activeTab === 'posts' ? 'Review, approve, or delete community content' : 'Manage your admin capabilities'}
+                            </p>
                         </div>
                         <div className="flex items-center gap-3">
                             <button className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors relative">
@@ -182,20 +202,19 @@ export default function AdminDashboard() {
 
                 {/* Page Content */}
                 <main className="px-8 py-8">
-                    {activeTab === 'posts' ? (
-                        <>
-                            <StatsSection />
-                            <PostsView
-                                page={page}
-                                setPage={setPage}
-                                showCreateModal={showCreateModal}
-                                setShowCreateModal={setShowCreateModal}
-                                setPreviewPost={setPreviewPost}
-                            />
-                        </>
-                    ) : (
-                        <PrivilegesView />
+                    {activeTab === 'overview' && <StatsSection />}
+                    
+                    {activeTab === 'posts' && (
+                        <PostsView
+                            page={page}
+                            setPage={setPage}
+                            showCreateModal={showCreateModal}
+                            setShowCreateModal={setShowCreateModal}
+                            setPreviewPost={setPreviewPost}
+                        />
                     )}
+
+                    {activeTab === 'privileges' && <PrivilegesView />}
                 </main>
             </div>
 

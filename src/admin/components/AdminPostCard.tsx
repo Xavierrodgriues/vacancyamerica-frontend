@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, XIcon, Check } from 'lucide-react';
+import { Shield, XIcon, Check, AlertCircle } from 'lucide-react';
 import { AdminPost } from '../hooks/use-admin-posts';
 
 interface AdminPostCardProps {
@@ -22,72 +22,106 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
     const userInitial = userDisplayName[0]?.toUpperCase() || '?';
 
     return (
-        <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl hover:shadow-2xl hover:border-slate-700 transition-all duration-300">
+        <div className="group relative bg-[#0B0F1A] rounded-[2.5rem] border border-slate-800/50 overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] hover:border-indigo-500/30 transition-all duration-700 hover:-translate-y-1.5 active:scale-[0.99]">
+            {/* Top Gloss Highlight */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+            
             <div
                 className={onPreview ? "cursor-pointer" : ""}
                 onClick={() => onPreview?.(post)}
             >
                 {/* Card Header */}
-                <div className="p-5 flex justify-between items-start">
+                <div className="p-7 flex justify-between items-start bg-gradient-to-b from-white/[0.02] to-transparent">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-slate-700 ring-2 ring-slate-900">
-                            {userAvatar ? (
-                                <img src={userAvatar} alt={userDisplayName} className="w-full h-full object-cover" />
-                            ) : (
-                                <span className="text-xl font-bold bg-gradient-to-br from-amber-400 to-amber-600 bg-clip-text text-transparent">{userInitial}</span>
-                            )}
+                        <div className="relative">
+                            <div className="absolute -inset-1 bg-gradient-to-tr from-amber-500 to-amber-200 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-700"></div>
+                            <div className="relative w-14 h-14 rounded-full bg-slate-900 p-0.5 flex items-center justify-center overflow-hidden border border-slate-800 shadow-2xl">
+                                {userAvatar ? (
+                                    <img src={userAvatar} alt={userDisplayName} className="w-full h-full object-cover rounded-full" />
+                                ) : (
+                                    <span className="text-2xl font-black bg-gradient-to-br from-amber-300 via-amber-500 to-amber-600 bg-clip-text text-transparent">{userInitial}</span>
+                                )}
+                            </div>
                         </div>
                         <div>
-                            <h4 className="text-base font-bold text-white leading-tight">{userDisplayName}</h4>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs text-slate-400 font-medium">@{userUsername}</span>
-                                <span className="text-slate-600">•</span>
-                                <span className="text-xs text-slate-500">{new Date(post.createdAt).toLocaleString()}</span>
+                            <h4 className="text-lg font-black text-slate-100 tracking-tight leading-none mb-1.5">{userDisplayName}</h4>
+                            <div className="flex items-center gap-2.5">
+                                <span className="text-xs text-slate-500 font-bold uppercase tracking-widest bg-slate-800/40 px-2 py-0.5 rounded-md border border-slate-700/30">@{userUsername}</span>
+                                <span className="w-1 h-1 rounded-full bg-slate-700" />
+                                <span className="text-xs text-slate-500 font-medium">{new Date(post.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                        {isTrusted && <span className="px-2.5 py-1 bg-blue-500/10 text-blue-400 text-xs font-bold rounded-lg border border-blue-500/20 flex items-center gap-1.5 shadow-sm shadow-blue-900/10"><Shield className="w-3.5 h-3.5" /> Trusted</span>}
-                        {isRejected && <span className="px-2.5 py-1 bg-red-500/10 text-red-400 text-xs font-bold rounded-lg border border-red-500/20 flex items-center gap-1.5 shadow-sm shadow-red-900/10"><XIcon className="w-3.5 h-3.5" /> Rejected</span>}
+                    <div className="flex flex-col items-end gap-2">
+                        {isTrusted && (
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                                <Shield className="w-3.5 h-3.5" />
+                                <span>Verified</span>
+                            </div>
+                        )}
+                        {isRejected && (
+                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(244,63,94,0.1)]">
+                                <XIcon className="w-3.5 h-3.5" />
+                                <span>Rejected</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="px-5 pb-5">
+                {/* Content Area */}
+                <div className="px-8 pb-8">
                     {post.content ? (
-                        <p className="text-slate-300 whitespace-pre-wrap mb-4 text-base leading-relaxed font-light">{post.content}</p>
+                        <p className="text-slate-300 text-lg leading-[1.8] font-medium tracking-tight mb-8 line-clamp-4 group-hover:line-clamp-none transition-all duration-500 border-l-2 border-indigo-500/20 pl-6 py-1 italic decoration-slate-600 underline-offset-4 decoration-dotted">
+                            {post.content}
+                        </p>
                     ) : (
-                        <div className="p-4 rounded-lg bg-slate-800/50 border border-slate-800 border-dashed text-center mb-4">
-                            <p className="text-slate-500 italic text-sm">No text content provided.</p>
+                        <div className="p-8 rounded-[2rem] bg-slate-900/40 border border-slate-800 border-dashed text-center mb-8">
+                            <p className="text-slate-600 italic font-medium tracking-wide">Empty narrative sequence.</p>
                         </div>
                     )}
 
-                    {post.image_url && (
-                        <div className="rounded-xl overflow-hidden mb-4 border border-slate-800 bg-black relative group">
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                            <img src={post.image_url} alt="Post attachment" className="w-full max-h-[500px] object-contain" />
-                        </div>
-                    )}
+                    {/* Media Display */}
+                    {(post.image_url || post.video_url) && (
+                        <div className="relative rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl aspect-video md:aspect-auto group/media">
+                            {/* Inner Glow/Shadow */}
+                            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.4)] pointer-events-none z-10" />
+                            
+                            {post.image_url ? (
+                                <img 
+                                    src={post.image_url} 
+                                    alt="Attachment" 
+                                    className="w-full h-full max-h-[600px] object-contain transition-transform duration-1000 group-hover/media:scale-105" 
+                                />
+                            ) : (
+                                <video 
+                                    src={post.video_url} 
+                                    className="w-full h-full max-h-[600px]"
+                                    muted
+                                    onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+                                    onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}
+                                />
+                            )}
 
-                    {post.video_url && (
-                        <div className="rounded-xl overflow-hidden mb-4 border border-slate-800 bg-black shadow-lg">
-                            <video src={post.video_url} className="w-full max-h-[500px]" onClick={(e) => {
-                                // If onPreview is active, don't let the video click trigger it if there are controls
-                                // But here we are just previewing, so maybe it's fine.
-                                // If the user wants to play, they can play.
-                            }} />
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-0 group-hover/media:opacity-100 transition-opacity duration-500 flex items-end p-8 gap-4 z-20">
+                                <span className="bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-[10px] font-black text-white uppercase tracking-widest">
+                                    {post.image_url ? 'Still Image' : 'Motion Video'}
+                                </span>
+                            </div>
                         </div>
                     )}
 
                     {isRejected && post.rejectionReason && (
-                        <div className="mt-4 p-4 bg-red-950/20 border border-red-900/30 rounded-xl flex gap-3">
-                            <div className="p-2 bg-red-500/10 rounded-lg h-fit">
-                                <XIcon className="w-4 h-4 text-red-500" />
+                        <div className="mt-8 p-6 bg-rose-950/20 border border-rose-900/30 rounded-[2rem] flex gap-5 animate-fadeIn backdrop-blur-sm">
+                            <div className="p-3 bg-rose-500/10 rounded-2xl h-fit border border-rose-500/20 shadow-lg shadow-rose-900/20">
+                                <XIcon className="w-5 h-5 text-rose-500" />
                             </div>
-                            <div>
-                                <p className="text-sm text-red-400 font-medium">Rejection Reason</p>
-                                <p className="text-sm text-slate-400 mt-1">{post.rejectionReason}</p>
-                                <p className="text-xs text-slate-600 mt-2">rejected by {post.approvedBy?.display_name || 'Super Admin'}</p>
+                            <div className="flex-1">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-sm text-rose-400 font-black uppercase tracking-[0.15em]">Moderation Note</p>
+                                    <span className="text-[10px] text-slate-500 font-bold bg-slate-800/50 px-2 py-0.5 rounded uppercase">{post.approvedBy?.display_name || 'Admin'}</span>
+                                </div>
+                                <p className="text-slate-400 leading-relaxed text-sm font-medium italic underline decoration-rose-900/50 decoration-2 underline-offset-4">"{post.rejectionReason}"</p>
                             </div>
                         </div>
                     )}
@@ -96,18 +130,23 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
 
             {/* Actions Footer */}
             {!isRejected && onApprove && onReject && (
-                <div className="px-5 py-4 bg-slate-950/50 border-t border-slate-800 flex justify-end gap-3 backdrop-blur-sm">
+                <div className="px-8 py-6 bg-slate-950/80 border-t border-slate-900 flex justify-end gap-4 backdrop-blur-xl">
                     {showRejectInput ? (
-                        <div className="flex items-center gap-3 w-full animate-fadeIn">
-                            <input
-                                type="text"
-                                name="postRejectReason"
-                                value={rejectReason}
-                                onChange={(e) => setRejectReason(e.target.value)}
-                                placeholder="Why are you rejecting this post?"
-                                className="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-slate-600"
-                                autoFocus
-                            />
+                        <div className="flex items-center gap-4 w-full animate-fadeIn">
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    name="postRejectReason"
+                                    value={rejectReason}
+                                    onChange={(e) => setRejectReason(e.target.value)}
+                                    placeholder="Briefly state reason for rejection..."
+                                    className="w-full bg-slate-900 border-2 border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-white focus:outline-none focus:border-rose-500/50 transition-all placeholder:text-slate-600 font-medium"
+                                    autoFocus
+                                />
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-500/40">
+                                    <AlertCircle className="w-4 h-4" />
+                                </div>
+                            </div>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => {
@@ -118,15 +157,15 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
                                         }
                                     }}
                                     disabled={!rejectReason.trim()}
-                                    className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-red-900/20"
+                                    className="px-6 py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all disabled:opacity-20 disabled:cursor-not-allowed shadow-[0_8px_20px_rgba(225,29,72,0.3)] active:translate-y-0.5"
                                 >
-                                    Reject
+                                    Confirm Reject
                                 </button>
                                 <button
                                     onClick={() => setShowRejectInput(false)}
-                                    className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-medium transition-colors"
+                                    className="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all active:translate-y-0.5"
                                 >
-                                    Cancel
+                                    Back
                                 </button>
                             </div>
                         </div>
@@ -134,16 +173,16 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
                         <>
                             <button
                                 onClick={() => setShowRejectInput(true)}
-                                className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 rounded-lg text-sm font-medium transition-all shadow-sm flex items-center gap-2 group"
+                                className="px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-500/30 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all group flex items-center gap-2.5 active:translate-y-0.5"
                             >
-                                <XIcon className="w-4 h-4 text-slate-400 group-hover:text-red-400 transition-colors" />
+                                <XIcon className="w-4 h-4 transition-transform group-hover:rotate-90 group-hover:scale-110" />
                                 Reject
                             </button>
                             <button
                                 onClick={onApprove}
-                                className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-900/20 rounded-lg text-sm font-bold transition-all flex items-center gap-2 hover:transform hover:-translate-y-0.5"
+                                className="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-[0_8px_30px_rgba(16,185,129,0.3)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.5)] rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center gap-2.5 group active:translate-y-0.5"
                             >
-                                <Check className="w-4 h-4" />
+                                <Check className="w-4 h-4 transition-transform group-hover:scale-125" />
                                 Approve & Publish
                             </button>
                         </>
@@ -152,10 +191,10 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
             )}
             <style>{`
                 @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(5px); }
+                    from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
-                .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+                .animate-fadeIn { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
             `}</style>
         </div>
     );

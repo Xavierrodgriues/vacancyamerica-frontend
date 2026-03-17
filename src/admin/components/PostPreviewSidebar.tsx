@@ -13,16 +13,16 @@ export function PostPreviewSidebar({ post, onClose }: PostPreviewSidebarProps) {
     const userInitial = userDisplayName[0]?.toUpperCase() || '?';
 
     return (
-        <div 
+        <div
             className="fixed inset-0 z-[60] overflow-hidden flex justify-end"
             onClick={onClose}
         >
             {/* Backdrop Overlay */}
             <div className="absolute inset-0 bg-slate-950/20 backdrop-blur-[2px] animate-in fade-in duration-500" />
-            
+
             {/* Sidebar Container */}
-            <div 
-                className="relative w-full md:w-[500px] h-full bg-white/95 backdrop-blur-2xl border-l border-white/20 shadow-[-32px_0_64px_-16px_rgba(0,0,0,0.15)] flex flex-col animate-in slide-in-from-right duration-500 ease-out fill-mode-forwards" 
+            <div
+                className="relative w-full md:w-[500px] h-full bg-white/95 backdrop-blur-2xl border-l border-white/20 shadow-[-32px_0_64px_-16px_rgba(0,0,0,0.15)] flex flex-col animate-in slide-in-from-right duration-500 ease-out fill-mode-forwards"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Decorative Accent Bar */}
@@ -64,16 +64,14 @@ export function PostPreviewSidebar({ post, onClose }: PostPreviewSidebarProps) {
                 <div className="flex-1 overflow-y-auto px-8 py-8 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                     {/* Status Section */}
                     <div className="mb-8 flex items-center justify-between">
-                        <div className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] shadow-sm ring-1 ${
-                            post.status === 'published' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' :
-                            post.status === 'rejected' ? 'bg-red-50 text-red-700 ring-red-100' :
-                            'bg-amber-50 text-amber-700 ring-amber-100'
-                        }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${
-                                post.status === 'published' ? 'bg-emerald-500 animate-pulse' :
-                                post.status === 'rejected' ? 'bg-red-500' :
-                                'bg-amber-500 animate-pulse'
-                            }`} />
+                        <div className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] shadow-sm ring-1 ${post.status === 'published' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' :
+                                post.status === 'rejected' ? 'bg-red-50 text-red-700 ring-red-100' :
+                                    'bg-amber-50 text-amber-700 ring-amber-100'
+                            }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${post.status === 'published' ? 'bg-emerald-500 animate-pulse' :
+                                    post.status === 'rejected' ? 'bg-red-500' :
+                                        'bg-amber-500 animate-pulse'
+                                }`} />
                             {post.status}
                         </div>
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -95,16 +93,16 @@ export function PostPreviewSidebar({ post, onClose }: PostPreviewSidebarProps) {
                         <div className="mb-10 group relative">
                             <div className="relative rounded-[2rem] overflow-hidden border border-slate-100 bg-black/5 shadow-xl">
                                 {post.video_url ? (
-                                    <video 
-                                        src={post.video_url} 
-                                        controls 
-                                        className="w-full h-auto max-h-[500px] object-contain mx-auto transition duration-500 group-hover:scale-[1.02]" 
+                                    <video
+                                        src={post.video_url}
+                                        controls
+                                        className="w-full h-auto max-h-[500px] object-contain mx-auto transition duration-500 group-hover:scale-[1.02]"
                                     />
                                 ) : post.image_url ? (
-                                    <img 
-                                        src={post.image_url} 
-                                        alt="Post content" 
-                                        className="w-full h-auto max-h-[500px] object-contain mx-auto transition duration-500 group-hover:scale-[1.02]" 
+                                    <img
+                                        src={post.image_url}
+                                        alt="Post content"
+                                        className="w-full h-auto max-h-[500px] object-contain mx-auto transition duration-500 group-hover:scale-[1.02]"
                                     />
                                 ) : null}
                             </div>
@@ -137,7 +135,7 @@ export function PostPreviewSidebar({ post, onClose }: PostPreviewSidebarProps) {
                     </button>
                 </div>
             </div>
-            
+
             <style>{`
                 .scrollbar-thin::-webkit-scrollbar {
                     width: 4px;
