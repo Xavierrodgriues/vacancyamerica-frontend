@@ -27,15 +27,19 @@ import {
     AlertCircle,
     Shield,
     Bell,
-    User
+    User,
+    Eye
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
+import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
+import { AdminPost } from '../hooks/use-admin-posts';
 
 export default function AdminDashboard() {
     const { admin, logout } = useAdminAuth();
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
     const [activeTab, setActiveTab] = useState<'posts' | 'privileges'>('posts');
 
     // Track previous level for animations
@@ -186,6 +190,7 @@ export default function AdminDashboard() {
                                 setPage={setPage}
                                 showCreateModal={showCreateModal}
                                 setShowCreateModal={setShowCreateModal}
+                                setPreviewPost={setPreviewPost}
                             />
                         </>
                     ) : (
@@ -197,6 +202,11 @@ export default function AdminDashboard() {
             {/* Create Post Modal */}
             {showCreateModal && (
                 <CreatePostModal onClose={() => setShowCreateModal(false)} />
+            )}
+
+            {/* Post Preview Sidebar */}
+            {previewPost && (
+                <PostPreviewSidebar post={previewPost} onClose={() => setPreviewPost(null)} />
             )}
         </div>
     );
@@ -235,7 +245,7 @@ function StatsSection() {
 }
 
 // --- Posts View -------------------------------------------------------------
-function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) {
+function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPreviewPost }: any) {
     const { data, isLoading: loading, error } = useAdminPosts(page);
     const deletePostCmd = useDeleteAdminPost();
 
@@ -284,7 +294,8 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
                     {posts.map((post: any) => (
                         <div
                             key={post._id}
-                            className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1"
+                            onClick={() => setPreviewPost(post)}
+                            className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                         >
                             <div className="aspect-video relative overflow-hidden bg-slate-100">
                                 {post.video_url ? (
@@ -309,7 +320,10 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal }: any) 
                                 )}
                                 <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                     <button
-                                        onClick={() => handleDelete(post._id)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDelete(post._id);
+                                        }}
                                         disabled={deletingId === post._id}
                                         className="p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg"
                                     >

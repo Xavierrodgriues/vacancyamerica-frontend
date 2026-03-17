@@ -3,6 +3,8 @@ import { toast } from 'sonner';
 import { useApprovePost, useRejectPost, AdminPost } from '../hooks/use-admin-posts';
 import { AdminPostCard } from './AdminPostCard';
 import { LoadingState, EmptyState } from './SharedUI';
+import { PostPreviewSidebar } from './PostPreviewSidebar';
+import { useState } from 'react';
 
 interface PostListTabProps {
     posts: AdminPost[];
@@ -13,6 +15,7 @@ interface PostListTabProps {
 export function PostListTab({ posts, isLoading, type }: PostListTabProps) {
     const approvePost = useApprovePost();
     const rejectPost = useRejectPost();
+    const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
 
     const config = {
         pending: {
@@ -55,12 +58,19 @@ export function PostListTab({ posts, isLoading, type }: PostListTabProps) {
                                     rejectPost.mutate({ postId: post._id, reason });
                                     toast.success('Post rejected');
                                 } : undefined}
+                                onPreview={setPreviewPost}
                                 isTrusted={type === 'trusted'}
                                 isRejected={type === 'rejected'}
                             />
                         ))}
                     </div>
                 )
+            )}
+            {previewPost && (
+                <PostPreviewSidebar
+                    post={previewPost}
+                    onClose={() => setPreviewPost(null)}
+                />
             )}
         </div>
     );
