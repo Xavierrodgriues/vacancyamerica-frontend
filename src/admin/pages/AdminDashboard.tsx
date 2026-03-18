@@ -28,11 +28,14 @@ import {
     Shield,
     Bell,
     User,
-    Eye
+    Eye,
+    Heart,
+    MessageCircle
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
 import { AdminPost } from '../hooks/use-admin-posts';
+import { useAdminAnalytics } from '../hooks/use-admin-posts';
 
 export default function AdminDashboard() {
     const { admin, logout } = useAdminAuth();
@@ -202,7 +205,7 @@ export default function AdminDashboard() {
 
                 {/* Page Content */}
                 <main className="px-8 py-8">
-                    {activeTab === 'overview' && <StatsSection />}
+                {activeTab === 'overview' && <OverviewSection />}
 
                     {activeTab === 'posts' && (
                         <PostsView
@@ -231,7 +234,234 @@ export default function AdminDashboard() {
     );
 }
 
-// --- Stats Section ----------------------------------------------------------
+// --- Overview Section (Analytics) ------------------------------------------
+function OverviewSection() {
+    const { data, isLoading, error } = useAdminAnalytics();
+    const analytics = data?.data;
+
+    if (isLoading) return <LoadingState />;
+    if (error || !analytics) return (
+        <div className="text-center py-20 text-slate-400">Failed to load analytics.</div>
+    );
+
+    const { statusBreakdown, totalLikes, totalComments, chartData, topPosts } = analytics;
+    const maxCount = Math.max(...chartData.map(d => d.count), 1);
+
+    const kpis = [
+        {
+            label: 'Total Posts',
+            value: statusBreakdown.total,
+            icon: <FileText className="w-5 h-5" />,
+            color: 'indigo',
+            bg: 'bg-indigo-50',
+            border: 'border-indigo-100',
+            text: 'text-indigo-600',
+            badge: 'bg-indigo-100 text-indigo-700',
+        },
+        {
+            label: 'Published',
+            value: statusBreakdown.published,
+            icon: <CheckCircle2 className="w-5 h-5" />,
+            color: 'emerald',
+            bg: 'bg-emerald-50',
+            border: 'border-emerald-100',
+            text: 'text-emerald-600',
+            badge: 'bg-emerald-100 text-emerald-700',
+        },
+        {
+            label: 'Pending Review',
+            value: statusBreakdown.pending,
+            icon: <Clock className="w-5 h-5" />,
+            color: 'amber',
+            bg: 'bg-amber-50',
+            border: 'border-amber-100',
+            text: 'text-amber-600',
+            badge: 'bg-amber-100 text-amber-700',
+        },
+        {
+            label: 'Total Likes',
+            value: totalLikes,
+            icon: <Heart className="w-5 h-5" />,
+            color: 'rose',
+            bg: 'bg-rose-50',
+            border: 'border-rose-100',
+            text: 'text-rose-500',
+            badge: 'bg-rose-100 text-rose-700',
+        },
+        {
+            label: 'Comments',
+            value: totalComments,
+            icon: <MessageCircle className="w-5 h-5" />,
+            color: 'violet',
+            bg: 'bg-violet-50',
+            border: 'border-violet-100',
+            text: 'text-violet-600',
+            badge: 'bg-violet-100 text-violet-700',
+        },
+    ];
+
+    const publishRate = statusBreakdown.total > 0
+        ? Math.round((statusBreakdown.published / statusBreakdown.total) * 100)
+        : 0;
+
+    return (
+        <div className="space-y-8">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {kpis.map((kpi) => (
+                    <div
+                        key={kpi.label}
+                        className={`relative bg-white rounded-2xl border ${kpi.border} p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-all duration-200 group overflow-hidden`}
+                    >
+                        <div className={`absolute inset-0 ${kpi.bg} opacity-0 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none`} />
+                        <div className={`w-10 h-10 rounded-xl ${kpi.bg} flex items-center justify-center ${kpi.text} relative z-10`}>
+                            {kpi.icon}
+                        </div>
+                        <div className="relative z-10">
+                            <p className="text-2xl font-black text-slate-800 leading-none">{kpi.value.toLocaleString()}</p>
+                            <p className="text-xs font-semibold text-slate-400 mt-1 uppercase tracking-wider">{kpi.label}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Chart + Top Posts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* 7-Day Activity Bar Chart */}
+                <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-base font-bold text-slate-800">Post Activity</h3>
+                            <p className="text-xs text-slate-400 mt-0.5">Posts published over the last 7 days</p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold border border-indigo-100">
+                            Last 7 Days
+                        </span>
+                    </div>
+                    <div className="flex items-end gap-3 h-48">
+                        {chartData.map((day) => {
+                            const heightPct = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+                            const isToday = day.label === new Date().toLocaleDateString('en-US', { weekday: 'short' });
+                            return (
+                                <div key={day.date} className="flex-1 flex flex-col items-center gap-2 group/bar">
+                                    <span className="text-xs font-bold text-slate-500 opacity-0 group-hover/bar:opacity-100 transition-opacity">
+                                        {day.count}
+                                    </span>
+                                    <div className="w-full flex items-end" style={{ height: '160px' }}>
+                                        <div
+                                            className={`w-full rounded-t-xl transition-all duration-500 group-hover/bar:brightness-110 ${
+                                                isToday
+                                                    ? 'bg-gradient-to-t from-indigo-600 to-indigo-400 shadow-lg shadow-indigo-200'
+                                                    : day.count > 0
+                                                        ? 'bg-gradient-to-t from-slate-300 to-slate-200'
+                                                        : 'bg-slate-100'
+                                            }`}
+                                            style={{ height: `${Math.max(heightPct, day.count > 0 ? 8 : 4)}%` }}
+                                        />
+                                    </div>
+                                    <span className={`text-[11px] font-semibold ${ isToday ? 'text-indigo-600' : 'text-slate-400'}`}>
+                                        {day.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Right Panel: Publish Rate + Top Posts */}
+                <div className="flex flex-col gap-4">
+                    {/* Publish Rate donut-style */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex items-center gap-5">
+                        <div className="relative w-16 h-16 flex-shrink-0">
+                            <svg viewBox="0 0 36 36" className="w-16 h-16 -rotate-90">
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f1f5f9" strokeWidth="3.5" />
+                                <circle
+                                    cx="18" cy="18" r="15.9"
+                                    fill="none"
+                                    stroke="#6366f1"
+                                    strokeWidth="3.5"
+                                    strokeDasharray={`${publishRate} ${100 - publishRate}`}
+                                    strokeLinecap="round"
+                                    className="transition-all duration-700"
+                                />
+                            </svg>
+                            <span className="absolute inset-0 flex items-center justify-center text-sm font-black text-slate-700">
+                                {publishRate}%
+                            </span>
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-700">Publish Rate</p>
+                            <p className="text-xs text-slate-400 mt-0.5">{statusBreakdown.published} of {statusBreakdown.total} posts live</p>
+                        </div>
+                    </div>
+
+                    {/* Top Posts */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex-1">
+                        <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-rose-500" />
+                            Top Posts by Likes
+                        </h3>
+                        {topPosts.length === 0 ? (
+                            <div className="text-center py-6">
+                                <Heart className="w-8 h-8 text-slate-200 mx-auto mb-2" />
+                                <p className="text-xs text-slate-400">No likes yet — post more content!</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {topPosts.map((post, i) => (
+                                    <div key={post._id} className="flex items-start gap-3 group/post">
+                                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black flex-shrink-0 ${
+                                            i === 0 ? 'bg-amber-100 text-amber-600' :
+                                            i === 1 ? 'bg-slate-100 text-slate-500' :
+                                            'bg-orange-50 text-orange-500'
+                                        }`}>{i + 1}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-xs text-slate-600 font-medium line-clamp-2 leading-relaxed">
+                                                {post.content || '📸 Image post'}
+                                            </p>
+                                            <div className="flex items-center gap-2 mt-1.5">
+                                                <span className="flex items-center gap-1 text-[11px] font-bold text-rose-500">
+                                                    <Heart className="w-3 h-3" />
+                                                    {post.likesCount}
+                                                </span>
+                                                <span className="text-[11px] text-slate-300">•</span>
+                                                <span className="text-[11px] text-slate-400">
+                                                    {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Summary Footer Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                    { label: 'Rejected Posts', value: statusBreakdown.rejected, icon: <AlertCircle className="w-4 h-4" />, color: 'text-rose-500', bg: 'bg-rose-50' },
+                    { label: 'Total Engagement', value: totalLikes + totalComments, icon: <TrendingUp className="w-4 h-4" />, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+                    { label: 'Avg Likes/Post', value: statusBreakdown.published > 0 ? (totalLikes / statusBreakdown.published).toFixed(1) : '0', icon: <Heart className="w-4 h-4" />, color: 'text-rose-500', bg: 'bg-rose-50' },
+                    { label: 'Comments / Post', value: statusBreakdown.published > 0 ? (totalComments / statusBreakdown.published).toFixed(1) : '0', icon: <MessageCircle className="w-4 h-4" />, color: 'text-violet-500', bg: 'bg-violet-50' },
+                ].map((stat) => (
+                    <div key={stat.label} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center gap-3 hover:border-slate-300 transition-colors">
+                        <div className={`w-8 h-8 rounded-lg ${stat.bg} flex items-center justify-center ${stat.color}`}>
+                            {stat.icon}
+                        </div>
+                        <div>
+                            <p className="text-lg font-black text-slate-800 leading-none">{stat.value}</p>
+                            <p className="text-[11px] text-slate-400 font-medium mt-0.5">{stat.label}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// --- Stats Section (legacy, kept for reference) ----------------------------
 function StatsSection() {
     const { data: statsData, isLoading: statsLoading, error: statsError } = useAdminPostStats();
     const stats = statsData?.data;

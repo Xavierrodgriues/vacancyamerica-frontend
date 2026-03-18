@@ -55,6 +55,30 @@ export function useAdminPostStats() {
     });
 }
 
+export interface AnalyticsData {
+    statusBreakdown: { published: number; pending: number; rejected: number; total: number };
+    totalLikes: number;
+    totalComments: number;
+    chartData: { date: string; label: string; count: number }[];
+    topPosts: { _id: string; content: string; image_url: string | null; likesCount: number; createdAt: string; status: string }[];
+}
+
+export function useAdminAnalytics() {
+    const { admin } = useAdminAuth();
+    return useQuery<{ success: boolean; data: AnalyticsData }>({
+        queryKey: ['adminAnalytics'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/analytics`, {
+                headers: { 'Authorization': `Bearer ${admin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch analytics');
+            return res.json();
+        },
+        enabled: !!admin?.token,
+        staleTime: 60 * 1000, // 1 minute
+    });
+}
+
 export function useCreateAdminPost() {
     const { admin } = useAdminAuth();
     const queryClient = useQueryClient();
