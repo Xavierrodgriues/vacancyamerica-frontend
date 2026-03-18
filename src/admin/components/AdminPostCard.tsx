@@ -25,7 +25,7 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
         <div className="group relative bg-[#0B0F1A] rounded-[2.5rem] border border-slate-800/50 overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] hover:border-indigo-500/30 transition-all duration-700 hover:-translate-y-1.5 active:scale-[0.99]">
             {/* Top Gloss Highlight */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
-            
+
             <div
                 className={onPreview ? "cursor-pointer" : ""}
                 onClick={() => onPreview?.(post)}
@@ -82,20 +82,20 @@ export function AdminPostCard({ post, onApprove, onReject, onPreview, isTrusted,
 
                     {/* Media Display */}
                     {(post.image_url || post.video_url) && (
-                        <div className="relative rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl aspect-video md:aspect-auto group/media">
+                        <div className="relative rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/40 shadow-2xl h-[360px] group/media">
                             {/* Inner Glow/Shadow */}
                             <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.4)] pointer-events-none z-10" />
-                            
+
                             {post.image_url ? (
-                                <img 
-                                    src={post.image_url} 
-                                    alt="Attachment" 
-                                    className="w-full h-full max-h-[600px] object-contain transition-transform duration-1000 group-hover/media:scale-105" 
+                                <img
+                                    src={post.image_url}
+                                    alt="Attachment"
+                                    className="w-full h-full object-contain transition-transform duration-1000 group-hover/media:scale-105"
                                 />
                             ) : (
-                                <video 
-                                    src={post.video_url} 
-                                    className="w-full h-full max-h-[600px]"
+                                <video
+                                    src={post.video_url}
+                                    className="w-full h-full object-contain"
                                     muted
                                     onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
                                     onMouseOut={(e) => (e.target as HTMLVideoElement).pause()}

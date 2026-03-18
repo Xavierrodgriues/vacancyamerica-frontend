@@ -114,6 +114,7 @@
   .hover-card {
     @apply transition-colors duration-150;
   }
+
   .hover-card:hover {
     background-color: hsl(var(--hover-bg));
   }

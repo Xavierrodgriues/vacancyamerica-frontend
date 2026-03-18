@@ -71,3 +71,4 @@ export function NotificationCard({ notification, onApprove, onReject, rejectingI
         </div>
     );
 }
+}

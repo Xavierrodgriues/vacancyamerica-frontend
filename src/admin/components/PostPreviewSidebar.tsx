@@ -65,12 +65,12 @@ export function PostPreviewSidebar({ post, onClose }: PostPreviewSidebarProps) {
                     {/* Status Section */}
                     <div className="mb-8 flex items-center justify-between">
                         <div className={`inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] shadow-sm ring-1 ${post.status === 'published' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' :
-                                post.status === 'rejected' ? 'bg-red-50 text-red-700 ring-red-100' :
-                                    'bg-amber-50 text-amber-700 ring-amber-100'
+                            post.status === 'rejected' ? 'bg-red-50 text-red-700 ring-red-100' :
+                                'bg-amber-50 text-amber-700 ring-amber-100'
                             }`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${post.status === 'published' ? 'bg-emerald-500 animate-pulse' :
-                                    post.status === 'rejected' ? 'bg-red-500' :
-                                        'bg-amber-500 animate-pulse'
+                                post.status === 'rejected' ? 'bg-red-500' :
+                                    'bg-amber-500 animate-pulse'
                                 }`} />
                             {post.status}
                         </div>

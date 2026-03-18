@@ -111,7 +111,7 @@ export default function AdminDashboard() {
                             <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Dashboard</p>
                         </div>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         className={`p-2 rounded-xl hover:bg-slate-100 text-slate-400 transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
                     >
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                 {/* Page Content */}
                 <main className="px-8 py-8">
                     {activeTab === 'overview' && <StatsSection />}
-                    
+
                     {activeTab === 'posts' && (
                         <PostsView
                             page={page}
@@ -330,7 +330,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                                     <img
                                         src={post.image_url}
                                         alt={post.content || 'Post image'}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-slate-50">
