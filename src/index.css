@@ -118,4 +118,27 @@
   .hover-card:hover {
     background-color: hsl(var(--hover-bg));
   }
+
+  @keyframes heart-float {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5) translateY(0);
+    }
+    15% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2) translateY(-10px);
+    }
+    30% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) translateY(-20px);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9) translateY(-100px);
+    }
+  }
+
+  .animate-heart-float {
+    animation: heart-float 1s ease-out forwards;
+  }
 }

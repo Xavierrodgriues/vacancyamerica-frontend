@@ -35,6 +35,7 @@ interface Post {
 export function PostCard({ post, priority = false }: { post: Post; priority?: boolean }) {
   const [showComments, setShowComments] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [heartAnim, setHeartAnim] = useState<{ id: number; x: number; y: number } | null>(null);
   const { user } = useAuth();
   const toggleLike = useToggleLike();
 
@@ -63,6 +64,28 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
       return;
     }
     toggleLike.mutate(postId);
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Sign in to like posts");
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setHeartAnim({ id: Date.now(), x, y });
+
+    if (!liked && !toggleLike.isPending) {
+      toggleLike.mutate(postId);
+    }
+
+    setTimeout(() => {
+      setHeartAnim(null);
+    }, 1000);
   };
 
   return (
@@ -99,7 +122,19 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
             </p>
 
             {post.image_url && (
-              <div className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-muted/30 relative flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
+              <div 
+                className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-muted/30 relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] select-none"
+                onDoubleClick={handleDoubleClick}
+              >
+                {heartAnim && (
+                  <div
+                    key={heartAnim.id}
+                    className="absolute pointer-events-none z-50 animate-heart-float"
+                    style={{ left: heartAnim.x, top: heartAnim.y }}
+                  >
+                    <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
+                  </div>
+                )}
                 {!imageLoaded && (
                   <div className="absolute inset-0 bg-muted animate-pulse" />
                 )}
@@ -116,7 +151,20 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
             )}
 
             {post.video_url && (
-              <div ref={containerRef} className="mt-3 rounded-2xl overflow-hidden border border-post-border">
+              <div 
+                ref={containerRef} 
+                className="mt-3 rounded-2xl overflow-hidden border border-post-border relative select-none"
+                onDoubleClick={handleDoubleClick}
+              >
+                {heartAnim && (
+                  <div
+                    key={heartAnim.id}
+                    className="absolute pointer-events-none z-50 animate-heart-float"
+                    style={{ left: heartAnim.x, top: heartAnim.y }}
+                  >
+                    <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
+                  </div>
+                )}
                 <video
                   ref={videoRef}
                   src={post.video_url}

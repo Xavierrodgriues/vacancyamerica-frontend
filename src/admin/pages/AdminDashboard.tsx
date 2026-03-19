@@ -30,12 +30,14 @@ import {
     User,
     Eye,
     Heart,
-    MessageCircle
+    MessageCircle,
+    MessagesSquare
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
 import { AdminPost } from '../hooks/use-admin-posts';
 import { useAdminAnalytics } from '../hooks/use-admin-posts';
+import MessagesTab from '../components/MessagesTab';
 
 export default function AdminDashboard() {
     const { admin, logout } = useAdminAuth();
@@ -43,7 +45,7 @@ export default function AdminDashboard() {
     const [page, setPage] = useState(1);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges' | 'messages'>('overview');
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     // Track previous level for animations
@@ -94,6 +96,7 @@ export default function AdminDashboard() {
         { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
         { id: 'posts' as const, label: 'Manage Posts', icon: FileText },
         { id: 'privileges' as const, label: 'Privileges', icon: Shield },
+        { id: 'messages' as const, label: 'Messages', icon: MessagesSquare },
     ];
 
     const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
@@ -185,10 +188,16 @@ export default function AdminDashboard() {
                     <div className="px-8 py-5 flex items-center justify-between">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-800">
-                                {activeTab === 'overview' ? 'Overview' : activeTab === 'posts' ? 'Manage Posts' : 'My Privileges'}
+                                {activeTab === 'overview' ? 'Overview'
+                                    : activeTab === 'posts' ? 'Manage Posts'
+                                    : activeTab === 'privileges' ? 'My Privileges'
+                                    : 'Messages'}
                             </h2>
                             <p className="text-sm text-slate-400 mt-0.5">
-                                {activeTab === 'overview' ? 'System stats & quick summary' : activeTab === 'posts' ? 'Review, approve, or delete community content' : 'Manage your admin capabilities'}
+                                {activeTab === 'overview' ? 'System stats & quick summary'
+                                    : activeTab === 'posts' ? 'Review, approve, or delete community content'
+                                    : activeTab === 'privileges' ? 'Manage your admin capabilities'
+                                    : 'View and reply to user conversations'}
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -218,6 +227,8 @@ export default function AdminDashboard() {
                     )}
 
                     {activeTab === 'privileges' && <PrivilegesView />}
+
+                    {activeTab === 'messages' && <MessagesTab />}
                 </main>
             </div>
 
