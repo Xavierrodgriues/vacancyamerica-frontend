@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../lib/admin-auth-context';
 import {
@@ -47,9 +47,46 @@ export default function AdminDashboard() {
     const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges' | 'messages'>('overview');
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [unreadMsgCount, setUnreadMsgCount] = useState(0);
+    const activeTabRef = useRef(activeTab);
 
     // Track previous level for animations
     const prevLevelRef = useRef(admin?.admin_level);
+
+    // Keep activeTabRef in sync (avoids stale closures in callbacks)
+    useEffect(() => {
+        activeTabRef.current = activeTab;
+        // Clear unread badge as soon as admin opens the messages tab
+        if (activeTab === 'messages') {
+            setUnreadMsgCount(0);
+        }
+    }, [activeTab]);
+
+    // Called by MessagesTab when a new unread message arrives
+    const handleNewMessage = useCallback(
+        (convId: string, senderName: string, text: string) => {
+            // Only increment + toast if the admin is NOT already on the messages tab
+            if (activeTabRef.current !== 'messages') {
+                setUnreadMsgCount(prev => prev + 1);
+                toast(
+                    <div
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setActiveTab('messages')}
+                    >
+                        <p style={{ fontWeight: 700, marginBottom: 2 }}>💬 {senderName}</p>
+                        <p style={{ fontSize: 13, color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220 }}>
+                            {text}
+                        </p>
+                    </div>,
+                    {
+                        duration: 5000,
+                        style: { cursor: 'pointer' },
+                    }
+                );
+            }
+        },
+        [] // no deps — uses ref for activeTab
+    );
 
     useEffect(() => {
         if (!admin) return;
@@ -96,7 +133,7 @@ export default function AdminDashboard() {
         { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
         { id: 'posts' as const, label: 'Manage Posts', icon: FileText },
         { id: 'privileges' as const, label: 'Privileges', icon: Shield },
-        { id: 'messages' as const, label: 'Messages', icon: MessagesSquare },
+        { id: 'messages' as const, label: 'Messages', icon: MessagesSquare, badge: unreadMsgCount },
     ];
 
     const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
@@ -134,6 +171,7 @@ export default function AdminDashboard() {
                         {sidebarItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = activeTab === item.id;
+                            const badge = (item as any).badge || 0;
                             return (
                                 <button
                                     key={item.id}
@@ -144,10 +182,22 @@ export default function AdminDashboard() {
                                         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
                                         } ${isCollapsed ? 'justify-center' : ''}`}
                                 >
-                                    <Icon className={`w-[18px] h-[18px] flex-shrink-0 ${isActive ? 'text-indigo-600' : ''}`} />
+                                    <div className="relative flex-shrink-0">
+                                        <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-indigo-600' : ''}`} />
+                                        {badge > 0 && activeTab !== item.id && (
+                                            <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center leading-none shadow">
+                                                {badge > 99 ? '99+' : badge}
+                                            </span>
+                                        )}
+                                    </div>
                                     <span className={`transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
                                         {item.label}
                                     </span>
+                                    {!isCollapsed && badge > 0 && activeTab !== item.id && (
+                                        <span className="ml-auto flex-shrink-0 min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center leading-none">
+                                            {badge > 99 ? '99+' : badge}
+                                        </span>
+                                    )}
                                 </button>
                             );
                         })}
@@ -228,7 +278,7 @@ export default function AdminDashboard() {
 
                     {activeTab === 'privileges' && <PrivilegesView />}
 
-                    {activeTab === 'messages' && <MessagesTab />}
+                    {activeTab === 'messages' && <MessagesTab onNewMessage={handleNewMessage} />}
                 </main>
             </div>
 

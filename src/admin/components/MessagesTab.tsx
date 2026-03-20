@@ -327,12 +327,13 @@ function ChatView({
 }
 
 // ─── Main MessagesTab ─────────────────────────────────────────────────────────
-export default function MessagesTab() {
+export default function MessagesTab({ onNewMessage }: { onNewMessage?: (convId: string, senderName: string, text: string) => void } = {}) {
     const [conversations, setConversations] = useState<Conversation[]>([]);
     const [activeConv, setActiveConv] = useState<Conversation | null>(null);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
     const socketRef = useRef<Socket | null>(null);
+    const activeConvRef = useRef<Conversation | null>(null);
 
     const token = getAdminToken();
     const adminId = getAdminId() || '';
@@ -356,6 +357,11 @@ export default function MessagesTab() {
         loadConversations();
     }, [loadConversations]);
 
+    // Keep activeConvRef in sync so socket handler can read it without stale closure
+    useEffect(() => {
+        activeConvRef.current = activeConv;
+    }, [activeConv]);
+
     // Socket.IO — /admin namespace
     useEffect(() => {
         if (!token) return;
@@ -366,21 +372,40 @@ export default function MessagesTab() {
         socketRef.current = socket;
 
         socket.on('newMessage', ({ message, conversationId }: { message: Message; conversationId: string }) => {
+            const isFromAdmin = message.sender?.isAdmin === true || message.sender?._id === adminId;
+            const isCurrentlyViewing = activeConvRef.current?._id === conversationId;
+
             // Bump conversation to top + update preview
             setConversations(prev => {
                 const conv = prev.find(c => c._id === conversationId);
                 if (!conv) return prev;
+
+                // Only increment unread if this is an incoming message (not from admin)
+                // and the admin is not currently viewing that conversation
+                const newUnreadCounts = { ...conv.unreadCounts };
+                if (!isFromAdmin && !isCurrentlyViewing) {
+                    newUnreadCounts[adminId] = (newUnreadCounts[adminId] || 0) + 1;
+                }
+
                 const updated = {
                     ...conv,
                     lastMessage: { text: message.text, sender: message.sender._id, createdAt: message.createdAt },
-                    updatedAt: message.createdAt
+                    updatedAt: message.createdAt,
+                    unreadCounts: newUnreadCounts
                 };
                 return [updated, ...prev.filter(c => c._id !== conversationId)];
             });
+
+            // Notify parent dashboard if this is an unread incoming message
+            if (!isFromAdmin && !isCurrentlyViewing && onNewMessage) {
+                const senderName = message.sender?.display_name || message.sender?.username || 'Someone';
+                onNewMessage(conversationId, senderName, message.text);
+            }
         });
 
         return () => { socket.disconnect(); socketRef.current = null; };
-    }, [token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token, adminId]);
 
     const filteredConvs = conversations.filter(conv => {
         if (!search.trim()) return true;
@@ -443,7 +468,8 @@ export default function MessagesTab() {
                     {filteredConvs.map(conv => {
                         const other = getOtherUser(conv);
                         if (!other) return null;
-                        const unread = Object.values(conv.unreadCounts || {}).reduce((a, b) => a + b, 0);
+                        // Use admin's own unread count, not sum of all participants
+                        const unread = conv.unreadCounts?.[adminId] || 0;
                         const isActive = conv._id === activeConv?._id;
 
                         return (
