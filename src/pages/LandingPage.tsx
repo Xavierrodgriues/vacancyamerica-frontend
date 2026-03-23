@@ -601,6 +601,85 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* ─── ADMIN LEVELS (PLATFORM MODERATION) ─── */}
+            <section id="admin-levels" className="py-24 lg:py-32 px-6 lg:px-8 bg-[#FAFAFA]">
+                <RevealSection className="max-w-4xl mx-auto text-center mb-16">
+                    <span className="section-label"><CheckShield className="w-3.5 h-3.5" /> Platform Security</span>
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mt-2">
+                        How we keep VacancyAmerica <span className="text-[#64748B]">safe.</span>
+                    </h2>
+                    <p className="text-[#64748B] text-lg max-w-2xl mx-auto leading-relaxed mt-4">
+                        We rely on a structured, multi-tier team of administrators who ensure every interaction and listing meets our high standards.
+                    </p>
+                </RevealSection>
+                
+                <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+                    {/* Level 0 */}
+                    <RevealSection>
+                        <div className="landing-card bg-white rounded-3xl p-8 border-2 border-[#E5E7EB] hover:border-[#3B82F6] transition-colors relative h-full flex flex-col">
+                            <div className="absolute top-6 right-8 text-5xl font-extrabold text-[#F1F5F9]">L0</div>
+                            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 relative z-10 shrink-0">
+                                <UserCheck className="w-7 h-7" />
+                            </div>
+                            <div className="inline-block px-3 py-1 bg-gray-100/80 text-gray-700 text-xs font-bold rounded-full mb-4 self-start">Basic Admin / Restricted</div>
+                            <h3 className="text-2xl font-bold text-[#102A43] mb-4 relative z-10">Level 0 Admin</h3>
+                            <ul className="space-y-3 mb-8 relative z-10 flex-grow">
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-blue-500 shrink-0" /><span className="text-[#64748B] text-sm">Posts cannot go live directly</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-blue-500 shrink-0" /><span className="text-[#64748B] text-sm">Must be approved by Super Admin</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-blue-500 shrink-0" /><span className="text-[#64748B] text-sm">Suitable for new or low-trust users</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-blue-500 shrink-0" /><span className="text-[#64748B] text-sm">Ensures content quality and prevents misuse</span></li>
+                            </ul>
+                            <div className="relative z-10 bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+                                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2">Publishing Flow</div>
+                                <div className="text-sm text-[#102A43] font-medium leading-relaxed">Create post → Send request → Super Admin approves → Post published</div>
+                            </div>
+                        </div>
+                    </RevealSection>
+
+                    {/* Level 1 */}
+                    <RevealSection>
+                        <div className="landing-card bg-white rounded-3xl p-8 border-2 border-[#E5E7EB] hover:border-[#F59E0B] transition-colors relative h-full shadow-lg transform lg:-translate-y-4 flex flex-col">
+                            <div className="absolute top-6 right-8 text-5xl font-extrabold text-[#F1F5F9]">L1</div>
+                            <div className="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center mb-6 relative z-10 shrink-0">
+                                <FileCheck className="w-7 h-7" />
+                            </div>
+                            <div className="inline-block px-3 py-1 bg-gray-100/80 text-gray-700 text-xs font-bold rounded-full mb-4 self-start">Intermediate Admin / Priority Review</div>
+                            <h3 className="text-2xl font-bold text-[#102A43] mb-4 relative z-10">Level 1 Admin</h3>
+                            <ul className="space-y-3 mb-8 relative z-10 flex-grow">
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-amber-500 shrink-0" /><span className="text-[#64748B] text-sm">Posts go into a priority review queue</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-amber-500 shrink-0" /><span className="text-[#64748B] text-sm">Faster approval compared to Level 0</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-amber-500 shrink-0" /><span className="text-[#64748B] text-sm">Moderators/Super Admin review and approve</span></li>
+                            </ul>
+                            <div className="relative z-10 bg-amber-50/50 rounded-2xl p-4 border border-amber-100">
+                                <div className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-2">Publishing Flow</div>
+                                <div className="text-sm text-[#102A43] font-medium leading-relaxed">Create post → Goes to priority list → Quick review → Published</div>
+                            </div>
+                        </div>
+                    </RevealSection>
+
+                    {/* Level 2 */}
+                    <RevealSection>
+                        <div className="landing-card bg-[#102A43] text-white rounded-3xl p-8 border-2 border-[#102A43] relative h-full flex flex-col">
+                            <div className="absolute top-6 right-8 text-5xl font-extrabold text-white/10">L2</div>
+                            <div className="w-14 h-14 bg-red-500/20 text-[#E63946] rounded-2xl flex items-center justify-center mb-6 relative z-10 shrink-0">
+                                <Briefcase className="w-7 h-7 text-white" />
+                            </div>
+                            <div className="inline-block px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-full mb-4 self-start">Trusted Admin / Direct Publishing</div>
+                            <h3 className="text-2xl font-bold text-white mb-4 relative z-10">Level 2 Admin</h3>
+                            <ul className="space-y-3 mb-8 relative z-10 flex-grow">
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-[#E63946] shrink-0" /><span className="text-gray-300 text-sm">No approval required</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-[#E63946] shrink-0" /><span className="text-gray-300 text-sm">Posts are published instantly</span></li>
+                                <li className="flex items-start gap-3"><CheckShield className="w-5 h-5 text-[#E63946] shrink-0" /><span className="text-gray-300 text-sm">Given to highly trusted users/admins</span></li>
+                            </ul>
+                            <div className="relative z-10 bg-white/5 rounded-2xl p-4 border border-white/10">
+                                <div className="text-xs font-bold text-[#E63946] uppercase tracking-wider mb-2">Publishing Flow</div>
+                                <div className="text-sm text-white font-medium leading-relaxed">Create post → Directly published</div>
+                            </div>
+                        </div>
+                    </RevealSection>
+                </div>
+            </section>
+
             {/* ─── TESTIMONIALS CAROUSEL ─── */}
             <section className="py-24 lg:py-32 px-6 lg:px-8 everyone-bg">
                 <RevealSection className="max-w-4xl mx-auto text-center mb-12">
