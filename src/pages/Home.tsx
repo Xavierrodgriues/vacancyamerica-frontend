@@ -20,8 +20,8 @@ export default function Home() {
   return (
     <AppLayout>
       {/* Header */}
-      <header className="border-b border-post-border">
-        <h1 className="text-xl font-bold p-4 text-foreground">Home</h1>
+      <header className="border-b border-post-border bg-white sticky top-0 z-20 shadow-sm">
+        <h1 className="text-xl font-extrabold p-4 text-foreground">Home</h1>
       </header>
 
       {/* Feed */}

@@ -133,12 +133,12 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                     <h3 className="text-sm font-bold text-foreground truncate">{otherUser.display_name}</h3>
                     <p className="text-xs text-muted-foreground">
                         {isOtherTyping ? (
-                            <span className="text-blue-400 font-medium flex items-center gap-1">
+                            <span className="text-primary font-medium flex items-center gap-1">
                                 typing
                                 <span className="flex gap-0.5">
-                                    <span className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                                    <span className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                                    <span className="w-1 h-1 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                                 </span>
                             </span>
                         ) : `@${otherUser.username}`}
@@ -163,7 +163,7 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
 
                 {isLoading && (
                     <div className="flex justify-center py-4">
-                        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                     </div>
                 )}
 
@@ -197,8 +197,8 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                                     </div>
                                 ) : (
                                     <div>
-                                        <div className="bg-blue-600 rounded-2xl rounded-br-md px-3 py-2.5">
-                                            <p className="text-sm text-white leading-relaxed">{msg.text}</p>
+                                        <div className="bg-primary rounded-2xl rounded-br-md px-3 py-2.5">
+                                            <p className="text-sm text-primary-foreground leading-relaxed">{msg.text}</p>
                                         </div>
                                         <span className="text-[10px] text-muted-foreground mr-1 mt-0.5 block text-right">
                                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -254,7 +254,7 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                             value={newMessage}
                             onChange={handleInputChange}
                             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                            className="w-full px-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-all pr-12"
+                            className="w-full px-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all pr-12"
                         />
                         <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-muted/80 transition-colors">
                             <Image className="w-4 h-4 text-muted-foreground" />
@@ -264,9 +264,9 @@ function ChatView({ conversation, otherUser, onBack, onCall }: {
                         <button
                             onClick={handleSend}
                             disabled={sendMessage.isPending}
-                            className="p-2.5 bg-blue-600 hover:bg-blue-500 rounded-full transition-colors flex-shrink-0 disabled:opacity-50"
+                            className="p-2.5 bg-primary hover:bg-primary/90 rounded-full transition-colors flex-shrink-0 disabled:opacity-50"
                         >
-                            <Send className="w-4 h-4 text-white" />
+                            <Send className="w-4 h-4 text-primary-foreground" />
                         </button>
                     )}
                 </div>
@@ -355,7 +355,7 @@ export function RightSidebar() {
     });
 
     return (
-        <aside className="hidden lg:flex flex-col flex-1 h-screen sticky top-0 border-l border-post-border bg-background overflow-hidden">
+        <aside className="hidden lg:flex flex-col flex-1 h-screen sticky top-0 border-l border-post-border bg-white overflow-hidden">
             {/* Call Modal */}
             {(callStatus !== "idle" || incomingCall) && (
                 <CallModal
@@ -412,7 +412,7 @@ export function RightSidebar() {
                                 placeholder={showNewChat ? "Search friends..." : "Search messages..."}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 transition-all"
+                                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
                             />
                         </div>
                     </div>
@@ -454,7 +454,7 @@ export function RightSidebar() {
                             )
                         ) : convsLoading ? (
                             <div className="flex justify-center py-8">
-                                <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                             </div>
                         ) : filteredConversations.length > 0 ? (
                             filteredConversations.map((conv) => {
@@ -471,7 +471,7 @@ export function RightSidebar() {
                                                 <span className={`text-sm truncate ${conv.unreadCount > 0 ? "font-bold text-foreground" : "font-medium text-foreground"}`}>
                                                     {other.display_name}
                                                 </span>
-                                                <span className={`text-[11px] flex-shrink-0 ml-2 ${conv.unreadCount > 0 ? "text-blue-400 font-semibold" : "text-muted-foreground"}`}>
+                                                <span className={`text-[11px] flex-shrink-0 ml-2 ${conv.unreadCount > 0 ? "text-primary font-semibold" : "text-muted-foreground"}`}>
                                                     {formatTime(conv.lastMessage?.createdAt || conv.updatedAt)}
                                                 </span>
                                             </div>
@@ -480,8 +480,8 @@ export function RightSidebar() {
                                             </p>
                                         </div>
                                         {conv.unreadCount > 0 && (
-                                            <div className="flex-shrink-0 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                                                <span className="text-[10px] font-bold text-white">{conv.unreadCount}</span>
+                                            <div className="flex-shrink-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                                <span className="text-[10px] font-bold text-primary-foreground">{conv.unreadCount}</span>
                                             </div>
                                         )}
                                     </button>

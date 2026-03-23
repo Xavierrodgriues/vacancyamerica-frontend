@@ -89,7 +89,7 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
   };
 
   return (
-    <article className="border-b border-post-border hover-card">
+    <article className="bg-white rounded-2xl border border-post-border shadow-sm hover:shadow-md transition-all sm:mx-4 sm:my-4 mx-0 my-2 overflow-hidden">
       <div className="p-4">
         <div className="flex gap-3">
           <Link to={`/profile/${post.profiles.username}`} className="flex-shrink-0">

@@ -24,7 +24,7 @@ export function AppSidebar() {
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-[275px] h-screen sticky top-0 border-r border-post-border p-3">
+    <aside className="hidden md:flex flex-col w-[275px] h-screen sticky top-0 border-r border-post-border p-3 bg-white">
       {/* Logo */}
       <div className="p-3 mb-2">
         <img src="/logo1.png" alt="VacancyAmerica" className="h-16 w-auto" />
@@ -43,8 +43,8 @@ export function AppSidebar() {
               key={item.title}
               to={item.url === "/profile" && profile ? `/profile/${profile.username}` : item.url}
               className={cn(
-                "flex items-center gap-4 px-4 py-3 rounded-full text-lg transition-colors hover-card",
-                isActive ? "font-bold text-foreground" : "text-foreground/80",
+                "flex items-center gap-4 px-4 py-3 rounded-full text-lg transition-colors",
+                isActive ? "font-bold bg-primary text-primary-foreground shadow-md" : "text-foreground/80 hover:bg-muted",
                 (item as any).className
               )}
             >

@@ -6,51 +6,51 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 210 11% 15%;
+    --background: 210 40% 96%; /* #F1F5F9 - Slate 100 for depth */
+    --foreground: 210 61% 16%; /* #102A43 - Navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 210 11% 15%;
+    --card-foreground: 210 61% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 11% 15%;
+    --popover-foreground: 210 61% 16%;
 
-    --primary: 204 89% 53%;
+    --primary: 355 78% 56%; /* #E63946 - Red */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 16% 96%;
-    --secondary-foreground: 210 11% 15%;
+    --secondary: 210 40% 90%; 
+    --secondary-foreground: 210 61% 16%;
 
-    --muted: 210 16% 96%;
-    --muted-foreground: 210 9% 53%;
+    --muted: 210 40% 92%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 16% 96%;
-    --accent-foreground: 210 11% 15%;
+    --accent: 210 40% 90%;
+    --accent-foreground: 210 61% 16%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 92%;
-    --input: 214 20% 92%;
-    --ring: 204 89% 53%;
+    --border: 220 13% 85%;
+    --input: 220 13% 85%;
+    --ring: 355 78% 56%;
 
     --radius: 1rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 210 11% 15%;
-    --sidebar-primary: 204 89% 53%;
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 210 61% 16%;
+    --sidebar-primary: 355 78% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 16% 96%;
-    --sidebar-accent-foreground: 210 11% 15%;
-    --sidebar-border: 214 20% 92%;
-    --sidebar-ring: 204 89% 53%;
+    --sidebar-accent: 210 40% 94%;
+    --sidebar-accent-foreground: 210 61% 16%;
+    --sidebar-border: 220 13% 85%;
+    --sidebar-ring: 355 78% 56%;
 
     /* Custom tokens */
-    --hover-bg: 210 16% 97%;
-    --post-border: 214 20% 92%;
-    --icon-muted: 210 9% 65%;
-    --badge-bg: 204 89% 95%;
-    --badge-text: 204 89% 40%;
+    --hover-bg: 210 40% 94%;
+    --post-border: 220 13% 85%;
+    --icon-muted: 215 16% 47%;
+    --badge-bg: 355 78% 95%;
+    --badge-text: 355 78% 40%;
   }
 
   .dark {
