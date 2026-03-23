@@ -1,513 +1,127 @@
-import { Search, Edit3, ArrowLeft, Send, Phone, Video, Image, Smile } from "lucide-react";
-import { useState, useRef, useEffect, lazy, Suspense } from "react";
-import { useDebounce } from "@/hooks/use-debounce";
+import { UserAvatar } from "@/components/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
-import { useFriends } from "@/hooks/use-friends";
-import {
-    useConversations,
-    useMessages,
-    useSendMessage,
-    useStartConversation,
-    useTypingIndicator,
-    type ConversationData,
-    type Participant,
-} from "@/hooks/use-chat";
-import { useSocket } from "@/lib/socket-context";
-import { EmojiClickData, Theme } from "emoji-picker-react";
-const EmojiPicker = lazy(() => import("emoji-picker-react"));
-import { Skeleton } from "@/components/ui/skeleton";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useWebRTC } from "@/hooks/use-web-rtc";
-import { CallModal } from "./chat/CallModal";
+import { usePosts } from "@/hooks/use-posts";
+import { useActivity } from "@/hooks/use-activity";
+import { formatDistanceToNow } from "date-fns";
 
-// ─── Avatar Colors ──────────────────────────────────────────────────────────
-const AVATAR_COLORS = [
-    "from-blue-500 to-purple-600", "from-pink-500 to-rose-600",
-    "from-emerald-500 to-teal-600", "from-orange-500 to-amber-600",
-    "from-indigo-500 to-blue-600", "from-violet-500 to-purple-600",
-    "from-cyan-500 to-blue-600", "from-fuchsia-500 to-pink-600",
-];
-
-function getColor(name: string) {
-    return AVATAR_COLORS[name.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR_COLORS.length];
-}
-
-function getInitials(name: string) {
-    return name.split(" ").map((n) => n[0]).join("").toUpperCase();
-}
-
-function ChatAvatar({ name, avatarUrl, online, size = "md" }: { name: string; avatarUrl?: string | null; online?: boolean; size?: "sm" | "md" | "lg" }) {
-    const sizeMap = { sm: "w-8 h-8 text-[10px]", md: "w-11 h-11 text-xs", lg: "w-14 h-14 text-base" };
-    const imgSize = { sm: "w-8 h-8", md: "w-11 h-11", lg: "w-14 h-14" };
-    const dotMap = { sm: "w-2.5 h-2.5", md: "w-3 h-3", lg: "w-3.5 h-3.5" };
-    return (
-        <div className="relative flex-shrink-0">
-            {avatarUrl ? (
-                <img src={avatarUrl} alt={name} className={`${imgSize[size]} rounded-full object-cover`} />
-            ) : (
-                <div className={`${sizeMap[size]} rounded-full bg-gradient-to-br ${getColor(name)} flex items-center justify-center font-semibold text-white`}>
-                    {getInitials(name)}
-                </div>
-            )}
-            {online && <div className={`absolute bottom-0 right-0 ${dotMap[size]} bg-green-500 rounded-full border-2 border-background`} />}
-        </div>
-    );
-}
-
-// ─── Chat Conversation View ─────────────────────────────────────────────────
-function ChatView({ conversation, otherUser, onBack, onCall }: {
-    conversation: ConversationData;
-    otherUser: Participant;
-    onBack: () => void;
-    onCall: () => void;
-}) {
-    const { user } = useAuth();
-    const [newMessage, setNewMessage] = useState("");
-    const messagesContainerRef = useRef<HTMLDivElement>(null);
-    const { data: msgData, isLoading } = useMessages(conversation._id);
-    const sendMessage = useSendMessage();
-    const { sendTyping, stopTyping } = useTypingIndicator(conversation._id);
-    const { socket } = useSocket();
-    const [isOtherTyping, setIsOtherTyping] = useState(false);
-
-    const messages = msgData?.messages || [];
-
-    // Scroll only the chat container to bottom — never the main page
-    useEffect(() => {
-        const el = messagesContainerRef.current;
-        if (el) el.scrollTop = el.scrollHeight;
-    }, [messages]);
-
-    // Listen for typing indicators
-    useEffect(() => {
-        if (!socket) return;
-        const handleTyping = (data: { conversationId: string; userId: string }) => {
-            if (data.conversationId === conversation._id && data.userId !== user?._id) {
-                setIsOtherTyping(true);
-            }
-        };
-        const handleStopTyping = (data: { conversationId: string; userId: string }) => {
-            if (data.conversationId === conversation._id && data.userId !== user?._id) {
-                setIsOtherTyping(false);
-            }
-        };
-        socket.on("userTyping", handleTyping);
-        socket.on("userStopTyping", handleStopTyping);
-        return () => {
-            socket.off("userTyping", handleTyping);
-            socket.off("userStopTyping", handleStopTyping);
-        };
-    }, [socket, conversation._id, user?._id]);
-
-    const handleSend = () => {
-        if (!newMessage.trim()) return;
-        stopTyping();
-        sendMessage.mutate({ conversationId: conversation._id, text: newMessage.trim() });
-        setNewMessage("");
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewMessage(e.target.value);
-        if (e.target.value.trim()) {
-            sendTyping();
-        } else {
-            stopTyping();
-        }
-    };
-
-    return (
-        <div className="flex flex-col h-full">
-            <style>{`
-                /* Hide support chatbot when desktop chat view is active */
-                button[aria-label*="support chat"] {
-                    display: none !important;
-                }
-            `}</style>
-            {/* Header */}
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-post-border flex-shrink-0">
-                <button onClick={onBack} className="p-1.5 rounded-full hover:bg-muted transition-colors">
-                    <ArrowLeft className="w-5 h-5 text-foreground" />
-                </button>
-                <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="md" />
-                <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-bold text-foreground truncate">{otherUser.display_name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                        {isOtherTyping ? (
-                            <span className="text-primary font-medium flex items-center gap-1">
-                                typing
-                                <span className="flex gap-0.5">
-                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                                    <span className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                                </span>
-                            </span>
-                        ) : `@${otherUser.username}`}
-                    </p>
-                </div>
-                <button onClick={onCall} className="p-2 rounded-full hover:bg-muted transition-colors">
-                    <Phone className="w-4 h-4 text-foreground" />
-                </button>
-                <button className="p-2 rounded-full hover:bg-muted transition-colors">
-                    <Video className="w-4 h-4 text-foreground" />
-                </button>
-            </div>
-
-            {/* Messages */}
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ scrollbarWidth: "thin" }}>
-                {/* Profile card at top */}
-                <div className="flex flex-col items-center py-4 mb-2">
-                    <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="lg" />
-                    <h4 className="text-sm font-bold text-foreground mt-2">{otherUser.display_name}</h4>
-                    <p className="text-xs text-muted-foreground">@{otherUser.username}</p>
-                </div>
-
-                {isLoading && (
-                    <div className="flex justify-center py-4">
-                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    </div>
-                )}
-
-                {messages.map((msg) => {
-                    if (msg.type === 'system') {
-                        return (
-                            <div key={msg._id} className="flex justify-center my-6">
-                                <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
-                                    <Phone className="w-4 h-4" />
-                                    <span>{msg.text} · {new Date(msg.createdAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</span>
-                                </div>
-                            </div>
-                        );
-                    }
-
-                    const isMine = msg.sender._id === user?._id || msg.sender.toString() === user?._id;
-                    return (
-                        <div key={msg._id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                            <div className="max-w-[75%]">
-                                {!isMine ? (
-                                    <div className="flex items-end gap-2">
-                                        <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="sm" />
-                                        <div>
-                                            <div className="bg-muted/80 rounded-2xl rounded-bl-md px-3 py-2.5">
-                                                <p className="text-sm text-foreground leading-relaxed">{msg.text}</p>
-                                            </div>
-                                            <span className="text-[10px] text-muted-foreground ml-1 mt-0.5 block">
-                                                {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <div className="bg-primary rounded-2xl rounded-br-md px-3 py-2.5">
-                                            <p className="text-sm text-primary-foreground leading-relaxed">{msg.text}</p>
-                                        </div>
-                                        <span className="text-[10px] text-muted-foreground mr-1 mt-0.5 block text-right">
-                                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
-
-                {isOtherTyping && (
-                    <div className="flex items-center gap-2">
-                        <ChatAvatar name={otherUser.display_name} avatarUrl={otherUser.avatar_url} size="sm" />
-                        <div className="bg-muted/80 rounded-2xl px-4 py-3">
-                            <div className="flex gap-1">
-                                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <div />
-            </div>
-
-            {/* Input */}
-            <div className="px-4 py-3 border-t border-post-border flex-shrink-0">
-                <div className="flex items-center gap-2">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <button className="p-2 rounded-full hover:bg-muted transition-colors flex-shrink-0">
-                                <Smile className="w-5 h-5 text-muted-foreground" />
-                            </button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full p-0 border-none bg-transparent shadow-none" side="top" align="start">
-                            <Suspense fallback={<Skeleton className="h-[400px] w-[300px] rounded-lg" />}>
-                                <EmojiPicker
-                                    onEmojiClick={(emojiData: EmojiClickData) => setNewMessage((prev) => prev + emojiData.emoji)}
-                                    theme={Theme.AUTO}
-                                    width={300}
-                                    height={400}
-                                />
-                            </Suspense>
-                        </PopoverContent>
-                    </Popover>
-                    <div className="flex-1 relative">
-                        <input
-                            type="text"
-                            name="messageInput"
-                            placeholder="Message..."
-                            value={newMessage}
-                            onChange={handleInputChange}
-                            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                            className="w-full px-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all pr-12"
-                        />
-                        <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-muted/80 transition-colors">
-                            <Image className="w-4 h-4 text-muted-foreground" />
-                        </button>
-                    </div>
-                    {newMessage.trim() && (
-                        <button
-                            onClick={handleSend}
-                            disabled={sendMessage.isPending}
-                            className="p-2.5 bg-primary hover:bg-primary/90 rounded-full transition-colors flex-shrink-0 disabled:opacity-50"
-                        >
-                            <Send className="w-4 h-4 text-primary-foreground" />
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// ─── Main Component ─────────────────────────────────────────────────────────
 export function RightSidebar() {
-    const { user } = useAuth();
-    const [searchQuery, setSearchQuery] = useState("");
-    const debouncedSearch = useDebounce(searchQuery, 300);
-    const [activeConversation, setActiveConversation] = useState<ConversationData | null>(null);
-    const [showNewChat, setShowNewChat] = useState(false);
-    const { data: conversations, isLoading: convsLoading } = useConversations();
-    const { data: friends } = useFriends();
-    const startConversation = useStartConversation();
-    const sendMessage = useSendMessage();
+  const { user } = useAuth();
+  const { data: postsData } = usePosts();
+  const { data: activityList } = useActivity();
 
-    const getOtherUser = (conv: ConversationData): Participant => {
-        return conv.participants.find((p) => p._id !== user?._id) || conv.participants[0];
-    };
+  // Extract unique users from posts
+  const allPosts = postsData?.pages.flatMap((p: any) => p.posts) || [];
+  const suggestedProfiles = Array.from(
+    new Map(
+      allPosts
+        .filter((p: any) => p.profiles && p.profiles.username !== user?.username)
+        .map((p: any) => [p.profiles.username, p.profiles])
+    ).values()
+  ).slice(0, 5);
 
-    const filteredConversations = (conversations || []).filter((conv) => {
-        const other = getOtherUser(conv);
-        return other.display_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            other.username.toLowerCase().includes(debouncedSearch.toLowerCase());
-    });
+  const renderActivityText = (act: any) => {
+      const isActor = act.actor._id === user?._id;
+      const isRecipient = act.recipient._id === user?._id;
+      
+      const actorName = isActor ? "You" : act.actor.display_name;
+      const targetName = isRecipient ? "your" : `${act.recipient.display_name}'s`;
+      
+      const ActorLink = isActor ? <span className="font-bold text-[14px] mr-1">You</span> : <Link to={`/profile/${act.actor.username}`} className="font-bold text-[14px] hover:underline mr-1">{actorName}</Link>;
+      const TargetLink = isRecipient ? "your" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:underline">{act.recipient.display_name}'s</Link>;
 
-    const filteredFriends = (friends || []).filter((friend) => {
-        const nameMatch = friend.display_name?.toLowerCase().includes(debouncedSearch.toLowerCase()) || false;
-        const userMatch = friend.username?.toLowerCase().includes(debouncedSearch.toLowerCase()) || false;
-        return nameMatch || userMatch;
-    });
+      switch(act.type) {
+          case 'LIKE': 
+              return <>{ActorLink} liked {TargetLink} post.</>;
+          case 'COMMENT': 
+              return <>{ActorLink} commented on {TargetLink} post.</>;
+          case 'FOLLOW': 
+              return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:underline">{act.recipient.display_name}</Link>}.</>;
+          default: 
+              return <>{ActorLink} interacted with {TargetLink}.</>;
+      }
+  };
 
-    const handleStartChat = async (friendId: string) => {
-        try {
-            const conv = await startConversation.mutateAsync(friendId);
-            setActiveConversation(conv);
-        } catch (err) {
-            // Error toast handled by hook
-        }
-    };
+  const getOtherUser = (act: any) => {
+      return act.actor._id === user?._id ? act.recipient : act.actor;
+  };
 
-    const formatTime = (dateStr: string) => {
-        if (!dateStr) return "";
-        const date = new Date(dateStr);
-        const now = new Date();
-        const diff = now.getTime() - date.getTime();
-        const mins = Math.floor(diff / 60000);
-        if (mins < 1) return "now";
-        if (mins < 60) return `${mins}m`;
-        const hours = Math.floor(mins / 60);
-        if (hours < 24) return `${hours}h`;
-        const days = Math.floor(hours / 24);
-        return `${days}d`;
-    };
+  const activities = activityList?.slice(0, 5) || [];
 
-    // ─── WebRTC Call Integration ──────────────────────────────────────────────
-    const {
-        callStatus,
-        incomingCall,
-        localStream,
-        remoteStream,
-        isMuted,
-        callUser,
-        answerCall,
-        endCall,
-        rejectCall,
-        toggleMute,
-        switchInputDevice
-    } = useWebRTC({
-        onCallEnd: async (reason, otherUserId) => {
-            try {
-                const conv = await startConversation.mutateAsync(otherUserId);
-                sendMessage.mutate({
-                    conversationId: conv._id,
-                    text: reason,
-                    type: 'system'
-                });
-            } catch (err) {
-                console.error("Failed to send system message for call end", err);
-            }
-        }
-    });
+  return (
+    <aside className="hidden lg:flex flex-col gap-6 w-[320px] flex-shrink-0 sticky top-[88px] h-fit pb-6">
+      {/* Activity */}
+      <div className="bg-white rounded-2xl border border-post-border p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-bold text-[15px] text-foreground">Activity</h3>
+          <span className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</span>
+        </div>
+        
+        {activities.length > 0 ? (
+          <div className="space-y-6">
+            {activities.map((act) => {
+              const otherUser = getOtherUser(act);
+              return (
+              <div key={act._id} className="flex items-start gap-3">
+                <Link to={`/profile/${otherUser.username}`} className="w-[38px] h-[38px] rounded-full flex-shrink-0 shadow-sm overflow-hidden border border-slate-100 block">
+                  <UserAvatar avatarUrl={otherUser.avatar_url} displayName={otherUser.display_name} />
+                </Link>
+                <div className="flex-1 min-w-0 pt-0.5 mt-[-2px]">
+                  <p className="text-[13px] text-foreground leading-[1.35]">
+                    {renderActivityText(act)}
+                    <span className="text-muted-foreground whitespace-nowrap ml-1 text-[11px] block mt-0.5">
+                      {formatDistanceToNow(new Date(act.createdAt), { addSuffix: true }).replace('about ', '')}
+                    </span>
+                  </p>
+                </div>
+                {act.post?.image_url && act.type !== 'FOLLOW' && (
+                   <div className="w-10 h-10 rounded-md overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                     <img src={`http://localhost:5000/uploads/${act.post.image_url}`} alt="Post content" className="w-full h-full object-cover" />
+                   </div>
+                )}
+              </div>
+            )})}
+          </div>
+        ) : (
+          <div className="text-center py-4">
+             <p className="text-sm text-muted-foreground">No recent activity.</p>
+          </div>
+        )}
+      </div>
 
-    return (
-        <aside className="hidden lg:flex flex-col flex-1 h-screen sticky top-0 border-l border-post-border bg-white overflow-hidden">
-            {/* Call Modal */}
-            {(callStatus !== "idle" || incomingCall) && (
-                <CallModal
-                    status={callStatus}
-                    incomingCall={incomingCall}
-                    otherUserName={activeConversation ? getOtherUser(activeConversation).display_name : incomingCall?.name}
-                    otherUserAvatar={activeConversation ? getOtherUser(activeConversation).avatar_url : null}
-                    localStream={localStream}
-                    remoteStream={remoteStream}
-                    isMuted={isMuted}
-                    onAnswer={answerCall}
-                    onReject={rejectCall}
-                    onEnd={endCall}
-                    onToggleMute={toggleMute}
-                    onSwitchInput={switchInputDevice}
-                />
-            )}
-
-            {activeConversation ? (
-                <ChatView
-                    conversation={activeConversation}
-                    otherUser={getOtherUser(activeConversation)}
-                    onBack={() => setActiveConversation(null)}
-                    onCall={() => callUser(getOtherUser(activeConversation)._id)}
-                />
-            ) : (
-                <>
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-post-border flex-shrink-0">
-                        {showNewChat ? (
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => { setShowNewChat(false); setSearchQuery(""); }} className="p-1.5 -ml-1.5 rounded-full hover:bg-muted transition-colors">
-                                    <ArrowLeft className="w-5 h-5 text-foreground" />
-                                </button>
-                                <h2 className="text-lg font-bold text-foreground">New Message</h2>
-                            </div>
-                        ) : (
-                            <>
-                                <h2 className="text-lg font-bold text-foreground">Messages</h2>
-                                <button onClick={() => { setShowNewChat(true); setSearchQuery(""); }} className="p-2 rounded-full hover:bg-muted transition-colors">
-                                    <Edit3 className="w-5 h-5 text-foreground" />
-                                </button>
-                            </>
-                        )}
-                    </div>
-
-                    {/* Search */}
-                    <div className="px-4 py-2 flex-shrink-0 border-b border-post-border">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <input
-                                type="text"
-                                name="searchQuery"
-                                placeholder={showNewChat ? "Search friends..." : "Search messages..."}
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-post-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Lists */}
-                    <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
-                        {showNewChat ? (
-                            filteredFriends.length > 0 ? (
-                                filteredFriends.map((friend) => (
-                                    <button
-                                        key={friend._id}
-                                        onClick={() => {
-                                            handleStartChat(friend._id);
-                                            setShowNewChat(false);
-                                            setSearchQuery("");
-                                        }}
-                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
-                                    >
-                                        <ChatAvatar name={friend.display_name} avatarUrl={friend.avatar_url} />
-                                        <div className="flex-1 min-w-0 text-left">
-                                            <span className="text-sm font-medium text-foreground truncate block">
-                                                {friend.display_name}
-                                            </span>
-                                            {friend.username && (
-                                                <span className="text-xs text-muted-foreground truncate block mt-0.5">
-                                                    @{friend.username}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </button>
-                                ))
-                            ) : (
-                                <div className="flex flex-col items-center justify-center py-12 px-6">
-                                    <Search className="w-10 h-10 text-muted-foreground/50 mb-3" />
-                                    <p className="text-sm text-muted-foreground">
-                                        {searchQuery ? "No friends found matching search" : "No friends found"}
-                                    </p>
-                                </div>
-                            )
-                        ) : convsLoading ? (
-                            <div className="flex justify-center py-8">
-                                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                            </div>
-                        ) : filteredConversations.length > 0 ? (
-                            filteredConversations.map((conv) => {
-                                const other = getOtherUser(conv);
-                                return (
-                                    <button
-                                        key={conv._id}
-                                        onClick={() => setActiveConversation(conv)}
-                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
-                                    >
-                                        <ChatAvatar name={other.display_name} avatarUrl={other.avatar_url} />
-                                        <div className="flex-1 min-w-0 text-left">
-                                            <div className="flex items-center justify-between">
-                                                <span className={`text-sm truncate ${conv.unreadCount > 0 ? "font-bold text-foreground" : "font-medium text-foreground"}`}>
-                                                    {other.display_name}
-                                                </span>
-                                                <span className={`text-[11px] flex-shrink-0 ml-2 ${conv.unreadCount > 0 ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-                                                    {formatTime(conv.lastMessage?.createdAt || conv.updatedAt)}
-                                                </span>
-                                            </div>
-                                            <p className={`text-xs mt-0.5 truncate ${conv.unreadCount > 0 ? "text-foreground/80 font-medium" : "text-muted-foreground"}`}>
-                                                {conv.lastMessage?.text || "Start a conversation"}
-                                            </p>
-                                        </div>
-                                        {conv.unreadCount > 0 && (
-                                            <div className="flex-shrink-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                                                <span className="text-[10px] font-bold text-primary-foreground">{conv.unreadCount}</span>
-                                            </div>
-                                        )}
-                                    </button>
-                                );
-                            })
-                        ) : (
-                            <div className="flex flex-col items-center justify-center py-12 px-6">
-                                <Search className="w-10 h-10 text-muted-foreground/50 mb-3" />
-                                <p className="text-sm text-muted-foreground">
-                                    {searchQuery ? "No conversations found" : "No messages yet"}
-                                </p>
-                                <p className="text-xs text-muted-foreground/70 mt-1 text-center">
-                                    Click on a friend above to start chatting
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Encryption notice */}
-                    <div className="px-4 py-2 border-t border-post-border flex-shrink-0">
-                        <p className="text-[10px] text-center text-muted-foreground/60">
-                            🔒 End-to-end encrypted · Vacancy America
-                        </p>
-                    </div>
-                </>
-            )}
-        </aside>
-    );
+      {/* Suggested */}
+      <div className="bg-white rounded-2xl border border-post-border p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-bold text-[15px] text-foreground">Suggested For you</h3>
+          <span className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</span>
+        </div>
+        
+        {suggestedProfiles.length > 0 ? (
+          <div className="space-y-5">
+            {suggestedProfiles.map((p: any) => (
+              <div key={p.username} className="flex items-center gap-3">
+                <Link to={`/profile/${p.username}`} className="w-[40px] h-[40px] rounded-full flex-shrink-0 shadow-sm overflow-hidden border border-slate-100">
+                  <UserAvatar avatarUrl={p.avatar_url} displayName={p.display_name} size="md" />
+                </Link>
+                <div className="flex-1 min-w-0">
+                  <Link to={`/profile/${p.username}`} className="hover:underline">
+                    <p className="text-[14px] font-bold text-foreground truncate leading-tight">{p.display_name}</p>
+                  </Link>
+                  <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5">@{p.username}</p>
+                </div>
+                <Button variant="ghost" className="font-semibold text-[13px] text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors h-8 px-3 rounded-full">
+                  Follow
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-4">
+             <p className="text-sm text-muted-foreground">No users to suggest.</p>
+          </div>
+        )}
+      </div>
+    </aside>
+  );
 }

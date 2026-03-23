@@ -1,21 +1,27 @@
 import { ReactNode } from "react";
-import { AppSidebar } from "@/components/AppSidebar";
+import { TopNav } from "@/components/TopNav";
+import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightSidebar } from "@/components/RightSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { SupportChatbot } from "@/components/SupportChatbot";
-import { useLocation, useNavigate } from "react-router-dom";
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   return (
-    <div className="flex min-h-screen w-full">
-      <AppSidebar />
-      <main className="flex-1 max-w-[600px] border-r border-post-border min-h-screen">
-        {children}
+    <div className="min-h-screen bg-slate-50">
+      <TopNav />
+      {/* Spacer for fixed nav */}
+      <div className="h-16" />
+      
+      <main className="max-w-[1440px] w-full mx-auto flex gap-6 lg:gap-8 px-4 md:px-8 py-6 items-start justify-center">
+        <LeftSidebar />
+        
+        <div className="flex-1 max-w-[720px] min-w-0">
+          {children}
+        </div>
+        
+        <RightSidebar />
       </main>
-      <RightSidebar />
+      
       <MobileNav />
       <SupportChatbot />
     </div>

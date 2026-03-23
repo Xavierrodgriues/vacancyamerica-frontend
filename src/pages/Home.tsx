@@ -19,10 +19,14 @@ export default function Home() {
 
   return (
     <AppLayout>
-      {/* Header */}
-      <header className="border-b border-post-border bg-white sticky top-0 z-20 shadow-sm">
-        <h1 className="text-xl font-extrabold p-4 text-foreground">Home</h1>
-      </header>
+
+      {/* Sort Divider */}
+      <div className="flex items-center gap-4 mb-6 px-1">
+        <div className="h-px bg-slate-200 flex-1"></div>
+        <button className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground">
+          Sort by : <span className="text-foreground">Recent</span> <span className="text-[10px]">▼</span>
+        </button>
+      </div>
 
       {/* Feed */}
       {isLoading ? (
