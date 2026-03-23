@@ -16,9 +16,10 @@ import { useAuth } from "@/lib/auth-context";
 interface FriendActionButtonsProps {
     userId: string;
     username: string; // Needed for optimistically updating or checks?
+    variant?: "default" | "compact";
 }
 
-export function FriendActionButtons({ userId, username }: FriendActionButtonsProps) {
+export function FriendActionButtons({ userId, username, variant = "default" }: FriendActionButtonsProps) {
     const { user } = useAuth();
     const { data: myProfile } = useProfile();
     const { data: requests, isLoading: requestsLoading } = useFriendRequests();
@@ -55,32 +56,48 @@ export function FriendActionButtons({ userId, username }: FriendActionButtonsPro
 
     if (isFriend) {
         return (
-            <div className="flex gap-2">
-                <Button variant="outline" size="sm" className="text-green-600 border-green-200 bg-green-50 hover:bg-green-100 hover:text-green-700">
-                    <UserCheck className="w-4 h-4 mr-2" />
-                    Friends
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive hover:bg-destructive/10"
-                    onClick={async () => {
-                        if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
-                    }}
-                    disabled={unfriend.isPending}
-                >
-                    <UserX className="w-4 h-4" />
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:bg-secondary"
-                    onClick={handleBlock}
-                    disabled={block.isPending}
-                    title="Block User"
-                >
-                    <Ban className="w-4 h-4" />
-                </Button>
+            <div className="flex gap-2 items-center">
+                {variant === 'compact' ? (
+                    <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        className="font-semibold text-[13px] rounded-lg bg-slate-100 hover:bg-slate-200 text-foreground px-4 h-8"
+                        onClick={async () => {
+                            if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
+                        }}
+                        disabled={unfriend.isPending}
+                    >
+                        Following
+                    </Button>
+                ) : (
+                    <>
+                        <Button variant="outline" size="sm" className="text-green-600 border-green-200 bg-green-50 hover:bg-green-100 hover:text-green-700">
+                            <UserCheck className="w-4 h-4 mr-2" />
+                            Friends
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-destructive hover:bg-destructive/10"
+                            onClick={async () => {
+                                if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
+                            }}
+                            disabled={unfriend.isPending}
+                        >
+                            <UserX className="w-4 h-4" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-muted-foreground hover:bg-secondary"
+                            onClick={handleBlock}
+                            disabled={block.isPending}
+                            title="Block User"
+                        >
+                            <Ban className="w-4 h-4" />
+                        </Button>
+                    </>
+                )}
             </div>
         );
     }

@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/use-profile";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Palette, Dribbble, PenTool, Tv } from "lucide-react";
+import { ConnectionsModal } from "@/components/ConnectionsModal";
 
 const SHORTCUTS = [
   { name: "Art and drawing", color: "bg-amber-100 text-amber-700", icon: Palette },
@@ -15,11 +17,20 @@ const SHORTCUTS = [
 export function LeftSidebar() {
   const { data: profile } = useProfile();
   const { user } = useAuth();
+  const [connectionsModal, setConnectionsModal] = useState<{isOpen: boolean, title: string}>({isOpen: false, title: "Followers"});
 
   if (!profile) return null;
 
   return (
     <div className="hidden md:flex flex-col gap-6 w-[260px] flex-shrink-0 sticky top-[88px] h-fit pb-6">
+      
+      {/* Connections Modal Popup */}
+      <ConnectionsModal 
+        isOpen={connectionsModal.isOpen} 
+        onClose={() => setConnectionsModal({ ...connectionsModal, isOpen: false })} 
+        title={connectionsModal.title} 
+      />
+
       {/* Profile Card */}
       <div className="bg-white rounded-2xl border border-post-border overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
         {/* Cover */}
@@ -37,15 +48,21 @@ export function LeftSidebar() {
           
           <div className="flex items-center justify-between px-1 mb-5">
             <div className="text-center">
-              <p className="text-[13px] font-bold text-foreground">250</p>
+              <p className="text-[13px] font-bold text-foreground">{profile.postCount || 0}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Post</p>
             </div>
-            <div className="text-center">
-              <p className="text-[13px] font-bold text-foreground">2022</p>
+            <div 
+              className="text-center cursor-pointer hover:opacity-75 transition-opacity"
+              onClick={() => setConnectionsModal({ isOpen: true, title: "Followers" })}
+            >
+              <p className="text-[13px] font-bold text-foreground">{profile.followersCount || 0}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Followers</p>
             </div>
-            <div className="text-center">
-              <p className="text-[13px] font-bold text-foreground">590</p>
+            <div 
+              className="text-center cursor-pointer hover:opacity-75 transition-opacity"
+              onClick={() => setConnectionsModal({ isOpen: true, title: "Following" })}
+            >
+              <p className="text-[13px] font-bold text-foreground">{profile.followingCount || 0}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Following</p>
             </div>
           </div>
