@@ -125,30 +125,30 @@ function RevealSection({ children, className = "", id }: { children: React.React
 }
 
 /* ─── Category SVG Icons ─── */
-const IconBroom = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M7 14l-2 6h14l-2-6"/><path d="M4 14h16"/><path d="M12 2v12"/><path d="M9 5l3-3 3 3"/></svg>;
-const IconTrash = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>;
-const IconScissors = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>;
-const IconChef = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>;
-const IconCar = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2"/><path d="M19 17h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><rect x="5" y="7" width="14" height="10" rx="2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>;
-const IconHardHat = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z"/><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg>;
-const IconShoppingCart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
-const IconPackage = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
-const IconHeart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
-const IconZap2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
-const IconDroplet = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>;
-const IconLeaf = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17 8C8 10 5.9 16.17 3.82 19.41a1 1 0 0 0 1.49 1.23l.29-.37"/><path d="M21.67 22.84A14.54 14.54 0 0 0 22 12C22 6 17 2 12 2c0 6-1 10.38-4 14"/></svg>;
-const IconUser2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
-const IconCode = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
-const IconBarChart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
-const IconDollar = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
-const IconBookOpen = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
-const IconBed = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>;
-const IconActivity = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
-const IconPhone = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>;
-const IconShield2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>;
-const IconMonitor = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
-const IconPlane = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>;
-const IconPenTool = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>;
+const IconBroom = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M7 14l-2 6h14l-2-6" /><path d="M4 14h16" /><path d="M12 2v12" /><path d="M9 5l3-3 3 3" /></svg>;
+const IconTrash = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4h6v2" /></svg>;
+const IconScissors = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><line x1="20" y1="4" x2="8.12" y2="15.88" /><line x1="14.47" y1="14.48" x2="20" y2="20" /><line x1="8.12" y1="8.12" x2="12" y2="12" /></svg>;
+const IconChef = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" /><line x1="6" y1="17" x2="18" y2="17" /></svg>;
+const IconCar = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2" /><path d="M19 17h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /><rect x="5" y="7" width="14" height="10" rx="2" /><circle cx="7.5" cy="17" r="1.5" /><circle cx="16.5" cy="17" r="1.5" /></svg>;
+const IconHardHat = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z" /><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5" /><path d="M4 15v-3a8 8 0 0 1 16 0v3" /></svg>;
+const IconShoppingCart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" /></svg>;
+const IconPackage = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21" /><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>;
+const IconHeart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>;
+const IconZap2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>;
+const IconDroplet = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></svg>;
+const IconLeaf = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17 8C8 10 5.9 16.17 3.82 19.41a1 1 0 0 0 1.49 1.23l.29-.37" /><path d="M21.67 22.84A14.54 14.54 0 0 0 22 12C22 6 17 2 12 2c0 6-1 10.38-4 14" /></svg>;
+const IconUser2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
+const IconCode = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>;
+const IconBarChart = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>;
+const IconDollar = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>;
+const IconBookOpen = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>;
+const IconBed = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 4v16" /><path d="M2 8h18a2 2 0 0 1 2 2v10" /><path d="M2 17h20" /><path d="M6 8v9" /></svg>;
+const IconActivity = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+const IconPhone = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>;
+const IconShield2 = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+const IconMonitor = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>;
+const IconPlane = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" /></svg>;
+const IconPenTool = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="m12 19 7-7 3 3-7 7-3-3z" /><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" /><path d="m2 2 7.586 7.586" /><circle cx="11" cy="11" r="2" /></svg>;
 
 /* ─── Job Categories data ─── */
 const JOB_CATEGORIES = [
@@ -266,7 +266,7 @@ export default function LandingPage() {
                 <div className="max-w-4xl mx-auto text-center">
                     <div className="badge-pop inline-flex items-center gap-2 bg-[#E63946]/10 text-[#E63946] text-xs font-bold tracking-widest uppercase px-5 py-2 rounded-full mb-8 border border-[#E63946]/20">
                         <CheckShield className="w-3.5 h-3.5" />
-                        USA-Only · 100% Verified · Always Free
+                        USA-Only · 100% Verified · Free
                     </div>
 
                     <h1 className="landing-hero-animate text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6">
@@ -305,7 +305,7 @@ export default function LandingPage() {
                     {[
                         { value: "100%", label: "Jobs Verified", sub: "manual review" },
                         { value: "0", label: "Fake Listings", sub: "zero tolerance" },
-                        { value: "$0", label: "Cost to Use", sub: "always free" },
+                        { value: "$0", label: "Cost to Use", sub: "free" },
                         { value: "All 50", label: "States Covered", sub: "USA citizens" },
                     ].map((stat, i) => (
                         <div key={stat.label} className={`stat-item stagger-${i + 1}`}>
@@ -347,9 +347,9 @@ export default function LandingPage() {
                 <RevealSection className="max-w-5xl mx-auto px-6 mt-16">
                     <div className="grid md:grid-cols-3 gap-6">
                         {[
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><path d="M7 14l-2 6h14l-2-6"/><path d="M4 14h16"/><path d="M12 2v12"/><path d="M9 5l3-3 3 3"/></svg>, title: "Blue-Collar & Skilled Trades", desc: "Cleaners, plumbers, electricians, construction workers, landscapers, barbers, mechanics — every skilled trade is welcome and verified.", color: "from-amber-50 to-orange-50", border: "border-amber-200" },
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, title: "Healthcare & Service", desc: "Nurses, aides, drivers, chefs, hotel staff, security guards — service roles that keep America running are front and center here.", color: "from-green-50 to-teal-50", border: "border-green-200" },
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>, title: "Professional & Corporate", desc: "Software engineers, data analysts, finance managers, designers, teachers — big-company roles from top employers across all 50 states.", color: "from-blue-50 to-indigo-50", border: "border-blue-200" },
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><path d="M7 14l-2 6h14l-2-6" /><path d="M4 14h16" /><path d="M12 2v12" /><path d="M9 5l3-3 3 3" /></svg>, title: "Blue-Collar & Skilled Trades", desc: "Cleaners, plumbers, electricians, construction workers, landscapers, barbers, mechanics — every skilled trade is welcome and verified.", color: "from-amber-50 to-orange-50", border: "border-amber-200" },
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>, title: "Healthcare & Service", desc: "Nurses, aides, drivers, chefs, hotel staff, security guards — service roles that keep America running are front and center here.", color: "from-green-50 to-teal-50", border: "border-green-200" },
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>, title: "Professional & Corporate", desc: "Software engineers, data analysts, finance managers, designers, teachers — big-company roles from top employers across all 50 states.", color: "from-blue-50 to-indigo-50", border: "border-blue-200" },
                         ].map(c => (
                             <div key={c.title} className={`landing-card rounded-2xl p-7 border ${c.border} bg-gradient-to-br ${c.color}`}>
                                 <div className="mb-4">{c.icon}</div>
@@ -418,7 +418,7 @@ export default function LandingPage() {
                     {[
                         { icon: <Target className="w-6 h-6" />, title: "Higher Quality Applicants", desc: "Candidates here are engaged, not burnt out. No ghost jobs means they save energy for real opportunities — like yours.", accent: "#E63946" },
                         { icon: <Award className="w-6 h-6" />, title: "Verified Employer Badge", desc: "Your company earns a trust badge after SuperAdmin verification. Candidates are far more likely to apply to verified employers.", accent: "#2563EB" },
-                        { icon: <Briefcase className="w-6 h-6" />, title: "$0 to Post — Always", desc: "No pay-per-click. No subscriptions. No premium tiers. Post unlimited jobs without spending a cent.", accent: "#059669" },
+                        { icon: <Briefcase className="w-6 h-6" />, title: "$0 to Post", desc: "No pay-per-click. No subscriptions. No premium tiers. Post unlimited jobs without spending a cent.", accent: "#059669" },
                         { icon: <Users className="w-6 h-6" />, title: "Applicants Who Read Your Post", desc: "On scammy platforms, candidates blind-apply. Here they engage carefully because they trust every listing is genuine.", accent: "#7C3AED" },
                         { icon: <Ban className="w-6 h-6" />, title: "No Competition from Fake Jobs", desc: "Your listing isn't buried under ghost postings. Every spot on VacancyAmerica is a real opportunity — including yours.", accent: "#D97706" },
                         { icon: <Globe className="w-6 h-6" />, title: "Reach All 50 States", desc: "Post once, reach motivated job seekers from New York to Montana. No geographic restrictions, no extra fees.", accent: "#0891B2" },
@@ -533,8 +533,8 @@ export default function LandingPage() {
                     </h2>
                     <div className="flex items-center justify-center gap-12 mt-12">
                         {[{ icon: <Eye className="w-6 h-6 text-white/80" />, label: "Transparency", cls: "landing-float" },
-                          { icon: <CheckShield className="w-6 h-6 text-white/80" />, label: "Trust", cls: "landing-float-delay-1" },
-                          { icon: <Globe className="w-6 h-6 text-white/80" />, label: "Accessibility", cls: "landing-float-delay-2" }].map(v => (
+                        { icon: <CheckShield className="w-6 h-6 text-white/80" />, label: "Trust", cls: "landing-float-delay-1" },
+                        { icon: <Globe className="w-6 h-6 text-white/80" />, label: "Accessibility", cls: "landing-float-delay-2" }].map(v => (
                             <div key={v.label} className={`${v.cls} flex flex-col items-center gap-3`}>
                                 <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center">{v.icon}</div>
                                 <span className="text-xs text-gray-500 font-medium">{v.label}</span>
@@ -556,7 +556,7 @@ export default function LandingPage() {
                     {[
                         { step: "01", icon: <Briefcase className="w-6 h-6" />, title: "Companies Submit", desc: "Companies submit real job openings through our simple portal — completely free, any industry." },
                         { step: "02", icon: <FileCheck className="w-6 h-6" />, title: "SuperAdmin Verifies", desc: "Our team reviews every posting for authenticity. No automated approvals, no shortcuts." },
-                        { step: "03", icon: <UserCheck className="w-6 h-6" />, title: "Everyone Applies with Confidence", desc: "Job seekers browse and apply knowing every listing is legitimate — from cleaner to CTO." },
+                        { step: "03", icon: <UserCheck className="w-6 h-6" />, title: "Apply with Confidence", desc: "Job seekers browse and apply knowing every listing is legitimate — from cleaner to CTO." },
                     ].map(item => (
                         <RevealSection key={item.step}>
                             <div className="landing-card bg-white border border-[#E5E7EB] rounded-2xl p-8 h-full relative overflow-hidden group">
@@ -646,12 +646,12 @@ export default function LandingPage() {
             </section>
 
             {/* ─── FREE PLATFORM ─── */}
-            <section id="free" className="py-24 lg:py-32 px-6 lg:px-8 bg-white">
+            {/* <section id="free" className="py-24 lg:py-32 px-6 lg:px-8 bg-white">
                 <RevealSection className="max-w-4xl mx-auto text-center">
                     <span className="section-label"><IconDollar /> Pricing</span>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 mt-2">
                         Completely free.
-                        <br /><span className="text-[#64748B]">For everyone. Forever.</span>
+                        <br /><span className="text-[#64748B]">For everyone.</span>
                     </h2>
                     <p className="text-[#64748B] text-lg max-w-xl mx-auto mb-12">No charges for job seekers. No charges for companies. No subscriptions. No hidden fees. Built purely for trust.</p>
                     <div className="landing-price-card inline-block bg-white border-2 border-[#102A43] rounded-3xl px-12 py-10 text-center">
@@ -669,7 +669,7 @@ export default function LandingPage() {
                         </button>
                     </div>
                 </RevealSection>
-            </section>
+            </section> */}
 
             {/* ─── CTA BAND ─── */}
             <section className="py-20 lg:py-24 px-6 lg:px-8 bg-[#102A43] text-white">

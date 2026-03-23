@@ -169,8 +169,8 @@ export default function Auth() {
     },
     {
       icon: <Briefcase className="w-5 h-5" />,
-      title: "Always Free",
-      desc: "No charges for job seekers. Ever."
+      title: "Free",
+      desc: "No charges for job seekers."
     }
   ];
 
@@ -249,7 +249,7 @@ export default function Auth() {
           {/* Bottom tags */}
           <div className="relative z-10 flex flex-wrap gap-2">
             <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">✓ Verified Jobs</span>
-            <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">✓ Always Free</span>
+            <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">✓ Free</span>
             <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium border border-white/10">✓ USA Only</span>
           </div>
         </div>
