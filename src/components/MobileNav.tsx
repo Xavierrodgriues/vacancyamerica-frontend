@@ -1,6 +1,7 @@
-import { Home, Search, User, LogOut, MessageCircle } from "lucide-react";
+import { Home, Search, User, LogOut, MessageCircle, Users } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useProfile } from "@/hooks/use-profile";
+import { useFriendRequests } from "@/hooks/use-friends";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -8,6 +9,7 @@ import { useState } from "react";
 const navItems = [
   { title: "Home", url: "/home", icon: Home },
   { title: "Explore", url: "/explore", icon: Search },
+  { title: "Network", url: "/network", icon: Users },
   { title: "Messages", url: "/messages", icon: MessageCircle },
   { title: "Profile", url: "/profile", icon: User },
 ];
@@ -17,7 +19,10 @@ export function MobileNav() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { data: profile } = useProfile();
+  const { data: requests } = useFriendRequests();
   const [showChat, setShowChat] = useState(false);
+
+  const pendingRequestsCount = requests?.filter(r => r.receiver._id === profile?._id && r.status === 'pending').length || 0;
 
   const handleSignOut = async () => {
     await signOut();
@@ -61,7 +66,14 @@ export function MobileNav() {
                   isActive ? "text-primary" : "text-muted-foreground"
                 )}
               >
-                <item.icon className={cn("h-6 w-6", isActive && "stroke-[2.5]")} />
+                <div className="relative">
+                  <item.icon className={cn("h-6 w-6", isActive && "stroke-[2.5]")} />
+                  {item.title === 'Network' && pendingRequestsCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-[15px] flex items-center justify-center rounded-full leading-none shadow-sm border border-white">
+                      {pendingRequestsCount > 9 ? '9+' : pendingRequestsCount}
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs">{item.title}</span>
               </Link>
             );

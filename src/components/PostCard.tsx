@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useToggleLike } from "@/hooks/use-posts";
 import { toast } from "sonner";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
+import { formatCompactNumber } from "@/lib/utils";
 
 interface PostProfile {
   username: string;
@@ -204,7 +205,7 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
                     }`}
                 />
                 {likesCount > 0 && (
-                  <span className="text-sm tabular-nums">{likesCount}</span>
+                  <span className="text-sm tabular-nums">{formatCompactNumber(likesCount)}</span>
                 )}
               </Button>
               <Button

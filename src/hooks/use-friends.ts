@@ -1,5 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
+import { useSocket } from "@/lib/socket-context";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 export interface FriendRequest {
@@ -27,6 +29,8 @@ export interface UserProfile {
     avatar_url: string | null;
 }
 
+const STALE_TIME = 1000 * 60 * 5; // 5 minutes
+
 export function useFriends() {
     const { user } = useAuth();
     return useQuery({
@@ -39,6 +43,51 @@ export function useFriends() {
             return res.json() as Promise<UserProfile[]>;
         },
         enabled: !!user,
+        staleTime: STALE_TIME,
+    });
+}
+
+export interface ConnectionStatus {
+    status: 'none' | 'pending' | 'accepted' | 'self';
+    senderId?: string;
+    requestId?: string;
+}
+
+export function useConnectionStatus(userId: string) {
+    const { user } = useAuth();
+    return useQuery({
+        queryKey: ["connection-status", userId],
+        queryFn: async () => {
+             const res = await fetch(`http://localhost:5000/api/friends/status/${userId}`, {
+                headers: { Authorization: `Bearer ${user?.token}` },
+             });
+             if (!res.ok) throw new Error("Failed to fetch connection status");
+             return res.json() as Promise<ConnectionStatus>;
+        },
+        enabled: !!user && !!userId,
+        staleTime: STALE_TIME,
+    });
+}
+
+export function useInfiniteFriends() {
+    const { user } = useAuth();
+    return useInfiniteQuery({
+        queryKey: ["friends", "infinite", user?._id],
+        queryFn: async ({ pageParam = null }) => {
+            const url = new URL("http://localhost:5000/api/friends");
+            url.searchParams.append("limit", "20");
+            if (pageParam) url.searchParams.append("cursor", pageParam);
+
+            const res = await fetch(url.toString(), {
+                headers: { Authorization: `Bearer ${user?.token}` },
+            });
+            if (!res.ok) throw new Error("Failed to fetch friends");
+            return res.json() as Promise<{ friends: UserProfile[], nextCursor: string | null }>;
+        },
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        enabled: !!user,
+        staleTime: STALE_TIME,
+        initialPageParam: null as string | null,
     });
 }
 
@@ -54,7 +103,55 @@ export function useFriendRequests() {
             return res.json() as Promise<FriendRequest[]>;
         },
         enabled: !!user,
+        staleTime: STALE_TIME, // Caching requests as well
     });
+}
+
+export function useFriendRealtimeUpdates() {
+    const { socket } = useSocket();
+    const queryClient = useQueryClient();
+    const { user } = useAuth();
+
+    useEffect(() => {
+        if (!socket || !user) return;
+
+        const handleNewActivity = (activity: any) => {
+            if (activity.type === 'FOLLOW') {
+                // Determine if it's an incoming friend request or an accepted friend request
+                // In this architecture, FOLLOW represents sending a request.
+                // Activity.actor is the sender. Our current user is the recipient.
+                
+                // Partial Cache Update for Friend Requests
+                queryClient.setQueryData<FriendRequest[]>(["friend-requests", user._id], (oldData) => {
+                    const newReq: FriendRequest = {
+                        _id: activity._id, // Assume unique enough or need exact request ID. Realistically, we might want to refetch or manually construct
+                        status: 'pending',
+                        createdAt: new Date().toISOString(),
+                        sender: activity.actor,
+                        receiver: {
+                            _id: user._id,
+                            username: user.username,
+                            display_name: user.display_name,
+                            avatar_url: user.avatar_url || null
+                        }
+                    };
+                    if (!oldData) return [newReq];
+                    // Prevent duplicates
+                    if (oldData.some(r => r.sender._id === newReq.sender._id)) return oldData;
+                    return [newReq, ...oldData];
+                });
+                
+                // We're dynamically updating UI without triggering network fetches immediately.
+                toast.success(`${activity.actor.display_name} sent you a friend request!`);
+            }
+        };
+
+        socket.on('new_activity', handleNewActivity);
+        
+        return () => {
+            socket.off('new_activity', handleNewActivity);
+        };
+    }, [socket, queryClient, user]);
 }
 
 export function useSendFriendRequest() {
@@ -73,9 +170,18 @@ export function useSendFriendRequest() {
             }
             return res.json();
         },
-        onSuccess: () => {
+        onSuccess: (data, userId) => {
             toast.success("Friend request sent!");
-            queryClient.invalidateQueries({ queryKey: ["friend-requests"] });
+            // Partial update
+            queryClient.setQueryData<FriendRequest[]>(["friend-requests", user?._id], (oldData) => {
+                if (!oldData) return [data];
+                return [...oldData, data];
+            });
+            queryClient.setQueryData(["connection-status", userId], {
+                status: 'pending',
+                senderId: user?._id,
+                requestId: data._id
+            });
             queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
         onError: (error: Error) => {
@@ -97,10 +203,17 @@ export function useAcceptFriendRequest() {
             if (!res.ok) throw new Error("Failed to accept request");
             return res.json();
         },
-        onSuccess: () => {
+        onSuccess: (_, requestId) => {
             toast.success("Friend request accepted!");
+            
             queryClient.invalidateQueries({ queryKey: ["friends"] });
-            queryClient.invalidateQueries({ queryKey: ["friend-requests"] });
+            queryClient.invalidateQueries({ queryKey: ["friends", "infinite"] });
+            queryClient.invalidateQueries({ queryKey: ["connection-status"] });
+            
+            queryClient.setQueryData<FriendRequest[]>(["friend-requests", user?._id], (oldData) => {
+                 if (!oldData) return [];
+                 return oldData.filter(r => r._id !== requestId);
+            });
             queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });
@@ -119,10 +232,14 @@ export function useCancelFriendRequest() {
             if (!res.ok) throw new Error("Failed to cancel request");
             return res.json();
         },
-        onSuccess: () => {
-            toast.success("Request cancelled");
-            queryClient.invalidateQueries({ queryKey: ["friend-requests"] });
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
+        onSuccess: (_, requestId) => {
+            toast.success("Request removed");
+            queryClient.setQueryData<FriendRequest[]>(["friend-requests", user?._id], (oldData) => {
+                if (!oldData) return [];
+                return oldData.filter(r => r._id !== requestId);
+           });
+           queryClient.invalidateQueries({ queryKey: ["connection-status"] });
+           queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });
 }
@@ -140,9 +257,17 @@ export function useUnfriendUser() {
             if (!res.ok) throw new Error("Failed to unfriend");
             return res.json();
         },
-        onSuccess: () => {
+        onSuccess: (_, friendId) => {
             toast.success("Unfriended user");
-            queryClient.invalidateQueries({ queryKey: ["friends"] });
+            
+            // Partial update friends list
+            queryClient.setQueryData<UserProfile[]>(["friends", user?._id], (oldData) => {
+                if (!oldData) return [];
+                return oldData.filter(f => f._id !== friendId);
+            });
+            
+            queryClient.setQueryData(["connection-status", friendId], { status: 'none' });
+            queryClient.invalidateQueries({ queryKey: ["friends", "infinite"] });
             queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });
@@ -161,10 +286,20 @@ export function useBlockUser() {
             if (!res.ok) throw new Error("Failed to block user");
             return res.json();
         },
-        onSuccess: () => {
+        onSuccess: (_, blockedUserId) => {
             toast.success("User blocked");
-            queryClient.invalidateQueries({ queryKey: ["friends"] });
-            queryClient.invalidateQueries({ queryKey: ["friend-requests"] });
+            
+            queryClient.setQueryData<UserProfile[]>(["friends", user?._id], (oldData) => {
+                if (!oldData) return [];
+                return oldData.filter(f => f._id !== blockedUserId);
+            });
+            queryClient.setQueryData<FriendRequest[]>(["friend-requests", user?._id], (oldData) => {
+                if (!oldData) return [];
+                return oldData.filter(r => r.sender._id !== blockedUserId && r.receiver._id !== blockedUserId);
+           });
+           
+            queryClient.setQueryData(["connection-status", blockedUserId], { status: 'none' });
+            queryClient.invalidateQueries({ queryKey: ["friends", "infinite"] });
             queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
     });

@@ -6,6 +6,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Palette, Dribbble, PenTool, Tv } from "lucide-react";
 import { ConnectionsModal } from "@/components/ConnectionsModal";
+import { formatCompactNumber } from "@/lib/utils";
 
 const SHORTCUTS = [
   { name: "Art and drawing", color: "bg-amber-100 text-amber-700", icon: Palette },
@@ -48,21 +49,21 @@ export function LeftSidebar() {
           
           <div className="flex items-center justify-between px-1 mb-5">
             <div className="text-center">
-              <p className="text-[13px] font-bold text-foreground">{profile.postCount || 0}</p>
+              <p className="text-[13px] font-bold text-foreground">{formatCompactNumber(profile.postCount)}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Post</p>
             </div>
             <div 
               className="text-center cursor-pointer hover:opacity-75 transition-opacity"
               onClick={() => setConnectionsModal({ isOpen: true, title: "Followers" })}
             >
-              <p className="text-[13px] font-bold text-foreground">{profile.followersCount || 0}</p>
+              <p className="text-[13px] font-bold text-foreground">{formatCompactNumber(profile.followersCount)}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Followers</p>
             </div>
             <div 
               className="text-center cursor-pointer hover:opacity-75 transition-opacity"
               onClick={() => setConnectionsModal({ isOpen: true, title: "Following" })}
             >
-              <p className="text-[13px] font-bold text-foreground">{profile.followingCount || 0}</p>
+              <p className="text-[13px] font-bold text-foreground">{formatCompactNumber(profile.followingCount)}</p>
               <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Following</p>
             </div>
           </div>

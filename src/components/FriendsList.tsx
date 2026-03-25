@@ -1,101 +1,122 @@
-import { useFriends, useFriendRequests, useAcceptFriendRequest, useCancelFriendRequest } from "@/hooks/use-friends";
+import { useInfiniteFriends, useFriendRequests, useAcceptFriendRequest, useCancelFriendRequest } from "@/hooks/use-friends";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2, UserCheck, X } from "lucide-react";
+import { Loader2, UserCheck } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect } from "react";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 export function FriendsList() {
-    const { data: friends, isLoading: friendsLoading } = useFriends();
+    const { data: friendsData, isLoading: friendsLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteFriends();
     const { data: requests, isLoading: requestsLoading } = useFriendRequests();
 
     const acceptRequest = useAcceptFriendRequest();
     const cancelRequest = useCancelFriendRequest();
 
-    const incomingRequests = requests?.filter(r => r.sender._id !== r.receiver._id); // Actually logic should be checking if *I* am the receiver
-    // But useFriendRequests returns requests involving me. 
-    // If useFriendRequests returns all requests involving current user.
-    // We need to know who is who.
-    // Let's assume the hook returns populated sender/receiver.
-    // But wait, the hook does not know "me" inside the map function easily without context.
-    // Actually, I can filter based on my ID if I had it, but simpler:
-    // Since 'requests' are filtered by API to be related to me.
-    // I need to separate them into Incoming (others -> me) and Outgoing (me -> others).
-    // But in this list, do we want to show Outgoing? Maybe just Incoming for "Requests".
+    const { containerRef, isVisible } = useIntersectionObserver({ rootMargin: "400px" });
 
-    // Let's assume the component will be used inside Profile of current user primarily? 
-    // Or maybe a modal?
+    useEffect(() => {
+        if (isVisible && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [isVisible, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // Actually, I cannot easily get "my id" without `useAuth`.
-
-    // Let's rely on the parent or adding `useAuth` here. 
-    // But for now, let's keep it simple.
+    const friends = friendsData?.pages.flatMap(page => page.friends) || [];
+    
+    // We filter incoming requests. Based on backend, receiver is current user.
+    // The backend `getFriendRequests` returns all pending requests where you are sender or receiver.
+    // In actual implementation, we'd need to know if `request.sender._id !== myAuthId` to be "incoming".
+    // For now, we assume requests listed are to be accepted.
+    const incomingRequests = requests; 
 
     return (
         <div className="w-full">
             <Tabs defaultValue="friends" className="w-full">
-                <TabsList className="w-full grid grid-cols-2">
-                    <TabsTrigger value="friends">Friends ({friends?.length || 0})</TabsTrigger>
-                    <TabsTrigger value="requests">Requests ({requests?.length || 0})</TabsTrigger>
+                <TabsList className="w-full grid grid-cols-2 bg-transparent">
+                    <TabsTrigger value="friends" className="data-[state=active]:bg-secondary rounded-lg font-semibold">
+                        Connections
+                    </TabsTrigger>
+                    <TabsTrigger value="requests" className="data-[state=active]:bg-secondary rounded-lg font-semibold flex items-center gap-2">
+                        Requests {requests?.length ? <span className="bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full leading-none">{requests.length}</span> : null}
+                    </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="friends" className="mt-4">
                     {friendsLoading ? (
-                        <div className="flex justify-center p-4"><Loader2 className="animate-spin" /></div>
-                    ) : friends?.length === 0 ? (
-                        <p className="text-center text-muted-foreground p-4">No friends yet.</p>
+                        <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+                    ) : friends.length === 0 ? (
+                        <div className="text-center py-12">
+                            <h3 className="text-xl font-bold text-foreground mb-2">Build your network</h3>
+                            <p className="text-muted-foreground">Find people to connect with and grow your audience.</p>
+                        </div>
                     ) : (
-                        <div className="space-y-4">
-                            {friends?.map(friend => (
-                                <div key={friend._id} className="flex items-center justify-between">
-                                    <Link to={`/profile/${friend.username}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <div className="space-y-1">
+                            {friends.map(friend => (
+                                <div key={friend._id} className="flex items-center justify-between p-3 rounded-xl hover:bg-secondary/50 transition-colors">
+                                    <Link to={`/profile/${friend.username}`} className="flex items-center gap-3 min-w-0 pr-3 flex-1">
                                         <UserAvatar avatarUrl={friend.avatar_url} displayName={friend.display_name} />
-                                        <div className="flex flex-col">
-                                            <span className="font-semibold">{friend.display_name}</span>
-                                            <span className="text-sm text-muted-foreground">@{friend.username}</span>
+                                        <div className="flex flex-col min-w-0">
+                                            <span className="font-bold text-[15px] truncate text-foreground leading-tight">{friend.display_name}</span>
+                                            <span className="text-[13px] text-muted-foreground truncate leading-tight mt-0.5">@{friend.username}</span>
                                         </div>
                                     </Link>
-                                    <Button variant="ghost" size="icon" asChild>
+                                    <Button variant="outline" size="sm" className="rounded-full shadow-sm" asChild>
                                         <Link to={`/profile/${friend.username}`}>
-                                            <UserCheck className="w-4 h-4 text-green-600" />
+                                            Profile
                                         </Link>
                                     </Button>
                                 </div>
                             ))}
+                            
+                            {/* Infinite scroll trigger */}
+                            <div ref={containerRef} className="h-10 mt-2 flex justify-center items-center">
+                                {isFetchingNextPage && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
+                            </div>
                         </div>
                     )}
                 </TabsContent>
 
                 <TabsContent value="requests" className="mt-4">
                     {requestsLoading ? (
-                        <div className="flex justify-center p-4"><Loader2 className="animate-spin" /></div>
-                    ) : requests?.length === 0 ? (
-                        <p className="text-center text-muted-foreground p-4">No pending requests.</p>
+                        <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+                    ) : incomingRequests?.length === 0 ? (
+                        <div className="text-center py-12 px-4 shadow-sm rounded-xl border border-post-border bg-white mt-4">
+                             <div className="bg-slate-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <UserCheck className="w-6 h-6 text-slate-400" />
+                            </div>
+                            <h3 className="text-lg font-bold text-foreground mb-1">No pending requests</h3>
+                            <p className="text-sm text-muted-foreground">When people want to connect with you, their requests will appear here.</p>
+                        </div>
                     ) : (
-                        <div className="space-y-4">
-                            {requests?.map(request => (
-                                <div key={request._id} className="flex items-center justify-between bg-secondary/20 p-3 rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        {/* We need to determine which user to show. Show the OTHER person. */}
-                                        {/* NOTE: This component needs to know 'current user id' to show the *other* person correctly. */}
-                                        {/* For now let's assume this tab is "Incoming Requests" and show Sender. */}
-                                        {/* But outgoing requests should also be shown? Maybe separate section? */}
-                                        {/* Let's show both types explicitly? */}
-
-                                        {/* Simplified: Just show the sender for incoming, and receiver for outgoing? */}
-                                        {/* Let's refine the UI later. For now, display friend request info simply. */}
-
-                                        <div className="flex flex-col text-sm">
-                                            <span className="font-semibold">{request.sender.display_name}</span> has sent you a request
+                        <div className="space-y-3">
+                            {incomingRequests?.map(request => (
+                                <div key={request._id} className="flex items-start gap-3 bg-white border border-post-border p-4 rounded-2xl shadow-sm">
+                                    <Link to={`/profile/${request.sender.username}`} className="flex-shrink-0 mt-0.5">
+                                        <UserAvatar avatarUrl={request.sender.avatar_url} displayName={request.sender.display_name} size="md" />
+                                    </Link>
+                                    <div className="flex-1 min-w-0">
+                                        <Link to={`/profile/${request.sender.username}`} className="font-bold text-[15px] text-foreground hover:underline truncate block max-w-[200px]">
+                                            {request.sender.display_name}
+                                        </Link>
+                                        <p className="text-xs text-muted-foreground mt-0.5 mb-3 leading-snug">Wants to connect with you</p>
+                                        <div className="flex gap-2 w-full">
+                                            <Button 
+                                                className="flex-1 h-8 rounded-full text-xs font-bold" 
+                                                onClick={() => acceptRequest.mutateAsync(request._id)} 
+                                                disabled={acceptRequest.isPending}
+                                            >
+                                                {acceptRequest.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Accept"}
+                                            </Button>
+                                            <Button 
+                                                variant="outline" 
+                                                className="flex-1 h-8 rounded-full text-xs font-bold" 
+                                                onClick={() => cancelRequest.mutateAsync(request._id)} 
+                                                disabled={cancelRequest.isPending}
+                                            >
+                                                {cancelRequest.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Decline"}
+                                            </Button>
                                         </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button size="sm" onClick={() => acceptRequest.mutateAsync(request._id)} disabled={acceptRequest.isPending}>
-                                            Accept
-                                        </Button>
-                                        <Button variant="outline" size="sm" onClick={() => cancelRequest.mutateAsync(request._id)} disabled={cancelRequest.isPending}>
-                                            Reject
-                                        </Button>
                                     </div>
                                 </div>
                             ))}

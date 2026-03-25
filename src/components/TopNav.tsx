@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, Home, Compass, MessageCircle, Bell, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/use-profile";
+import { useFriendRequests } from "@/hooks/use-friends";
 import { UserAvatar } from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,9 @@ export function TopNav() {
   const navigate = useNavigate();
   const { signOut } = useAuth();
   const { data: profile } = useProfile();
+  const { data: requests } = useFriendRequests();
+  
+  const pendingRequestsCount = requests?.filter(r => r.receiver._id === profile?._id && r.status === 'pending').length || 0;
 
   const handleSignOut = async () => {
     await signOut();
@@ -51,13 +55,20 @@ export function TopNav() {
               key={item.title}
               to={item.url}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 w-[60px] h-16 border-b-[3px] transition-all duration-200",
+                "relative flex flex-col items-center justify-center gap-1 w-[60px] h-16 border-b-[3px] transition-all duration-200",
                 isActive 
                   ? "border-blue-500 text-blue-500" 
                   : "border-transparent text-muted-foreground hover:text-foreground hover:bg-slate-50"
               )}
             >
-              <item.icon className={cn("w-6 h-6", isActive && "fill-current stroke-[1.5]")} strokeWidth={isActive ? 1.5 : 2} />
+              <div className="relative">
+                <item.icon className={cn("w-6 h-6", isActive && "fill-current stroke-[1.5]")} strokeWidth={isActive ? 1.5 : 2} />
+                {item.title === 'Network' && pendingRequestsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-[15px] flex items-center justify-center rounded-full leading-none shadow-sm border border-white">
+                    {pendingRequestsCount > 9 ? '9+' : pendingRequestsCount}
+                  </span>
+                )}
+              </div>
             </Link>
           );
         })}

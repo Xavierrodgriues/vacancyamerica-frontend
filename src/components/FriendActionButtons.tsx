@@ -6,7 +6,7 @@ import {
     useCancelFriendRequest,
     useUnfriendUser,
     useBlockUser,
-    useFriendRequests,
+    useConnectionStatus,
     FriendRequest
 } from "@/hooks/use-friends";
 import { useProfile } from "@/hooks/use-profile";
@@ -22,7 +22,7 @@ interface FriendActionButtonsProps {
 export function FriendActionButtons({ userId, username, variant = "default" }: FriendActionButtonsProps) {
     const { user } = useAuth();
     const { data: myProfile } = useProfile();
-    const { data: requests, isLoading: requestsLoading } = useFriendRequests();
+    const { data: connection, isLoading } = useConnectionStatus(userId);
 
     const sendRequest = useSendFriendRequest();
     const acceptRequest = useAcceptFriendRequest();
@@ -33,11 +33,11 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     if (!user || user._id === userId) return null;
 
     const isBlocked = myProfile?.blocked_users?.includes(userId);
-    const isFriend = myProfile?.friends?.includes(userId);
+    const isFriend = connection?.status === 'accepted';
 
     // Check for pending request
-    const incomingRequest = requests?.find(r => r.sender._id === userId && r.status === 'pending');
-    const outgoingRequest = requests?.find(r => r.receiver._id === userId && r.status === 'pending');
+    const incomingRequest = connection?.status === 'pending' && connection.senderId === userId;
+    const outgoingRequest = connection?.status === 'pending' && connection.senderId === user?._id;
 
     const handleBlock = async () => {
         if (confirm(`Are you sure you want to block this user?`)) {
@@ -107,7 +107,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
             <div className="flex gap-2">
                 <Button
                     size="sm"
-                    onClick={() => acceptRequest.mutateAsync(incomingRequest._id)}
+                    onClick={() => acceptRequest.mutateAsync(connection!.requestId!)}
                     disabled={acceptRequest.isPending}
                 >
                     {acceptRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Accept Request"}
@@ -115,7 +115,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => cancelRequest.mutateAsync(incomingRequest._id)}
+                    onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
                     Reject
@@ -141,7 +141,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                     variant="secondary"
                     size="sm"
                     className="text-muted-foreground"
-                    onClick={() => cancelRequest.mutateAsync(outgoingRequest._id)}
+                    onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
                     {cancelRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Request Sent"}
@@ -165,7 +165,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
             <Button
                 size="sm"
                 onClick={() => sendRequest.mutateAsync(userId)}
-                disabled={sendRequest.isPending}
+                disabled={sendRequest.isPending || isLoading}
             >
                 {sendRequest.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
