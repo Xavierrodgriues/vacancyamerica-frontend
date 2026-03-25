@@ -33,8 +33,14 @@ export function TopNav() {
     <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-post-border z-50 px-4 md:px-8 flex items-center justify-between shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
       {/* Left: Logo & Search */}
       <div className="flex items-center gap-6 flex-1">
-        <Link to="/home" className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-[22px] font-extrabold tracking-tight text-[#102A43]">VacancyAmerica</span>
+        <Link to="/home" className="flex items-center justify-center flex-shrink-0">
+          <style>
+            {"@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap');"}
+          </style>
+          <span className="text-[26px] tracking-tight leading-none italic" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <span style={{ color: '#0A3161' }}>Vacancy</span>
+            <span style={{ color: '#B31942' }}>America</span>
+          </span>
         </Link>
         <div className="hidden md:flex relative w-full max-w-sm ml-4">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground/70" />
