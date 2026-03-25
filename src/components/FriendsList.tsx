@@ -1,4 +1,5 @@
 import { useInfiniteFriends, useFriendRequests, useAcceptFriendRequest, useCancelFriendRequest } from "@/hooks/use-friends";
+import { useAuth } from "@/lib/auth-context";
 import { UserAvatar } from "@/components/UserAvatar";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useEffect } from "react";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 
 export function FriendsList() {
+    const { user } = useAuth();
     const { data: friendsData, isLoading: friendsLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteFriends();
     const { data: requests, isLoading: requestsLoading } = useFriendRequests();
 
@@ -24,11 +26,8 @@ export function FriendsList() {
 
     const friends = friendsData?.pages.flatMap(page => page.friends) || [];
     
-    // We filter incoming requests. Based on backend, receiver is current user.
-    // The backend `getFriendRequests` returns all pending requests where you are sender or receiver.
-    // In actual implementation, we'd need to know if `request.sender._id !== myAuthId` to be "incoming".
-    // For now, we assume requests listed are to be accepted.
-    const incomingRequests = requests; 
+    // Filter to only show incoming requests where the current user is the receiver
+    const incomingRequests = requests?.filter(r => r.receiver?._id === user?._id) || [];
 
     return (
         <div className="w-full">
@@ -38,7 +37,7 @@ export function FriendsList() {
                         Connections
                     </TabsTrigger>
                     <TabsTrigger value="requests" className="data-[state=active]:bg-secondary rounded-lg font-semibold flex items-center gap-2">
-                        Requests {requests?.length ? <span className="bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full leading-none">{requests.length}</span> : null}
+                        Requests {incomingRequests.length > 0 ? <span className="bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full leading-none">{incomingRequests.length}</span> : null}
                     </TabsTrigger>
                 </TabsList>
 
