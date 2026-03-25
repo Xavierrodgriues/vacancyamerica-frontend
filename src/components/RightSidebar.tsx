@@ -19,7 +19,7 @@ export function RightSidebar() {
         .filter((p: any) => p.profiles && p.profiles.username !== user?.username)
         .map((p: any) => [p.profiles.username, p.profiles])
     ).values()
-  ).slice(0, 5);
+  ).slice(0, 10);
 
   const renderActivityText = (act: any) => {
       const isActor = act.actor._id === user?._id;
@@ -47,7 +47,7 @@ export function RightSidebar() {
       return act.actor._id === user?._id ? act.recipient : act.actor;
   };
 
-  const activities = activityList?.slice(0, 5) || [];
+  const activities = activityList || [];
 
   return (
     <aside className="hidden lg:flex flex-col gap-6 w-[320px] flex-shrink-0 sticky top-[88px] h-fit pb-6">
@@ -59,7 +59,7 @@ export function RightSidebar() {
         </div>
         
         {activities.length > 0 ? (
-          <div className="space-y-6">
+          <div className="space-y-6 max-h-[350px] overflow-y-auto overflow-x-hidden pr-2">
             {activities.map((act) => {
               const otherUser = getOtherUser(act);
               return (
@@ -98,7 +98,7 @@ export function RightSidebar() {
         </div>
         
         {suggestedProfiles.length > 0 ? (
-          <div className="space-y-5">
+          <div className="space-y-5 max-h-[300px] overflow-y-auto overflow-x-hidden pr-2">
             {suggestedProfiles.map((p: any) => (
               <div key={p.username} className="flex items-center gap-3">
                 <Link to={`/profile/${p.username}`} className="w-[40px] h-[40px] rounded-full flex-shrink-0 shadow-sm overflow-hidden border border-slate-100">

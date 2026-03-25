@@ -110,8 +110,8 @@ export function LeftSidebar() {
               ))}
            </div>
         ) : conversations && conversations.length > 0 ? (
-          <div className="space-y-4">
-            {conversations.slice(0, 5).map((conv) => {
+          <div className="space-y-4 max-h-[300px] overflow-y-auto overflow-x-hidden pr-2">
+            {conversations.slice(0, 15).map((conv) => {
               const other = getOtherUser(conv, user?._id);
               return (
                 <Link to={`/messages?chatId=${conv._id}`} key={conv._id} className="flex items-start gap-3 cursor-pointer group">
