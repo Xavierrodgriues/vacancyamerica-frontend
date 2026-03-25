@@ -1,7 +1,7 @@
 import { Search, Edit3, ArrowLeft, Send, Phone, Video, Image, Smile } from "lucide-react";
 import { useState, useRef, useEffect, lazy, Suspense } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useFriends } from "@/hooks/use-friends";
 import {
@@ -256,6 +256,28 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
     const { data: friends } = useFriends();
     const startConversation = useStartConversation();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const chatId = searchParams.get("chatId");
+
+    // Automatically open conversation from URL if present
+    useEffect(() => {
+        if (chatId && conversations && conversations.length > 0 && !activeConversation) {
+            const targetConv = conversations.find(c => c._id === chatId);
+            if (targetConv) {
+                setActiveConversation(targetConv);
+            }
+        }
+    }, [chatId, conversations, activeConversation]);
+
+    const handleBack = () => {
+        setActiveConversation(null);
+        if (variant === "page" && searchParams.has("chatId")) {
+            setSearchParams(params => {
+                params.delete("chatId");
+                return params;
+            }, { replace: true });
+        }
+    };
 
     const getOtherUser = (conv: ConversationData): Participant => {
         return conv.participants.find((p) => p._id !== user?._id) || conv.participants[0];
@@ -334,7 +356,7 @@ export function MobileChatPanel({ onClose, variant = "overlay" }: { onClose?: ()
                 <MobileChatView
                     conversation={activeConversation}
                     otherUser={getOtherUser(activeConversation)}
-                    onBack={() => setActiveConversation(null)}
+                    onBack={handleBack}
                     onCall={() => callUser(getOtherUser(activeConversation)._id)}
                 />
             ) : (
