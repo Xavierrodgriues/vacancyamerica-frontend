@@ -11,7 +11,7 @@ import {
 import { toast } from 'sonner';
 
 // Components
-import { StatCard } from '../components/SharedUI';
+import { DarkStatCard } from '../components/SharedUI';
 import { NotificationsTab } from '../components/NotificationsTab';
 import { AdminManagementTab } from '../components/AdminManagementTab';
 import { PostListTab } from '../components/PostListTab';
@@ -175,11 +175,11 @@ export default function SuperAdminDashboard() {
                 <div className="p-6">
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-                        <StatCard icon={<FileText className="w-5 h-5" />} label="Pending Level 0" value={pendingPosts.length} color="indigo" />
-                        <StatCard icon={<Shield className="w-5 h-5" />} label="Pending Trusted" value={trustedPosts.length} color="blue" />
-                        <StatCard icon={<Users className="w-5 h-5" />} label="Pending Admins" value={adminCounts.pending} color="amber" />
-                        <StatCard icon={<Activity className="w-5 h-5" />} label="Approved Admins" value={adminCounts.approved} color="emerald" />
-                        <StatCard icon={<Activity className="w-5 h-5" />} label="Total Admins" value={adminCounts.all} color="slate" />
+                        <DarkStatCard icon={<FileText className="w-5 h-5" />} label="Lvl 0 Posts" value={pendingPosts.length} color="indigo" />
+                        <DarkStatCard icon={<Shield className="w-5 h-5" />} label="Trusted Posts" value={trustedPosts.length} color="blue" />
+                        <DarkStatCard icon={<Users className="w-5 h-5" />} label="Pending Admins" value={adminCounts.pending} color="amber" />
+                        <DarkStatCard icon={<Activity className="w-5 h-5" />} label="Approved Admins" value={adminCounts.approved} color="emerald" />
+                        <DarkStatCard icon={<Activity className="w-5 h-5" />} label="Total Admins" value={adminCounts.all} color="slate" />
                     </div>
 
                     {/* Tab Content */}

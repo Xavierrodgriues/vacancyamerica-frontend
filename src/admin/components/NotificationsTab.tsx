@@ -3,7 +3,7 @@ import { Bell } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNotifications, useUnreadCount, useMarkAllAsRead, useTakeAction } from '../hooks/use-notifications';
 import { NotificationCard } from './NotificationCard';
-import { LoadingState, EmptyState } from './SharedUI';
+import { DarkLoadingState, DarkEmptyState } from './SharedUI';
 
 type NotifFilter = 'pending' | 'history';
 
@@ -60,54 +60,57 @@ export function NotificationsTab() {
     };
 
     return (
-        <div className="bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-slate-800 animate-fadeIn">
-            {/* Notification Sub-tabs */}
-            <div className="border-b border-slate-800 px-6 pt-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setNotifFilter('pending')}
-                            className={`px-4 py-2 rounded-t-lg font-medium text-sm transition-all ${notifFilter === 'pending'
-                                ? 'bg-slate-800 text-amber-400 border-b-2 border-amber-400'
-                                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                }`}
-                        >
-                            Pending Action
-                            {pendingNotifications.length > 0 && (
-                                <span className="ml-2 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full">
-                                    {pendingNotifications.length}
-                                </span>
-                            )}
-                        </button>
-                        <button
-                            onClick={() => setNotifFilter('history')}
-                            className={`px-4 py-2 rounded-t-lg font-medium text-sm transition-all ${notifFilter === 'history'
-                                ? 'bg-slate-800 text-amber-400 border-b-2 border-amber-400'
-                                : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
-                                }`}
-                        >
-                            History
-                            <span className="ml-2 px-1.5 py-0.5 text-xs bg-slate-700 rounded-full">
-                                {actionedNotifications.length}
+        <div className="bg-slate-900/40 backdrop-blur-2xl rounded-3xl border border-white/5 shadow-2xl overflow-hidden animate-fadeIn relative">
+            {/* Ambient Background Glow */}
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-50" />
+            
+            {/* Header & Sub-tabs */}
+            <div className="border-b border-white/5 px-8 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-900/50">
+                <div className="flex p-1 bg-slate-950/80 rounded-full border border-white/5 shadow-inner">
+                    <button
+                        onClick={() => setNotifFilter('pending')}
+                        className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm transition-all duration-300 ${notifFilter === 'pending'
+                            ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                            }`}
+                    >
+                        Pending Action
+                        {pendingNotifications.length > 0 && (
+                            <span className={`px-2 py-0.5 text-[10px] rounded-full font-black ${notifFilter === 'pending' ? 'bg-slate-950/20 text-slate-900' : 'bg-red-500/20 text-red-500'}`}>
+                                {pendingNotifications.length}
                             </span>
-                        </button>
-                    </div>
-                    {unreadCount > 0 && (
-                        <button onClick={handleMarkAllRead} className="text-sm text-amber-400 hover:text-amber-300">
-                            Mark all as read
-                        </button>
-                    )}
+                        )}
+                    </button>
+                    <button
+                        onClick={() => setNotifFilter('history')}
+                        className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold text-sm transition-all duration-300 ${notifFilter === 'history'
+                            ? 'bg-slate-800 text-white shadow-lg ring-1 ring-white/10'
+                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                            }`}
+                    >
+                        History
+                        <span className={`px-2 py-0.5 text-[10px] rounded-full font-black ${notifFilter === 'history' ? 'bg-slate-700 text-slate-300' : 'bg-slate-800 text-slate-500'}`}>
+                            {actionedNotifications.length}
+                        </span>
+                    </button>
                 </div>
+                
+                {unreadCount > 0 && (
+                    <button onClick={handleMarkAllRead} className="px-5 py-2 rounded-full text-xs font-bold text-amber-500 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:-translate-y-0.5">
+                        Mark all as read
+                    </button>
+                )}
             </div>
 
             <div className="p-6">
                 {isLoading ? (
-                    <LoadingState />
+                    <DarkLoadingState />
                 ) : displayedNotifications.length === 0 ? (
-                    <EmptyState
-                        icon={<Bell className="w-12 h-12" />}
-                        title={notifFilter === 'pending' ? 'No pending notifications' : 'No history yet'}
-                        description={notifFilter === 'pending' ? "You're all caught up! No actions needed." : 'Actioned notifications will appear here.'}
+                    <DarkEmptyState
+                        icon={<Bell className="w-10 h-10 drop-shadow-lg" />}
+                        title={notifFilter === 'pending' ? 'No pending action required' : 'Notification history is empty'}
+                        description={notifFilter === 'pending' ? "You're all caught up! When user roles require approval, they will securely arrive here." : 'Action summary logs and post audits will safely appear down the line.'}
+                        glowColor={notifFilter === 'pending' ? 'amber' : 'slate'}
                     />
                 ) : (
                     <div className="space-y-3">
