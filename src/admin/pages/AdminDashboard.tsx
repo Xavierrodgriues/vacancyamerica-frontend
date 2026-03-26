@@ -756,6 +756,24 @@ function PrivilegesView() {
                                         </p>
                                     </div>
                                     <div className="p-4 bg-white/80 rounded-xl border border-purple-100">
+                                        <div className="flex items-center gap-2 mb-2 text-purple-600 font-semibold text-sm">
+                                            <Shield className="w-4 h-4" />
+                                            Verified Trust Badge
+                                        </div>
+                                        <p className="text-slate-500 text-xs leading-relaxed">
+                                            Exclusive verified indicator on your profile and posts to establish immediate credibility.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white/80 rounded-xl border border-purple-100">
+                                        <div className="flex items-center gap-2 mb-2 text-purple-600 font-semibold text-sm">
+                                            <TrendingUp className="w-4 h-4" />
+                                            Advanced Analytics
+                                        </div>
+                                        <p className="text-slate-500 text-xs leading-relaxed">
+                                            Full access to comprehensive performance metrics, audience insights, and engagement reporting.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white/80 rounded-xl border border-purple-100">
                                         <div className="flex items-center gap-2 mb-2 text-slate-600 font-semibold text-xs uppercase tracking-wider">
                                             <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                                             Process Flow
@@ -765,7 +783,7 @@ function PrivilegesView() {
                                             <ChevronRight className="w-3 h-3" />
                                             <span className="text-green-600 font-bold">Published Instantly</span>
                                             <ChevronRight className="w-3 h-3" />
-                                            <span>Live</span>
+                                            <span>Live to Audience</span>
                                         </div>
                                     </div>
                                 </div>
@@ -794,6 +812,30 @@ function PrivilegesView() {
                                             Trusted status. Your posts are reviewed with priority but still require approval from a Super Admin.
                                         </p>
                                     </div>
+                                    <div className="p-4 bg-white/80 rounded-xl border border-blue-100">
+                                        <div className="flex items-center gap-2 mb-2 text-blue-600 font-semibold text-sm">
+                                            <Bell className="w-4 h-4" />
+                                            Enhanced Visibility
+                                        </div>
+                                        <p className="text-slate-500 text-xs leading-relaxed">
+                                            Posts bypass the standard review queue, significantly reducing time to publish.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white/80 rounded-xl border border-blue-100">
+                                        <div className="flex items-center gap-2 mb-2 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                                            Process Flow
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
+                                            <span>Submit</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span className="text-blue-600 font-bold">Priority Queue</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Super Admin Approval</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Live</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -821,6 +863,15 @@ function PrivilegesView() {
                                         </p>
                                     </div>
                                     <div className="p-4 bg-white rounded-xl border border-slate-200">
+                                        <div className="flex items-center gap-2 mb-2 text-slate-600 font-semibold text-sm">
+                                            <MessageCircle className="w-4 h-4" />
+                                            Community Interaction
+                                        </div>
+                                        <p className="text-slate-500 text-xs leading-relaxed">
+                                            Engage with your audience through direct messages and monitor basic activity on your posts.
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-white rounded-xl border border-slate-200">
                                         <div className="flex items-center gap-2 mb-2 text-slate-600 font-semibold text-xs uppercase tracking-wider">
                                             <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                             Process Flow
@@ -828,7 +879,9 @@ function PrivilegesView() {
                                         <div className="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
                                             <span>Submit</span>
                                             <ChevronRight className="w-3 h-3" />
-                                            <span className="text-amber-600 font-bold">Pending Approval</span>
+                                            <span className="text-amber-600 font-bold">Standard Queue</span>
+                                            <ChevronRight className="w-3 h-3" />
+                                            <span>Super Admin Approval</span>
                                             <ChevronRight className="w-3 h-3" />
                                             <span>Start 6hr Timer (If Approved)</span>
                                             <ChevronRight className="w-3 h-3" />
