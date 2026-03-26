@@ -146,7 +146,7 @@ export default function AdminDashboard() {
         <div className="min-h-screen bg-slate-50 font-sans flex overflow-hidden">
             {/* Mobile Sidebar Overlay */}
             {isMobileOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
                     onClick={() => setIsMobileOpen(false)}
                 />
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
                 <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
                     <div className="px-5 md:px-8 py-4 md:py-5 flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            <button 
+                            <button
                                 onClick={() => setIsMobileOpen(true)}
                                 className="md:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors shrink-0"
                             >
@@ -271,18 +271,18 @@ export default function AdminDashboard() {
                             </button>
                             <div>
                                 <h2 className="text-xl md:text-2xl font-bold text-slate-800">
-                                {activeTab === 'overview' ? 'Overview'
-                                    : activeTab === 'posts' ? 'Manage Posts'
-                                    : activeTab === 'privileges' ? 'My Privileges'
-                                    : 'Messages'}
-                            </h2>
-                            <p className="text-sm text-slate-400 mt-0.5">
-                                {activeTab === 'overview' ? 'System stats & quick summary'
-                                    : activeTab === 'posts' ? 'Review, approve, or delete community content'
-                                    : activeTab === 'privileges' ? 'Manage your admin capabilities'
-                                    : 'View and reply to user conversations'}
-                            </p>
-                        </div>
+                                    {activeTab === 'overview' ? 'Overview'
+                                        : activeTab === 'posts' ? 'Manage Posts'
+                                            : activeTab === 'privileges' ? 'My Privileges'
+                                                : 'Messages'}
+                                </h2>
+                                <p className="text-sm text-slate-400 mt-0.5">
+                                    {activeTab === 'overview' ? 'System stats & quick summary'
+                                        : activeTab === 'posts' ? 'Review, approve, or delete community content'
+                                            : activeTab === 'privileges' ? 'Manage your admin capabilities'
+                                                : 'View and reply to user conversations'}
+                                </p>
+                            </div>
                         </div>
                         <div className="flex items-center gap-3">
                             <button className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors relative">
@@ -298,7 +298,7 @@ export default function AdminDashboard() {
 
                 {/* Page Content */}
                 <main className="px-4 md:px-8 py-6 md:py-8">
-                {activeTab === 'overview' && <OverviewSection />}
+                    {activeTab === 'overview' && <OverviewSection />}
 
                     {activeTab === 'posts' && (
                         <PostsView
@@ -425,13 +425,13 @@ function OverviewSection() {
                 <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 group/chart relative overflow-hidden flex flex-col">
                     {/* Background decoration */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
-                    
+
                     <div className="flex items-center justify-between mb-8 relative z-10">
                         <div>
                             <div className="flex items-center gap-3">
                                 <span className="relative flex h-3 w-3">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
                                 </span>
                                 <h3 className="text-xl font-black text-slate-800 tracking-tight">Post Activity</h3>
                             </div>
@@ -441,7 +441,7 @@ function OverviewSection() {
                             Last 7 Days
                         </span>
                     </div>
-                    
+
                     <div className="flex items-end gap-4 h-64 mt-auto relative z-10 w-full pt-10">
                         {chartData.map((day) => {
                             const heightPct = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
@@ -449,7 +449,7 @@ function OverviewSection() {
                             return (
                                 <div key={day.date} className="flex-1 flex flex-col items-center justify-end gap-3 group/bar h-full relative">
                                     <div className="w-full flex items-end justify-center relative flex-1 pb-2">
-                                        <div 
+                                        <div
                                             className="w-full max-w-[48px] flex flex-col items-center justify-end relative"
                                             style={{ height: `${Math.max(heightPct, day.count > 0 ? 12 : 6)}%` }}
                                         >
@@ -457,16 +457,15 @@ function OverviewSection() {
                                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 text-sm font-black text-indigo-600 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 translate-y-2 group-hover/bar:translate-y-0 drop-shadow-sm bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100 z-30 pointer-events-none">
                                                 {day.count}
                                             </div>
-                                            
+
                                             {/* The actual visual bar */}
                                             <div
-                                                className={`w-full h-full rounded-2xl transition-all duration-700 ease-in-out group-hover/bar:scale-x-110 relative overflow-hidden ${
-                                                    isToday
+                                                className={`w-full h-full rounded-2xl transition-all duration-700 ease-in-out group-hover/bar:scale-x-110 relative overflow-hidden ${isToday
                                                         ? 'bg-gradient-to-t from-indigo-600 via-indigo-500 to-indigo-400 shadow-[0_10px_20px_rgba(99,102,241,0.4)]'
                                                         : day.count > 0
                                                             ? 'bg-gradient-to-t from-slate-200 to-slate-100 group-hover/bar:from-indigo-300 group-hover/bar:to-indigo-200 shadow-sm'
                                                             : 'bg-slate-50'
-                                                }`}
+                                                    }`}
                                             >
                                                 <div className="absolute inset-0 bg-white/30 rounded-2xl opacity-0 group-hover/bar:opacity-100 transition-opacity duration-300" />
                                                 {/* Reflection highlight */}
@@ -474,7 +473,7 @@ function OverviewSection() {
                                             </div>
                                         </div>
                                     </div>
-                                    <span className={`text-xs font-bold uppercase tracking-widest transition-all duration-300 z-10 ${ isToday ? 'text-indigo-600 scale-110 drop-shadow-sm' : 'text-slate-400 group-hover/bar:text-slate-800'}`}>
+                                    <span className={`text-xs font-bold uppercase tracking-widest transition-all duration-300 z-10 ${isToday ? 'text-indigo-600 scale-110 drop-shadow-sm' : 'text-slate-400 group-hover/bar:text-slate-800'}`}>
                                         {day.label}
                                     </span>
                                 </div>
@@ -488,14 +487,14 @@ function OverviewSection() {
                     {/* Publish Rate donut-style */}
                     <div className="drop-shadow-lg bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-between group/donut hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
                         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl" />
-                        
+
                         <div className="relative z-10 flex-1">
                             <p className="text-xl font-black text-slate-800 tracking-tight">Publish Rate</p>
                             <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest leading-relaxed">
                                 <span className="text-indigo-600 font-black">{statusBreakdown.published}</span> / {statusBreakdown.total} Live
                             </p>
                         </div>
-                        
+
                         <div className="relative w-28 h-28 flex-shrink-0 z-10">
                             <svg viewBox="0 0 36 36" className="w-28 h-28 -rotate-90 group-hover/donut:scale-110 transition-transform duration-700 ease-out drop-shadow-xl">
                                 <defs>
@@ -547,11 +546,10 @@ function OverviewSection() {
                             <div className="space-y-4 flex-1">
                                 {topPosts.map((post, i) => (
                                     <div key={post._id} className="flex drop-shadow-lg items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-transparent hover:bg-white hover:border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group/post">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center drop-shadow-lg justify-center text-sm font-black flex-shrink-0 shadow-md ${
-                                            i === 0 ? 'bg-gradient-to-br from-amber-300 to-orange-500 text-white shadow-orange-200' :
-                                            i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-slate-200' :
-                                            'bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 shadow-orange-100'
-                                        }`}>
+                                        <div className={`w-12 h-12 rounded-xl flex items-center drop-shadow-lg justify-center text-sm font-black flex-shrink-0 shadow-md ${i === 0 ? 'bg-gradient-to-br from-amber-300 to-orange-500 text-white shadow-orange-200' :
+                                                i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-slate-200' :
+                                                    'bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 shadow-orange-100'
+                                            }`}>
                                             #{i + 1}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -659,7 +657,7 @@ function AnimatedDropdown({ value, onChange, options, align = "left", className 
                 {selectedOption.label}
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180 text-indigo-600' : 'text-slate-400'}`} />
             </button>
-            
+
             <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} top-full mt-2 min-w-full w-52 bg-white rounded-2xl shadow-[0_15px_40px_-5px_rgba(0,0,0,0.15)] border border-slate-100/80 overflow-hidden z-[60] transition-all duration-300 origin-top flex flex-col ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 -translate-y-2 pointer-events-none'}`}>
                 {options.map((option: any) => (
                     <button
@@ -668,11 +666,10 @@ function AnimatedDropdown({ value, onChange, options, align = "left", className 
                             onChange(option.value);
                             setIsOpen(false);
                         }}
-                        className={`w-full text-left px-5 py-3.5 text-sm font-bold transition-all duration-200 flex items-center gap-2 ${
-                            value === option.value 
-                            ? 'bg-indigo-50/80 text-indigo-600 pl-6 border-l-[3px] border-indigo-500' 
-                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
-                        }`}
+                        className={`w-full text-left px-5 py-3.5 text-sm font-bold transition-all duration-200 flex items-center gap-2 ${value === option.value
+                                ? 'bg-indigo-50/80 text-indigo-600 pl-6 border-l-[3px] border-indigo-500'
+                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
+                            }`}
                     >
                         {option.label}
                     </button>
@@ -719,14 +716,14 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                 {/* Post Counter Capsule */}
                 <div className="drop-shadow-lg flex items-center gap-3 px-6 py-3.5 bg-white rounded-full border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 cursor-default group">
                     <span className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
                     </span>
                     <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
                         <span className="text-emerald-500 text-sm group-hover:scale-110 transition-transform">{posts.length}</span> POSTS FOUND
                     </p>
                 </div>
-                
+
                 {/* Filters, Sorts & Create Button Container */}
                 <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto z-20">
                     {/* Filter Status */}
@@ -803,7 +800,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                                         <FileText className="w-12 h-12 text-slate-300 group-hover:scale-110 transition-transform duration-500" />
                                     </div>
                                 )}
-                                
+
                                 {/* Overlay Gradient */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -820,26 +817,25 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                                         <Trash2 className="w-5 h-5" />
                                     </button>
                                 </div>
-                                
+
                                 {/* Status Badge */}
                                 <div className="absolute bottom-4 left-4 z-10">
-                                    <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-2 backdrop-blur-md border ${
-                                        post.status === 'published' ? 'bg-emerald-500/90 text-white shadow-emerald-500/20 border-emerald-400' :
-                                        post.status === 'rejected' ? 'bg-rose-500/90 text-white shadow-rose-500/20 border-rose-400' :
-                                            'bg-amber-500/90 text-amber-50 shadow-amber-500/20 border-amber-400'
+                                    <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-2 backdrop-blur-md border ${post.status === 'published' ? 'bg-emerald-500/90 text-white shadow-emerald-500/20 border-emerald-400' :
+                                            post.status === 'rejected' ? 'bg-rose-500/90 text-white shadow-rose-500/20 border-rose-400' :
+                                                'bg-amber-500/90 text-amber-50 shadow-amber-500/20 border-amber-400'
                                         }`}>
                                         <span className={`w-2 h-2 rounded-full bg-white ${post.status === 'published' ? 'animate-pulse' : ''}`} />
                                         {post.status}
                                     </span>
                                 </div>
                             </div>
-                            
+
                             {/* Card Body */}
                             <div className="p-6 flex-1 flex flex-col relative z-10 bg-white">
                                 <p className="text-sm text-slate-700 font-bold line-clamp-2 leading-relaxed group-hover:text-indigo-600 transition-colors">
                                     {post.content || post.caption || 'No text content provided.'}
                                 </p>
-                                
+
                                 {/* Engagement quick stats */}
                                 <div className="flex items-center gap-4 mt-4 mb-2">
                                     <span className="flex items-center gap-1.5 text-xs font-black text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg">
@@ -910,7 +906,7 @@ function PrivilegesView() {
             <div className="lg:col-span-2 space-y-8">
                 <div className="bg-white border border-slate-100 rounded-[2rem] p-8 lg:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] relative overflow-hidden flex flex-col">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                    
+
                     <div className="relative z-10">
                         <h2 className="text-3xl font-black mb-2 text-slate-800 tracking-tight">
                             Your Privileges
@@ -922,7 +918,7 @@ function PrivilegesView() {
                             {currentLevel >= 2 && (
                                 <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-purple-200 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(168,85,247,0.15)] hover:-translate-y-2 transition-all duration-500">
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-                                    
+
                                     <div className="flex items-start gap-5 relative z-10">
                                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-[0_10px_20px_rgba(168,85,247,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                             <span className="text-2xl font-black text-white">2</span>
@@ -981,7 +977,7 @@ function PrivilegesView() {
                             {currentLevel === 1 && (
                                 <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-blue-200 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(59,130,246,0.15)] hover:-translate-y-2 transition-all duration-500">
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-                                    
+
                                     <div className="flex items-start gap-5 relative z-10">
                                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-[0_10px_20px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                             <span className="text-2xl font-black text-white">1</span>
@@ -1033,7 +1029,7 @@ function PrivilegesView() {
                             {currentLevel === 0 && (
                                 <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-slate-300 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500">
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-slate-500/5 rounded-full blur-3xl group-hover:bg-slate-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-                                    
+
                                     <div className="flex items-start gap-5 relative z-10">
                                         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center shadow-[0_10px_20px_rgba(100,116,139,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                             <span className="text-2xl font-black text-white">0</span>
@@ -1092,7 +1088,7 @@ function PrivilegesView() {
                 <div className="bg-white border border-slate-100 rounded-[2rem] p-8 lg:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] relative overflow-hidden group">
                     <h3 className="text-2xl font-black text-slate-800 mb-8 tracking-tight relative z-10">Level Hierarchy</h3>
                     <div className="absolute top-0 right-0 w-48 h-48 bg-slate-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-indigo-50 transition-colors duration-700" />
-                    
+
                     <div className="space-y-8 relative z-10">
                         {/* Connecting Line */}
                         <div className="absolute left-[23px] top-6 bottom-6 w-1 bg-slate-100 rounded-full" />
