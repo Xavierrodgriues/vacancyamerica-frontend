@@ -21,6 +21,7 @@ import {
     Calendar,
     ChevronLeft,
     ChevronRight,
+    ChevronDown,
     LayoutDashboard,
     Clock,
     CheckCircle2,
@@ -632,9 +633,61 @@ function StatsSection() {
     );
 }
 
+// --- Animated Dropdown Component --------------------------------------------
+function AnimatedDropdown({ value, onChange, options, align = "left", className = "" }: any) {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const selectedOption = options.find((opt: any) => opt.value === value) || options[0];
+
+    return (
+        <div className={`relative ${className}`} ref={dropdownRef}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`w-full sm:w-auto px-5 py-3.5 rounded-full bg-white border border-slate-100 text-sm font-bold shadow-[0_4px_15px_-3px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer drop-shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-between gap-3 min-w-[170px] ${isOpen ? 'ring-2 ring-indigo-500/20 shadow-md text-indigo-600' : 'text-slate-600'}`}
+            >
+                {selectedOption.label}
+                <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180 text-indigo-600' : 'text-slate-400'}`} />
+            </button>
+            
+            <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} top-full mt-2 min-w-full w-52 bg-white rounded-2xl shadow-[0_15px_40px_-5px_rgba(0,0,0,0.15)] border border-slate-100/80 overflow-hidden z-[60] transition-all duration-300 origin-top flex flex-col ${isOpen ? 'opacity-100 scale-y-100 translate-y-0' : 'opacity-0 scale-y-95 -translate-y-2 pointer-events-none'}`}>
+                {options.map((option: any) => (
+                    <button
+                        key={option.value}
+                        onClick={() => {
+                            onChange(option.value);
+                            setIsOpen(false);
+                        }}
+                        className={`w-full text-left px-5 py-3.5 text-sm font-bold transition-all duration-200 flex items-center gap-2 ${
+                            value === option.value 
+                            ? 'bg-indigo-50/80 text-indigo-600 pl-6 border-l-[3px] border-indigo-500' 
+                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
+                        }`}
+                    >
+                        {option.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // --- Posts View -------------------------------------------------------------
 function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPreviewPost }: any) {
-    const { data, isLoading: loading, error } = useAdminPosts(page);
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [sortBy, setSortBy] = useState('newest');
+
+    const { data, isLoading: loading, error } = useAdminPosts({ page, status: filterStatus, sort: sortBy });
     const deletePostCmd = useDeleteAdminPost();
 
     const posts = data?.data || [];
@@ -661,24 +714,56 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
 
     return (
         <div className="space-y-8 pb-10">
-            {/* Header */}
-            <div className="drop-shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white rounded-[2rem] p-6 sm:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 gap-4">
-                <div className="flex items-center gap-5">
-                    <div className="drop-shadow-lg w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center shadow-inner">
-                        <FileText className="w-6 h-6 text-indigo-500" />
-                    </div>
-                    <div>
-                        <h3 className="text-2xl font-black text-slate-800 tracking-tight">Manage Posts</h3>
-                        <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{posts.length} posts found in current view</p>
-                    </div>
+            {/* Action Bar / Floating Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mb-6">
+                {/* Post Counter Capsule */}
+                <div className="drop-shadow-lg flex items-center gap-3 px-6 py-3.5 bg-white rounded-full border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 cursor-default group">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                    </span>
+                    <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                        <span className="text-emerald-500 text-sm group-hover:scale-110 transition-transform">{posts.length}</span> POSTS FOUND
+                    </p>
                 </div>
-                <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="flex items-center gap-2 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white px-7 py-3.5 rounded-full hover:shadow-[0_10px_20px_rgba(99,102,241,0.4)] hover:-translate-y-1 transition-all duration-500 font-bold text-sm tracking-wide group"
-                >
-                    <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-                    Create New Post
-                </button>
+                
+                {/* Filters, Sorts & Create Button Container */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto z-20">
+                    {/* Filter Status */}
+                    <AnimatedDropdown
+                        value={filterStatus}
+                        onChange={(val: string) => { setFilterStatus(val); setPage(1); }}
+                        options={[
+                            { value: 'all', label: 'All Posts' },
+                            { value: 'published', label: 'Published' },
+                            { value: 'pending', label: 'Pending' },
+                            { value: 'rejected', label: 'Rejected' }
+                        ]}
+                    />
+
+                    {/* Sort By */}
+                    <AnimatedDropdown
+                        value={sortBy}
+                        onChange={(val: string) => { setSortBy(val); setPage(1); }}
+                        options={[
+                            { value: 'newest', label: 'Newest First' },
+                            { value: 'oldest', label: 'Oldest First' },
+                            { value: 'most_likes', label: 'Most Likes' },
+                            { value: 'least_likes', label: 'Least Likes' },
+                            { value: 'most_comments', label: 'Most Comments' },
+                            { value: 'least_comments', label: 'Least Comments' }
+                        ]}
+                    />
+
+                    {/* Create Button */}
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="w-full sm:w-auto drop-shadow-lg flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 active:scale-95 text-white px-8 py-3.5 rounded-full transition-all duration-500 font-bold text-sm tracking-wide shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1"
+                    >
+                        <Plus className="w-5 h-5 flex-shrink-0" />
+                        Create New Post
+                    </button>
+                </div>
             </div>
 
             {/* Post Grid */}

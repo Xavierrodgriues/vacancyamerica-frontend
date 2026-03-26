@@ -25,12 +25,12 @@ export interface AdminPost {
 
 // --- Regular Admin Hooks ---
 
-export function useAdminPosts(page = 1) {
+export function useAdminPosts({ page = 1, status = 'all', sort = 'newest' } = {}) {
     const { admin } = useAdminAuth();
     return useQuery({
-        queryKey: ['adminPosts', page],
+        queryKey: ['adminPosts', page, status, sort],
         queryFn: async () => {
-            const res = await fetch(`${API_URL}?page=${page}`, {
+            const res = await fetch(`${API_URL}?page=${page}&status=${status}&sort=${sort}`, {
                 headers: { 'Authorization': `Bearer ${admin?.token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch posts');
