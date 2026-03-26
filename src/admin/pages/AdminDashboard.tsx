@@ -400,10 +400,10 @@ function OverviewSection() {
                 {kpis.map((kpi) => (
                     <div
                         key={kpi.label}
-                        className="relative bg-white rounded-[2rem] p-6 flex flex-col gap-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group border border-slate-100 cursor-default"
+                        className="relative drop-shadow-lg bg-white rounded-[2rem] p-6 flex flex-col gap-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group border border-slate-100 cursor-default"
                     >
                         <div className="flex items-center justify-between z-10">
-                            <div className={`w-14 h-14 rounded-2xl ${kpi.bg} shadow-lg ${kpi.shadow} flex items-center justify-center ${kpi.text} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                            <div className={`w-14 h-14 drop-shadow-lg rounded-2xl ${kpi.bg} shadow-lg ${kpi.shadow} flex items-center justify-center ${kpi.text} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
                                 {kpi.icon}
                             </div>
                             <div className={`w-3 h-3 rounded-full ${kpi.bg} animate-pulse shadow-sm`} />
@@ -485,7 +485,7 @@ function OverviewSection() {
                 {/* Right Panel: Publish Rate + Top Posts */}
                 <div className="flex flex-col gap-8">
                     {/* Publish Rate donut-style */}
-                    <div className="bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-between group/donut hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                    <div className="drop-shadow-lg bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-between group/donut hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
                         <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl" />
                         
                         <div className="relative z-10 flex-1">
@@ -515,7 +515,7 @@ function OverviewSection() {
                                     strokeWidth="4"
                                     strokeDasharray={`${publishRate} ${100 - publishRate}`}
                                     strokeLinecap="round"
-                                    className="transition-all duration-[1.5s] ease-in-out"
+                                    className="transition-all duration-[1500ms] ease-in-out"
                                     filter="url(#glow)"
                                 />
                             </svg>
@@ -526,7 +526,7 @@ function OverviewSection() {
                     </div>
 
                     {/* Top Posts */}
-                    <div className="bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex-1 flex flex-col hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-shadow duration-500">
+                    <div className="drop-shadow-lg bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex-1 flex flex-col hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-shadow duration-500">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
                                 <span className="p-1.5 bg-rose-100 rounded-lg text-rose-500">
@@ -545,8 +545,8 @@ function OverviewSection() {
                         ) : (
                             <div className="space-y-4 flex-1">
                                 {topPosts.map((post, i) => (
-                                    <div key={post._id} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-transparent hover:bg-white hover:border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group/post">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-sm font-black flex-shrink-0 shadow-md ${
+                                    <div key={post._id} className="flex drop-shadow-lg items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-transparent hover:bg-white hover:border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group/post">
+                                        <div className={`w-12 h-12 rounded-xl flex items-center drop-shadow-lg justify-center text-sm font-black flex-shrink-0 shadow-md ${
                                             i === 0 ? 'bg-gradient-to-br from-amber-300 to-orange-500 text-white shadow-orange-200' :
                                             i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-slate-200' :
                                             'bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 shadow-orange-100'
@@ -584,9 +584,9 @@ function OverviewSection() {
                     { label: 'Avg Likes/Post', value: statusBreakdown.published > 0 ? (totalLikes / statusBreakdown.published).toFixed(1) : '0', icon: <Heart className="w-6 h-6" />, color: 'text-rose-500', bg: 'bg-rose-50', gradient: 'group-hover:bg-rose-500 group-hover:text-white', border: 'border-rose-100' },
                     { label: 'Comments / Post', value: statusBreakdown.published > 0 ? (totalComments / statusBreakdown.published).toFixed(1) : '0', icon: <MessageCircle className="w-6 h-6" />, color: 'text-violet-500', bg: 'bg-violet-50', gradient: 'group-hover:bg-violet-500 group-hover:text-white', border: 'border-violet-100' },
                 ].map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 group flex items-center gap-5 cursor-default relative overflow-hidden">
+                    <div key={stat.label} className="drop-shadow-lg bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 group flex items-center gap-5 cursor-default relative overflow-hidden">
                         <div className={`absolute inset-0 bg-gradient-to-br from-white to-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10`} />
-                        <div className={`w-14 h-14 rounded-2xl ${stat.bg} ${stat.color} ${stat.gradient} flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-sm z-10`}>
+                        <div className={`w-14 h-14 drop-shadow-lg rounded-2xl ${stat.bg} ${stat.color} ${stat.gradient} flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-sm z-10`}>
                             {stat.icon}
                         </div>
                         <div className="z-10">
