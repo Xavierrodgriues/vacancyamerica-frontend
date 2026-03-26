@@ -31,7 +31,8 @@ import {
     Eye,
     Heart,
     MessageCircle,
-    MessagesSquare
+    MessagesSquare,
+    Menu
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
@@ -47,6 +48,7 @@ export default function AdminDashboard() {
     const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
     const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges' | 'messages'>('overview');
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [unreadMsgCount, setUnreadMsgCount] = useState(0);
     const activeTabRef = useRef(activeTab);
 
@@ -137,12 +139,20 @@ export default function AdminDashboard() {
     ];
 
     const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
-    const mainMargin = isCollapsed ? 'ml-20' : 'ml-64';
+    const mainMargin = isCollapsed ? 'md:ml-20' : 'md:ml-64';
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans flex">
+        <div className="min-h-screen bg-slate-50 font-sans flex overflow-hidden">
+            {/* Mobile Sidebar Overlay */}
+            {isMobileOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+                    onClick={() => setIsMobileOpen(false)}
+                />
+            )}
+
             {/* --- Sidebar --- */}
-            <aside className={`${sidebarWidth} bg-white border-r border-slate-200 flex flex-col min-h-screen fixed left-0 top-0 z-40 transition-all duration-300 ease-in-out`}>
+            <aside className={`${sidebarWidth} bg-white border-r border-slate-200 flex flex-col min-h-screen fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 {/* Logo / Brand */}
                 <div className="px-6 py-6 border-b border-slate-100 flex items-center justify-between">
                     <div className={`flex items-center gap-3 transition-opacity duration-300 ${isCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
@@ -175,7 +185,10 @@ export default function AdminDashboard() {
                             return (
                                 <button
                                     key={item.id}
-                                    onClick={() => setActiveTab(item.id)}
+                                    onClick={() => {
+                                        setActiveTab(item.id);
+                                        setIsMobileOpen(false);
+                                    }}
                                     title={isCollapsed ? item.label : ''}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
                                         ? 'bg-indigo-50 text-indigo-700 shadow-sm'
@@ -232,12 +245,19 @@ export default function AdminDashboard() {
             </aside>
 
             {/* --- Main Content --- */}
-            <div className={`flex-1 ${mainMargin} transition-all duration-300 ease-in-out`}>
+            <div className={`flex-1 w-full ${mainMargin} transition-all duration-300 ease-in-out`}>
                 {/* Top Header */}
                 <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
-                    <div className="px-8 py-5 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-800">
+                    <div className="px-5 md:px-8 py-4 md:py-5 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <button 
+                                onClick={() => setIsMobileOpen(true)}
+                                className="md:hidden p-2 -ml-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors shrink-0"
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                            <div>
+                                <h2 className="text-xl md:text-2xl font-bold text-slate-800">
                                 {activeTab === 'overview' ? 'Overview'
                                     : activeTab === 'posts' ? 'Manage Posts'
                                     : activeTab === 'privileges' ? 'My Privileges'
@@ -249,6 +269,7 @@ export default function AdminDashboard() {
                                     : activeTab === 'privileges' ? 'Manage your admin capabilities'
                                     : 'View and reply to user conversations'}
                             </p>
+                        </div>
                         </div>
                         <div className="flex items-center gap-3">
                             <button className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors relative">
@@ -263,7 +284,7 @@ export default function AdminDashboard() {
                 </header>
 
                 {/* Page Content */}
-                <main className="px-8 py-8">
+                <main className="px-4 md:px-8 py-6 md:py-8">
                 {activeTab === 'overview' && <OverviewSection />}
 
                     {activeTab === 'posts' && (

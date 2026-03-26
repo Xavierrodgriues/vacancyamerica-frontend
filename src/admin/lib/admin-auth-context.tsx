@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { io, Socket } from 'socket.io-client';
 
 interface Admin {
     _id: string;
@@ -23,6 +24,7 @@ interface AdminAuthContextType {
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
 const API_BASE = 'http://localhost:5000/api/admin/auth';
+const SOCKET_URL = 'http://localhost:5000';
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
     const [admin, setAdmin] = useState<Admin | null>(null);
@@ -52,21 +54,48 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         checkAuth();
     }, []);
 
-    // Poll for updates every 60 seconds
-    // Purpose: Security measure. This ensures that if an Admin's role is changed (demoted) 
-    // or their account is suspended, they lose access within 60 seconds.
-    // Without this, they could remain logged in until their token expires (potentially days).
+    // Listen for real-time WebSocket privilege updates
     useEffect(() => {
         if (!admin?.token) return;
 
-        // Initial fetch to ensure up-to-date
+        // Fetch once on initial layout authentication just to be safe
         fetchProfile(admin.token);
 
-        const intervalId = setInterval(() => {
-            fetchProfile(admin.token);
-        }, 60000); // 60 seconds
+        // Mount the secure Admin namespace socket connection using JWT token
+        const socket: Socket = io(`${SOCKET_URL}/admin`, {
+            auth: { token: admin.token },
+            transports: ['websocket'],
+            reconnection: true,
+            reconnectionAttempts: 10,
+        });
 
-        return () => clearInterval(intervalId);
+        socket.on('connect', () => {
+            console.log('[AdminContext] Socket connected:', socket.id);
+        });
+
+        // Instantly merge pushed privilege payloads bypassing a round-trip fetch!
+        socket.on('admin_privilege_update', (data: { admin_level: number, status: string, role: string }) => {
+            console.log('[AdminContext] Instantly upgrading local privileges via WebSockets:', data);
+            
+            setAdmin(prev => {
+                if (!prev) return null;
+                
+                const updatedAdmin = {
+                    ...prev,
+                    admin_level: data.admin_level ?? prev.admin_level,
+                    status: data.status ?? prev.status,
+                    role: data.role ?? prev.role
+                };
+                
+                // Flush the UI updates to local storage instantly
+                localStorage.setItem('admin', JSON.stringify(updatedAdmin));
+                return updatedAdmin;
+            });
+        });
+
+        return () => {
+            socket.disconnect();
+        };
     }, [admin?.token]);
 
     const fetchProfile = async (token: string) => {
