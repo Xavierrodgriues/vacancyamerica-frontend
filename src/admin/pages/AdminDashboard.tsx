@@ -662,9 +662,9 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
     return (
         <div className="space-y-8 pb-10">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white rounded-[2rem] p-6 sm:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 gap-4">
+            <div className="drop-shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white rounded-[2rem] p-6 sm:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 gap-4">
                 <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center shadow-inner">
+                    <div className="drop-shadow-lg w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center shadow-inner">
                         <FileText className="w-6 h-6 text-indigo-500" />
                     </div>
                     <div>
@@ -683,7 +683,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
 
             {/* Post Grid */}
             {posts.length === 0 ? (
-                <div className="bg-white rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 p-16">
+                <div className="drop-shadow-lg bg-white rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 p-16">
                     <EmptyState icon={<FileText className="w-10 h-10" />} title="No posts yet" description="Create your first post to get started!" />
                 </div>
             ) : (
@@ -692,7 +692,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                         <div
                             key={post._id}
                             onClick={() => setPreviewPost(post)}
-                            className="group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col relative"
+                            className="drop-shadow-lg group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col relative"
                         >
                             {/* Image/Video Container */}
                             <div className="aspect-video relative overflow-hidden bg-slate-50">
