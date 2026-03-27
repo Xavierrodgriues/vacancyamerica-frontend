@@ -71,11 +71,7 @@ export default function ContactUs() {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center group cursor-pointer focus:outline-none">
-                            <img
-                                src="/logo1.png"
-                                alt="VacancyAmerica"
-                                className="h-12 lg:h-14 w-auto"
-                            />
+                             <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto cursor-pointer" onClick={() => navigate("/")} />
                         </div>
 
                         {/* Desktop Nav Links */}

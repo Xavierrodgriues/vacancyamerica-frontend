@@ -223,7 +223,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center cursor-pointer">
-                            <img src="/logo1.png" alt="VacancyAmerica" className="h-12 lg:h-14 w-auto" />
+                            <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto" />
                         </div>
                         <div className="hidden lg:flex items-center gap-7">
                             {navLinks.map(link => (
@@ -776,7 +776,7 @@ export default function LandingPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
                         <div className="col-span-2 md:col-span-1">
                             <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center mb-4 cursor-pointer">
-                                <img src="/logo1.png" alt="VacancyAmerica" className="h-12 lg:h-14 w-auto" />
+                                <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto" />
                             </div>
                             <p className="text-sm text-[#64748B] leading-relaxed">Verified job opportunities for every American — from entry-level to executive.</p>
                         </div>

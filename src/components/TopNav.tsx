@@ -34,13 +34,7 @@ export function TopNav() {
       {/* Left: Logo & Search */}
       <div className="flex items-center gap-6 flex-1">
         <Link to="/home" className="flex items-center justify-center flex-shrink-0">
-          <style>
-            {"@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,800&display=swap');"}
-          </style>
-          <span className="text-[26px] tracking-tight leading-none italic" style={{ fontFamily: "'Playfair Display', serif" }}>
-            <span style={{ color: '#0A3161' }}>Vacancy</span>
-            <span style={{ color: '#B31942' }}>America</span>
-          </span>
+          <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-12 w-auto" />
         </Link>
         <div className="hidden md:flex relative w-full max-w-sm ml-4">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground/70" />

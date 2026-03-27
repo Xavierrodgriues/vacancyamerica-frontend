@@ -143,9 +143,12 @@ export default function AdminLogin() {
 
                     {/* Logo */}
                     <Link to="/" className="relative z-10 block cursor-pointer hover:opacity-90 transition-opacity">
-                        <img src="/logo1.png" alt="VacancyAmerica" className="h-14 w-auto" />
+                        <img
+                            src="/VA-logo2.png"
+                            alt="VacancyAmerica"
+                            className="h-[65px] lg:h-[80px] w-auto"
+                        />
                     </Link>
-
                     {/* Main content */}
                     <div className="relative z-10 -mt-4">
                         <div className="inline-flex items-center gap-2 bg-[#E63946]/20 text-[#E63946] text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-4 border border-[#E63946]/20">
@@ -185,7 +188,7 @@ export default function AdminLogin() {
 
                     {/* Mobile logo */}
                     <Link to="/" className="lg:hidden flex justify-center mb-6 cursor-pointer hover:opacity-90 transition-opacity">
-                        <img src="/logo1.png" alt="VacancyAmerica" className="h-10 w-auto" />
+                        <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[60px] w-auto" />
                     </Link>
 
                     <div className="max-w-[420px] w-full mx-auto">

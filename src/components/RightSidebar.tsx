@@ -86,7 +86,7 @@ export function RightSidebar() {
       <div className="bg-white rounded-2xl border border-post-border p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between mb-6">
           <h3 className="font-bold text-[15px] text-foreground">Suggested For you</h3>
-          <span className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</span>
+          <Link to="/explore" className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</Link>
         </div>
         
         {suggestedProfiles.length > 0 ? (
