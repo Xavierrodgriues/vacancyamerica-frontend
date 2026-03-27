@@ -8,6 +8,7 @@ import { MessageCircle, Heart, Share, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth-context";
 import { useToggleLike } from "@/hooks/use-posts";
+import { useFriends } from "@/hooks/use-friends";
 import { toast } from "sonner";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { formatCompactNumber } from "@/lib/utils";
@@ -39,11 +40,14 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
   const [heartAnim, setHeartAnim] = useState<{ id: number; x: number; y: number } | null>(null);
   const { user } = useAuth();
   const toggleLike = useToggleLike();
+  const { data: friends } = useFriends();
 
   const postId = post._id || post.id || "";
   const createdAt = post.createdAt || post.created_at || new Date().toISOString();
   const liked = post.likedByMe || false;
   const likesCount = post.likesCount || 0;
+  
+  const isFriend = friends?.some(f => f.username === post.profiles.username);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { containerRef, isVisible } = useIntersectionObserver({ threshold: 0.5 });
@@ -219,8 +223,8 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
               >
                 <Share className="h-4 w-4" />
               </Button>
-              {/* Follow button - visible if not own post */}
-              {user && post.profiles.username !== user.username && (
+              {/* Follow button - visible if not own post and not already a friend */}
+              {user && post.profiles.username !== user.username && !isFriend && (
                 <Link to={`/profile/${post.profiles.username}`}>
                   <Button
                     variant="ghost"

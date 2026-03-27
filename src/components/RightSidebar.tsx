@@ -4,19 +4,21 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { usePosts } from "@/hooks/use-posts";
 import { useActivity } from "@/hooks/use-activity";
+import { useFriends } from "@/hooks/use-friends";
 import { formatDistanceToNow } from "date-fns";
 
 export function RightSidebar() {
   const { user } = useAuth();
   const { data: postsData } = usePosts();
   const { data: activityList } = useActivity();
+  const { data: friends } = useFriends();
 
   // Extract unique users from posts
   const allPosts = postsData?.pages.flatMap((p: any) => p.posts) || [];
   const suggestedProfiles = Array.from(
     new Map(
       allPosts
-        .filter((p: any) => p.profiles && p.profiles.username !== user?.username)
+        .filter((p: any) => p.profiles && p.profiles.username !== user?.username && !friends?.some((f: any) => f.username === p.profiles.username))
         .map((p: any) => [p.profiles.username, p.profiles])
     ).values()
   ).slice(0, 10);
