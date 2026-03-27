@@ -68,11 +68,16 @@ export default function Auth() {
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
         const res = await fetch(`${BASE_URL}/api/auth/google`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ access_token: tokenResponse.access_token })
+          body: JSON.stringify({ access_token: tokenResponse.access_token }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         const data = await res.json();
 
         if (!res.ok) throw new Error(data.message || "Google login failed");
@@ -81,7 +86,11 @@ export default function Auth() {
         toast.success("Welcome back!");
         navigate("/home");
       } catch (error: any) {
-        toast.error(error.message || "Google login failed");
+        if (error.name === 'AbortError') {
+          toast.error("Request timed out. The server might be waking up, please try again in a moment.");
+        } else {
+          toast.error(error.message || "Google login failed");
+        }
       } finally {
         setLoading(false);
       }
@@ -97,12 +106,17 @@ export default function Auth() {
     setLoading(true);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
       if (isLogin) {
         const res = await fetch(`${BASE_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Login failed");
 
@@ -111,16 +125,20 @@ export default function Auth() {
         navigate("/home");
       } else {
         if (!username.trim() || !displayName.trim()) {
+          clearTimeout(timeoutId);
           toast.error("Please fill in all fields");
           setLoading(false);
           return;
         }
+        // ... rest of validation logic ...
         if (username.length < 3) {
+          clearTimeout(timeoutId);
           toast.error("Username must be at least 3 characters");
           setLoading(false);
           return;
         }
         if (phoneNumber && phoneNumber.length < 10) {
+          clearTimeout(timeoutId);
           toast.error("Phone number must be at least 10 digits");
           setLoading(false);
           return;
@@ -135,8 +153,10 @@ export default function Auth() {
             username: sanitize(username).toLowerCase(),
             display_name: sanitize(displayName),
             phone_number: phoneNumber || undefined
-          })
+          }),
+          signal: controller.signal
         });
+        clearTimeout(timeoutId);
         const data = await res.json();
 
         if (!res.ok) throw new Error(data.message || "Signup failed");
@@ -146,7 +166,11 @@ export default function Auth() {
         navigate("/home");
       }
     } catch (error: any) {
-      toast.error(error.message || "Something went wrong");
+      if (error.name === 'AbortError') {
+        toast.error("Request timed out. The server might be waking up, please try again in a moment.");
+      } else {
+        toast.error(error.message || "Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
