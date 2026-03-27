@@ -1205,7 +1205,7 @@ function CreatePostModal({ onClose }: { onClose: () => void }) {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="What's happening?"
-                        className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all resize-none text-sm"
+                        className="w-full h-32 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition-all resize-y text-sm"
                         maxLength={500}
                     />
 
