@@ -3,6 +3,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useSocket } from "@/lib/socket-context";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { BASE_URL } from "@/lib/constants";
 
 export interface FriendRequest {
     _id: string;
@@ -36,7 +37,7 @@ export function useFriends() {
     return useQuery({
         queryKey: ["friends", user?._id],
         queryFn: async () => {
-            const res = await fetch("http://localhost:5000/api/friends", {
+            const res = await fetch(`${BASE_URL}/api/friends`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch friends");
@@ -58,7 +59,7 @@ export function useConnectionStatus(userId: string) {
     return useQuery({
         queryKey: ["connection-status", userId],
         queryFn: async () => {
-             const res = await fetch(`http://localhost:5000/api/friends/status/${userId}`, {
+             const res = await fetch(`${BASE_URL}/api/friends/status/${userId}`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
              });
              if (!res.ok) throw new Error("Failed to fetch connection status");
@@ -74,7 +75,7 @@ export function useInfiniteFriends() {
     return useInfiniteQuery({
         queryKey: ["friends", "infinite", user?._id],
         queryFn: async ({ pageParam = null }) => {
-            const url = new URL("http://localhost:5000/api/friends");
+            const url = new URL(`${BASE_URL}/api/friends`);
             url.searchParams.append("limit", "20");
             if (pageParam) url.searchParams.append("cursor", pageParam);
 
@@ -96,7 +97,7 @@ export function useFriendRequests() {
     return useQuery({
         queryKey: ["friend-requests", user?._id],
         queryFn: async () => {
-            const res = await fetch("http://localhost:5000/api/friends/requests", {
+            const res = await fetch(`${BASE_URL}/api/friends/requests`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch friend requests");
@@ -160,7 +161,7 @@ export function useSendFriendRequest() {
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const res = await fetch(`http://localhost:5000/api/friends/request/${userId}`, {
+            const res = await fetch(`${BASE_URL}/api/friends/request/${userId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -196,7 +197,7 @@ export function useAcceptFriendRequest() {
 
     return useMutation({
         mutationFn: async (requestId: string) => {
-            const res = await fetch(`http://localhost:5000/api/friends/accept/${requestId}`, {
+            const res = await fetch(`${BASE_URL}/api/friends/accept/${requestId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -225,7 +226,7 @@ export function useCancelFriendRequest() {
 
     return useMutation({
         mutationFn: async (requestId: string) => {
-            const res = await fetch(`http://localhost:5000/api/friends/request/${requestId}`, {
+            const res = await fetch(`${BASE_URL}/api/friends/request/${requestId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -250,7 +251,7 @@ export function useUnfriendUser() {
 
     return useMutation({
         mutationFn: async (friendId: string) => {
-            const res = await fetch(`http://localhost:5000/api/friends/${friendId}`, {
+            const res = await fetch(`${BASE_URL}/api/friends/${friendId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -279,7 +280,7 @@ export function useBlockUser() {
 
     return useMutation({
         mutationFn: async (userId: string) => {
-            const res = await fetch(`http://localhost:5000/api/friends/block/${userId}`, {
+            const res = await fetch(`${BASE_URL}/api/friends/block/${userId}`, {
                 method: "POST",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
@@ -304,3 +305,4 @@ export function useBlockUser() {
         },
     });
 }
+

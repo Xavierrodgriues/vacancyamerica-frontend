@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
+import { BASE_URL } from "@/lib/constants";
 
 export function useSuggestedUsers() {
     const { user } = useAuth();
@@ -7,7 +8,7 @@ export function useSuggestedUsers() {
     return useQuery({
         queryKey: ["suggested-users"],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/api/auth/suggested`, {
+            const res = await fetch(`${BASE_URL}/api/auth/suggested`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch suggested users");

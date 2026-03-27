@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/lib/auth-context";
+import { BASE_URL } from "@/lib/constants";
 
 interface SocketContextType {
     socket: Socket | null;
@@ -17,7 +18,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!user?.token) return;
 
-        const newSocket = io("http://localhost:5000", {
+        const newSocket = io(BASE_URL, {
             auth: { token: user.token },
             transports: ["websocket", "polling"],
             reconnection: true,

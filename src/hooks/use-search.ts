@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
+import { BASE_URL } from "@/lib/constants";
 
 export function useSearchUsers(query: string) {
     const { user } = useAuth();
@@ -20,7 +21,7 @@ export function useSearchUsers(query: string) {
         queryKey: ["search-users", debouncedQuery],
         queryFn: async () => {
             if (!debouncedQuery) return [];
-            const res = await fetch(`http://localhost:5000/api/auth/search?q=${encodeURIComponent(debouncedQuery)}`, {
+            const res = await fetch(`${BASE_URL}/api/auth/search?q=${encodeURIComponent(debouncedQuery)}`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to search users");

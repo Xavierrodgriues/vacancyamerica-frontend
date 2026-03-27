@@ -6,6 +6,7 @@ import { useActivity } from "@/hooks/use-activity";
 import { useFriends } from "@/hooks/use-friends";
 import { useSuggestedUsers } from "@/hooks/use-suggested-users";
 import { formatDistanceToNow } from "date-fns";
+import { BASE_URL } from "@/lib/constants";
 
 export function RightSidebar() {
   const { user } = useAuth();
@@ -69,7 +70,7 @@ export function RightSidebar() {
                 </div>
                 {act.post?.image_url && act.type !== 'FOLLOW' && (
                    <div className="w-10 h-10 rounded-md overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
-                     <img src={`http://localhost:5000/uploads/${act.post.image_url}`} alt="Post content" className="w-full h-full object-cover" />
+                     <img src={`${BASE_URL}/uploads/${act.post.image_url}`} alt="Post content" className="w-full h-full object-cover" />
                    </div>
                 )}
               </div>

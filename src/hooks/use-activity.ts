@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 import { useSocket } from "@/lib/socket-context";
 import { useEffect } from "react";
+import { BASE_URL } from "@/lib/constants";
 
 export interface Activity {
     _id: string;
@@ -33,7 +34,7 @@ export function useActivity() {
     const query = useQuery({
         queryKey: ["activity", user?._id],
         queryFn: async () => {
-            const res = await fetch("http://localhost:5000/api/activity", {
+            const res = await fetch(`${BASE_URL}/api/activity`, {
                 headers: { Authorization: `Bearer ${user?.token}` },
             });
             if (!res.ok) throw new Error("Failed to fetch activity");
@@ -70,7 +71,7 @@ export function useMarkActivityRead() {
 
     return useMutation({
         mutationFn: async () => {
-            const res = await fetch(`http://localhost:5000/api/activity/read`, {
+            const res = await fetch(`${BASE_URL}/api/activity/read`, {
                 method: "PUT",
                 headers: { Authorization: `Bearer ${user?.token}` },
             });

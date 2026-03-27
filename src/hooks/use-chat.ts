@@ -3,8 +3,9 @@ import { useAuth } from "@/lib/auth-context";
 import { useSocket } from "@/lib/socket-context";
 import { useEffect, useCallback, useRef } from "react";
 import { toast } from "sonner";
+import { BASE_URL } from "@/lib/constants";
 
-const API = "http://localhost:5000/api/chat";
+const API = `${BASE_URL}/api/chat`;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 export interface Participant {

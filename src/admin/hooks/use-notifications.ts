@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSuperAdminAuth } from '../lib/super-admin-auth-context';
+import { BASE_URL } from '@/lib/constants';
 
-const API_URL = 'http://localhost:5000/api/superadmin/notifications';
+const API_URL = `${BASE_URL}/api/superadmin/notifications`;
 
 interface Notification {
     _id: string;

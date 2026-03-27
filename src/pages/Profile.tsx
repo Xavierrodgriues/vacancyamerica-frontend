@@ -18,6 +18,7 @@ import { FriendsList } from "@/components/FriendsList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect } from "react";
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
+import { BASE_URL } from "@/lib/constants";
 
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
@@ -53,7 +54,7 @@ export default function Profile() {
     if (!user || !user.token) return;
     setSaving(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/profile", {
+      const res = await fetch(`${BASE_URL}/api/auth/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

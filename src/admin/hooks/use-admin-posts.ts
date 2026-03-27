@@ -1,8 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSuperAdminAuth } from '../lib/super-admin-auth-context';
 import { useAdminAuth } from '../lib/admin-auth-context';
+import { BASE_URL } from '@/lib/constants';
 
-const API_URL = 'http://localhost:5000/api/admin/posts';
+const API_URL = `${BASE_URL}/api/admin/posts`;
 
 export interface AdminPost {
     _id: string;

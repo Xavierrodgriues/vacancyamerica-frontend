@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { BASE_URL } from '@/lib/constants';
 
 interface Admin {
     _id: string;
@@ -23,8 +24,8 @@ interface AdminAuthContextType {
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
-const API_BASE = 'http://localhost:5000/api/admin/auth';
-const SOCKET_URL = 'http://localhost:5000';
+const API_BASE = `${BASE_URL}/api/admin/auth`;
+const SOCKET_URL = BASE_URL;
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
     const [admin, setAdmin] = useState<Admin | null>(null);

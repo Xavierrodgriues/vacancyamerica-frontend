@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { BASE_URL } from '@/lib/constants';
 
 interface SuperAdmin {
     _id: string;
@@ -36,7 +37,7 @@ export function SuperAdminAuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const login = async (email: string, password: string) => {
-        const res = await fetch('http://localhost:5000/api/superadmin/auth/login', {
+        const res = await fetch(`${BASE_URL}/api/superadmin/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -54,7 +55,7 @@ export function SuperAdminAuthProvider({ children }: { children: ReactNode }) {
     };
 
     const register = async (username: string, email: string, password: string, display_name: string) => {
-        const res = await fetch('http://localhost:5000/api/superadmin/auth/register', {
+        const res = await fetch(`${BASE_URL}/api/superadmin/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password, display_name })

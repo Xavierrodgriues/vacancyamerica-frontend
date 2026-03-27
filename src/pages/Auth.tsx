@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { BASE_URL } from "@/lib/constants";
 
 /* ─── Inline SVG Icons ─── */
 
@@ -67,7 +68,7 @@ export default function Auth() {
     onSuccess: async (tokenResponse) => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:5000/api/auth/google", {
+        const res = await fetch(`${BASE_URL}/api/auth/google`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ access_token: tokenResponse.access_token })
@@ -97,7 +98,7 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const res = await fetch("http://localhost:5000/api/auth/login", {
+        const res = await fetch(`${BASE_URL}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
@@ -125,7 +126,7 @@ export default function Auth() {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/api/auth/signup", {
+        const res = await fetch(`${BASE_URL}/api/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

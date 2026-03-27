@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff, Check, X, Clock } from 'lucide-react';
+import { BASE_URL } from '@/lib/constants';
 
 /* ─── Inline SVG Icons ─── */
 const CheckShield = ({ className = "" }: { className?: string }) => (
@@ -83,7 +84,7 @@ export default function AdminRegister() {
 
         setIsLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/admin/auth/register', {
+            const res = await fetch(`${BASE_URL}/api/admin/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -1,7 +1,8 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
+import { BASE_URL } from "@/lib/constants";
 
-const API = "http://localhost:5000/api/posts";
+const API = `${BASE_URL}/api/posts`;
 
 export function usePosts() {
   const { user } = useAuth();

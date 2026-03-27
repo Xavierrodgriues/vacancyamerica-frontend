@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Search, ArrowLeft, Send, Smile, Loader2 } from 'lucide-react';
+import { BASE_URL } from '@/lib/constants';
 
-const API_BASE = 'http://localhost:5000/api/admin/chat';
-const SOCKET_URL = 'http://localhost:5000';
+const API_BASE = `${BASE_URL}/api/admin/chat`;
+const SOCKET_URL = BASE_URL;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Participant {

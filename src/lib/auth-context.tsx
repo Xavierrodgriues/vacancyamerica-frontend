@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { BASE_URL } from "./constants";
 
 interface User {
   _id: string;
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const token = localStorage.getItem('token');
     if (token) {
       // Here we should validate the token with the backend /me endpoint
-      fetch('http://localhost:5000/api/auth/me', {
+      fetch(`${BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
