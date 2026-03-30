@@ -419,3 +419,65 @@ html {
     animation-duration: 22s;
   }
 }
+
+/* ── Mobile Fullscreen Menu Animations ── */
+@keyframes menuOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menuSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes menuTopBarIn {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes menuAuthIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-menu-overlay {
+  animation: menuOverlayIn 0.22s ease forwards;
+}
+
+.mobile-menu-top-bar {
+  opacity: 0;
+  animation: menuTopBarIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+}
+
+.mobile-menu-item {
+  opacity: 0;
+  animation: menuSlideInLeft 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.mobile-menu-auth {
+  opacity: 0;
+  animation: menuAuthIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

@@ -223,7 +223,7 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center cursor-pointer">
-                            <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[48px] lg:h-[56px] w-auto" />
+                            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[48px] lg:h-[56px] w-auto" />
                         </div>
                         <div className="hidden lg:flex items-center gap-7">
                             {navLinks.map(link => (
@@ -240,20 +240,78 @@ export default function LandingPage() {
                             {mobileOpen ? <XIcon className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
                     </div>
-                    <div className={`landing-mobile-menu lg:hidden ${mobileOpen ? "open" : ""}`}>
-                        <div className="pb-4 pt-2 space-y-1 border-t border-[#E5E7EB]">
-                            {navLinks.map(link => (
-                                <a key={link.label} href={link.href} onClick={() => setMobileOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#64748B] hover:text-[#102A43] hover:bg-white rounded-lg transition-colors">{link.label}</a>
-                            ))}
-                            <div className="flex flex-col gap-2 pt-3 px-3">
-                                <button onClick={() => navigate("/auth")} className="text-sm font-medium text-[#102A43] py-2">Login</button>
-                                <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full">Post a Job</button>
-                                <button onClick={() => navigate("/contact")} className="landing-btn-secondary bg-white text-[#102A43] text-sm font-medium px-5 py-2.5 rounded-full border border-[#E5E7EB]">Contact Us</button>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </nav>
+
+            {/* ─── MOBILE FULLSCREEN MENU ─── */}
+            {mobileOpen && (
+                <div className="fixed inset-0 z-[100] bg-white flex flex-col lg:hidden overflow-hidden mobile-menu-overlay">
+                    {/* Top bar */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] flex-shrink-0 mobile-menu-top-bar">
+                        <div
+                            onClick={() => { setMobileOpen(false); window.scrollTo(0, 0); navigate("/"); }}
+                            className="cursor-pointer"
+                        >
+                            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[44px] w-auto" />
+                        </div>
+                        <button
+                            onClick={() => setMobileOpen(false)}
+                            className="w-10 h-10 rounded-full bg-[#E63946] flex items-center justify-center text-white hover:bg-[#d32f3f] transition-colors flex-shrink-0"
+                            aria-label="Close menu"
+                        >
+                            <XIcon className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Nav Links */}
+                    <div className="flex-1 overflow-y-auto px-4 py-8">
+                        <div className="space-y-2">
+                            {navLinks.map((link, index) => (
+                                <a
+                                    key={link.label}
+                                    href={link.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="mobile-menu-item group flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-[#FFF5F5] transition-all duration-200"
+                                    style={{ animationDelay: `${0.1 + index * 0.08}s` }}
+                                >
+                                    <span className="text-xl font-semibold text-[#102A43] group-hover:text-[#E63946] transition-colors duration-200">
+                                        {link.label}
+                                    </span>
+                                    <span className="w-9 h-9 rounded-full bg-[#E63946] flex items-center justify-center text-white flex-shrink-0">
+                                        <ArrowRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                    </span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Auth Buttons */}
+                    <div
+                        className="px-6 pb-10 pt-4 border-t border-[#E5E7EB] flex flex-col gap-3 flex-shrink-0 mobile-menu-auth"
+                        style={{ animationDelay: `${0.1 + navLinks.length * 0.08}s` }}
+                    >
+                        <button
+                            onClick={() => { navigate("/auth"); setMobileOpen(false); }}
+                            className="text-sm font-medium text-[#102A43] py-2"
+                        >
+                            Login
+                        </button>
+                        <button
+                            onClick={() => { navigate("/auth"); setMobileOpen(false); }}
+                            className="landing-btn-primary bg-[#E63946] text-white text-sm font-semibold px-5 py-3 rounded-full"
+                        >
+                            Post a Job
+                        </button>
+                        <button
+                            onClick={() => { navigate("/contact"); setMobileOpen(false); }}
+                            className="landing-btn-secondary bg-white text-[#102A43] text-sm font-medium px-5 py-3 rounded-full border border-[#E5E7EB]"
+                        >
+                            Contact Us
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* ─── HERO ─── */}
             <section id="hero" className="relative pt-32 pb-24 lg:pt-48 lg:pb-36 px-6 lg:px-8 overflow-hidden">
@@ -612,7 +670,7 @@ export default function LandingPage() {
                         We rely on a structured, multi-tier team of administrators who ensure every interaction and listing meets our high standards.
                     </p>
                 </RevealSection>
-                
+
                 <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
                     {/* Level 0 */}
                     <RevealSection>
@@ -776,7 +834,7 @@ export default function LandingPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
                         <div className="col-span-2 md:col-span-1">
                             <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center mb-4 cursor-pointer">
-                                <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto" />
+                                <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto" />
                             </div>
                             <p className="text-sm text-[#64748B] leading-relaxed">Verified job opportunities for every American — from entry-level to executive.</p>
                         </div>

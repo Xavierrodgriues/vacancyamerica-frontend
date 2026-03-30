@@ -232,12 +232,12 @@ export default function Auth() {
           {/* Logo */}
           <div className="relative z-10">
             <img
-              src="/VA-logo2.png"
+              src="/VA-logo2-removebg.png"
               alt="VacancyAmerica"
               className="h-[65px] lg:h-[80px] w-auto cursor-pointer"
               onClick={() => navigate("/")}
             />
-          </div>
+          </div>2
 
           {/* Main content */}
           <div className="relative z-10 -mt-4">
@@ -284,7 +284,7 @@ export default function Auth() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex justify-center mb-6">
-            <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[60px] w-auto" />
+            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[60px] w-auto" />
           </div>
 
           <div className="max-w-[420px] w-full mx-auto">

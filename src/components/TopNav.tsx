@@ -21,7 +21,7 @@ export function TopNav() {
   const { signOut } = useAuth();
   const { data: profile } = useProfile();
   const { data: requests } = useFriendRequests();
-  
+
   const pendingRequestsCount = requests?.filter(r => r.receiver._id === profile?._id && r.status === 'pending').length || 0;
 
   const handleSignOut = async () => {
@@ -34,7 +34,7 @@ export function TopNav() {
       {/* Left: Logo & Search */}
       <div className="flex items-center gap-6 flex-1">
         <Link to="/home" className="flex items-center justify-center flex-shrink-0">
-          <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-12 w-auto" />
+          <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-12 w-auto" />
         </Link>
         <div className="hidden md:flex relative w-full max-w-sm ml-4">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground/70" />
@@ -56,8 +56,8 @@ export function TopNav() {
               to={item.url}
               className={cn(
                 "relative flex flex-col items-center justify-center gap-1 w-[60px] h-16 border-b-[3px] transition-all duration-200",
-                isActive 
-                  ? "border-blue-500 text-blue-500" 
+                isActive
+                  ? "border-blue-500 text-blue-500"
                   : "border-transparent text-muted-foreground hover:text-foreground hover:bg-slate-50"
               )}
             >

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, MapPin, Phone, Send, Loader2, Menu, X } from "lucide-react";
+import { Mail, MapPin, Phone, Send, Loader2, Menu, X, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -71,7 +71,7 @@ export default function ContactUs() {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div onClick={() => { window.scrollTo(0, 0); navigate("/"); }} className="flex items-center group cursor-pointer focus:outline-none">
-                             <img src="/VA-logo2.png" alt="VacancyAmerica" className="h-[80px] lg:h-[100px] w-auto cursor-pointer" onClick={() => navigate("/")} />
+                            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[48px] lg:h-[56px] w-auto cursor-pointer" onClick={() => navigate("/")} />
                         </div>
 
                         {/* Desktop Nav Links */}
@@ -129,46 +129,77 @@ export default function ContactUs() {
                         </button>
                     </div>
 
-                    {/* Mobile Menu */}
-                    <div
-                        className={`landing-mobile-menu lg:hidden ${mobileOpen ? "open" : ""
-                            }`}
-                    >
-                        <div className="pb-4 pt-2 space-y-1 border-t border-[#E5E7EB]">
-                            {navLinks.map((link) => (
+                </div>
+            </nav>
+
+            {/* ─── MOBILE FULLSCREEN MENU ─── */}
+            {mobileOpen && (
+                <div className="fixed inset-0 z-[100] bg-white flex flex-col lg:hidden overflow-hidden mobile-menu-overlay">
+                    {/* Top bar */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#E5E7EB] flex-shrink-0 mobile-menu-top-bar">
+                        <div
+                            onClick={() => { setMobileOpen(false); window.scrollTo(0, 0); navigate("/"); }}
+                            className="cursor-pointer"
+                        >
+                            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[44px] w-auto" />
+                        </div>
+                        <button
+                            onClick={() => setMobileOpen(false)}
+                            className="w-10 h-10 rounded-full bg-[#E63946] flex items-center justify-center text-white hover:bg-[#d32f3f] transition-colors flex-shrink-0"
+                            aria-label="Close menu"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Nav Links */}
+                    <div className="flex-1 overflow-y-auto px-4 py-8">
+                        <div className="space-y-2">
+                            {navLinks.map((link, index) => (
                                 <a
                                     key={link.label}
                                     href={link.href}
                                     onClick={() => setMobileOpen(false)}
-                                    className="block px-3 py-2.5 text-sm font-medium text-[#64748B] hover:text-[#102A43] hover:bg-white rounded-lg transition-colors"
+                                    className="mobile-menu-item group flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-[#FFF5F5] transition-all duration-200"
+                                    style={{ animationDelay: `${0.1 + index * 0.08}s` }}
                                 >
-                                    {link.label}
+                                    <span className="text-xl font-semibold text-[#102A43] group-hover:text-[#E63946] transition-colors duration-200">
+                                        {link.label}
+                                    </span>
+                                    <span className="w-9 h-9 rounded-full bg-[#E63946] flex items-center justify-center text-white flex-shrink-0">
+                                        <ArrowRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                    </span>
                                 </a>
                             ))}
-                            <div className="flex flex-col gap-2 pt-3 px-3">
-                                <button
-                                    onClick={() => navigate("/auth")}
-                                    className="text-sm font-medium text-[#102A43] py-2"
-                                >
-                                    Login
-                                </button>
-                                <button
-                                    onClick={() => navigate("/auth")}
-                                    className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
-                                >
-                                    Post a Job
-                                </button>
-                                <button
-                                    onClick={() => { setMobileOpen(false); window.scrollTo(0, 0); }}
-                                    className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full text-center"
-                                >
-                                    Contact Us
-                                </button>
-                            </div>
                         </div>
                     </div>
+
+                    {/* Auth Buttons */}
+                    <div
+                        className="px-6 pb-10 pt-4 border-t border-[#E5E7EB] flex flex-col gap-3 flex-shrink-0 mobile-menu-auth"
+                        style={{ animationDelay: `${0.1 + navLinks.length * 0.08}s` }}
+                    >
+                        <button
+                            onClick={() => { navigate("/auth"); setMobileOpen(false); }}
+                            className="text-sm font-medium text-[#102A43] py-2"
+                        >
+                            Login
+                        </button>
+                        <button
+                            onClick={() => { navigate("/auth"); setMobileOpen(false); }}
+                            className="landing-btn-primary bg-[#E63946] text-white text-sm font-semibold px-5 py-3 rounded-full"
+                        >
+                            Post a Job
+                        </button>
+                        <button
+                            onClick={() => { setMobileOpen(false); window.scrollTo(0, 0); }}
+                            className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-3 rounded-full"
+                        >
+                            Contact Us
+                        </button>
+                    </div>
                 </div>
-            </nav>
+            )}
 
             {/* Main Content */}
             <main className="flex-1 max-w-7xl w-full mx-auto px-6 pt-32 pb-24 relative z-10 grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
