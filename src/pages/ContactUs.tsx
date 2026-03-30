@@ -4,6 +4,7 @@ import { Mail, MapPin, Phone, Send, Loader2, Menu, X, ArrowRight } from "lucide-
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import "./landing.css";
 
 export default function ContactUs() {
     const navigate = useNavigate();
@@ -75,7 +76,7 @@ export default function ContactUs() {
                         </div>
 
                         {/* Desktop Nav Links */}
-                        <div className="hidden lg:flex items-center gap-8">
+                        <div className="hidden lg:flex items-center gap-7">
                             {navLinks.map((link) => (
                                 <a
                                     key={link.label}
@@ -88,28 +89,28 @@ export default function ContactUs() {
                         </div>
 
                         {/* Auth Actions */}
-                        <div className="hidden lg:flex items-center gap-4">
+                        <div className="hidden lg:flex items-center gap-3">
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-sm font-medium text-[#64748B] hover:text-[#102A43] transition-colors"
+                                className="text-sm font-medium text-[#64748B] hover:text-[#102A43] transition-colors px-3 py-2"
                             >
                                 Login
                             </button>
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="text-sm font-medium text-[#102A43] hover:text-[#102A43] transition-colors"
+                                className="text-sm font-medium text-[#102A43] hover:text-[#102A43] transition-colors px-3 py-2"
                             >
                                 Sign Up
                             </button>
                             <button
                                 onClick={() => navigate("/auth")}
-                                className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full"
+                                className="landing-btn-primary bg-[#E63946] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
                             >
                                 Post a Job
                             </button>
                             <button
                                 onClick={() => window.scrollTo(0, 0)}
-                                className="landing-btn-primary bg-[#E63946] text-white text-sm font-medium px-5 py-2.5 rounded-full"
+                                className="landing-btn-secondary bg-white text-[#102A43] text-sm font-medium px-5 py-2.5 rounded-full border border-[#E5E7EB]"
                             >
                                 Contact Us
                             </button>
