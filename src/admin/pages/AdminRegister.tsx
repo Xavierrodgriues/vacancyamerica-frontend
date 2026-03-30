@@ -168,7 +168,7 @@ export default function AdminRegister() {
             <div className="bg-white rounded-3xl shadow-[0_8px_40px_-12px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col lg:flex-row max-w-[1100px] w-full min-h-[700px] border border-[#E5E7EB]">
 
                 {/* Back to home */}
-                <Link
+                {/* <Link
                     to="/"
                     className="absolute top-5 right-5 md:top-7 md:right-7 z-20 inline-flex items-center gap-2 bg-[#E63946] text-white text-sm font-semibold px-4 py-2 rounded-full shadow-sm hover:shadow-md hover:bg-[#d32f3f] transition-all group"
                 >
@@ -176,7 +176,7 @@ export default function AdminRegister() {
                         <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
                     </svg>
                     Home
-                </Link>
+                </Link> */}
 
                 {/* ─── Left Panel — Admin Registration Content ─── */}
                 <div className="hidden lg:flex w-[45%] bg-[#102A43] relative flex-col justify-between p-10 overflow-hidden text-white">
