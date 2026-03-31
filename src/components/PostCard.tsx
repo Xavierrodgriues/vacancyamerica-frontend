@@ -151,62 +151,65 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
         </p>
       </div>
 
-      {/* Image — fixed height container like LinkedIn so all posts align */}
+      {/* Image — X-style fluid, tight-fitting wrapper */}
       {post.image_url && (
-        <div
-          className="mx-0 relative bg-[#f2f2f2] select-none cursor-zoom-in flex items-center justify-center overflow-hidden"
-          style={{ height: 460 }}
-          onDoubleClick={handleDoubleClick}
-        >
-          {heartAnim && (
-            <div
-              key={heartAnim.id}
-              className="absolute pointer-events-none z-50 animate-heart-float"
-              style={{ left: heartAnim.x, top: heartAnim.y }}
-            >
-              <Heart className="w-20 h-20 fill-rose-500 text-rose-500 drop-shadow-2xl" />
-            </div>
-          )}
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200 animate-pulse" />
-          )}
-          <img
-            src={post.image_url}
-            alt="Post"
-            className={`max-w-full max-h-full w-auto h-auto object-contain transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"}`}
-            loading={priority ? "eager" : "lazy"}
-            onLoad={() => setImageLoaded(true)}
-            {...(priority ? { fetchPriority: "high" } : {})}
-          />
+        <div className="px-4 pb-3 flex justify-center w-full">
+          <div
+            className="relative overflow-hidden rounded-[16px] border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] bg-transparent inline-flex justify-center items-center w-full sm:w-fit"
+            onDoubleClick={handleDoubleClick}
+          >
+            {heartAnim && (
+              <div
+                key={heartAnim.id}
+                className="absolute pointer-events-none z-50 animate-heart-float"
+                style={{ left: heartAnim.x, top: heartAnim.y }}
+              >
+                <Heart className="w-20 h-20 fill-rose-500 text-rose-500 drop-shadow-2xl" />
+              </div>
+            )}
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-slate-50 animate-pulse" />
+            )}
+            <img
+              src={post.image_url}
+              alt="Post"
+              className={`w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[560px] lg:max-h-[600px] object-cover sm:w-auto sm:object-contain transition-opacity duration-500 block ${imageLoaded ? "opacity-100" : "opacity-0"}`}
+              loading={priority ? "eager" : "lazy"}
+              onLoad={() => setImageLoaded(true)}
+              {...(priority ? { fetchPriority: "high" } : {})}
+            />
+          </div>
         </div>
       )}
 
       {/* Video */}
       {post.video_url && (
-        <div
-          ref={containerRef}
-          className="mx-0 relative overflow-hidden select-none bg-black"
-          onDoubleClick={handleDoubleClick}
-        >
-          {heartAnim && (
-            <div
-              key={heartAnim.id}
-              className="absolute pointer-events-none z-50 animate-heart-float"
-              style={{ left: heartAnim.x, top: heartAnim.y }}
-            >
-              <Heart className="w-20 h-20 fill-rose-500 text-rose-500 drop-shadow-2xl" />
-            </div>
-          )}
-          <video
-            ref={videoRef}
-            src={post.video_url}
-            controls
-            loop
-            muted
-            playsInline
-            className="w-full max-h-[560px] object-contain aspect-video"
-            preload="metadata"
-          />
+        <div className="px-4 pb-3 flex justify-center w-full">
+          <div
+            ref={containerRef}
+            className="relative overflow-hidden bg-black rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] inline-flex justify-center items-center w-full sm:w-fit"
+            onDoubleClick={handleDoubleClick}
+          >
+            {heartAnim && (
+              <div
+                key={heartAnim.id}
+                className="absolute pointer-events-none z-50 animate-heart-float"
+                style={{ left: heartAnim.x, top: heartAnim.y }}
+              >
+                <Heart className="w-20 h-20 fill-rose-500 text-rose-500 drop-shadow-2xl" />
+              </div>
+            )}
+            <video
+              ref={videoRef}
+              src={post.video_url}
+              controls
+              loop
+              muted
+              playsInline
+              className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[560px] lg:max-h-[600px] object-cover sm:w-auto sm:object-contain block"
+              preload="metadata"
+            />
+          </div>
         </div>
       )}
 
@@ -239,9 +242,32 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
 
         {/* Share */}
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.origin);
-            toast.success("Link copied!");
+          onClick={async () => {
+            const postUrl = `${window.location.origin}/post/${postId}`;
+            const author = post.profiles.display_name;
+            const appName = "VacancyAmerica";
+            const excerpt = post.content ? (post.content.length > 60 ? post.content.substring(0, 60) + "..." : post.content) : "Check out this post!";
+
+            const shareText = `${author} on ${appName}\n"${excerpt}"\n`;
+
+            const shareData = {
+              title: `${author} on ${appName}`,
+              text: shareText,
+              url: postUrl
+            };
+
+            if (navigator.share) {
+              try {
+                await navigator.share(shareData);
+              } catch (err) {
+                // User cancelled share, silently ignore
+                console.log("Share cancelled or failed", err);
+              }
+            } else {
+              // Fallback for browsers that don't support native share
+              navigator.clipboard.writeText(`${shareText}\n${postUrl}`);
+              toast.success("Link & text copied to clipboard!");
+            }
           }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium text-muted-foreground hover:bg-violet-50 hover:text-violet-600 transition-all duration-150"
         >

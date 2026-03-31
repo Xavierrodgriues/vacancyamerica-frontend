@@ -24,24 +24,28 @@ export function RightSidebar() {
   };
 
   const renderActivityText = (act: any) => {
-    const isActor = act.actor._id === user?._id;
-    const isRecipient = act.recipient._id === user?._id;
+    const isActor = (act.actor._id || act.actor) === user?._id;
+    const isRecipient = (act.recipient._id || act.recipient) === user?._id;
     const actorName = isActor ? "You" : act.actor.display_name;
     const ActorLink = isActor
       ? <span className="font-bold text-[13px]">You</span>
       : <Link to={`/profile/${act.actor.username}`} className="font-bold text-[13px] hover:text-primary transition-colors">{actorName}</Link>;
-    const TargetLink = isRecipient ? "your" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary transition-colors">{act.recipient.display_name}'s</Link>;
+    const TargetLink = isRecipient ? "your" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary transition-colors">{act.recipient?.display_name || ''}'s</Link>;
 
     switch (act.type) {
       case "LIKE": return <>{ActorLink} liked {TargetLink} post</>;
       case "COMMENT": return <>{ActorLink} commented on {TargetLink} post</>;
-      case "FOLLOW": return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary">{act.recipient.display_name}</Link>}</>;
+      case "FOLLOW": return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary">{act.recipient?.display_name || ''}</Link>}</>;
       default: return <>{ActorLink} interacted with {TargetLink}</>;
     }
   };
 
   const getOtherUser = (act: any) => {
-    return act.actor._id === user?._id ? act.recipient : act.actor;
+    // If the actor is the current user, the other user means the recipient.
+    // Since getActivities only fetches activities where recipient is the current user,
+    // if actor === user, then both are the user. We can safely return the `user` object.
+    const isActor = (act.actor._id || act.actor) === user?._id;
+    return isActor ? user : act.actor;
   };
 
   const activities = activityList || [];
@@ -83,7 +87,11 @@ export function RightSidebar() {
                   </div>
                   {act.post?.image_url && act.type !== "FOLLOW" && (
                     <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
-                      <img src={`${BASE_URL}/uploads/${act.post.image_url}`} alt="Post" className="w-full h-full object-cover" />
+                      <img 
+                        src={act.post.image_url.startsWith('http') ? act.post.image_url : `${BASE_URL}/uploads/${act.post.image_url}`} 
+                        alt="Post" 
+                        className="w-full h-full object-cover" 
+                      />
                     </div>
                   )}
                 </div>

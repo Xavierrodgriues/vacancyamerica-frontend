@@ -22,7 +22,8 @@ export function TopNav() {
   const { data: profile } = useProfile();
   const { data: requests } = useFriendRequests();
 
-  const pendingRequestsCount = requests?.filter(r => r.receiver._id === profile?._id && r.status === 'pending').length || 0;
+  const pendingRequestsCount =
+    requests?.filter((r) => r.receiver._id === profile?._id && r.status === "pending").length || 0;
 
   const handleSignOut = async () => {
     await signOut();
@@ -30,62 +31,91 @@ export function TopNav() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-post-border z-50 px-4 md:px-8 flex items-center justify-between shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-      {/* Left: Logo & Search */}
-      <div className="flex items-center gap-6 flex-1">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-b border-slate-100 z-50 px-4 md:px-6 flex items-center justify-between shadow-[0_1px_12px_rgba(0,0,0,0.06)]">
+      
+      {/* Left: Logo + Search */}
+      <div className="flex items-center gap-4 flex-1">
         <Link to="/home" className="flex items-center justify-center flex-shrink-0">
-          <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-12 w-auto" />
+          <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-11 w-auto" />
         </Link>
-        <div className="hidden md:flex relative w-full max-w-sm ml-4">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground/70" />
+        <div className="hidden md:flex relative w-full max-w-[240px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search"
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-full text-[13px] text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-shadow"
+            placeholder="Search…"
+            className="w-full pl-9 pr-4 py-2 bg-slate-100 border border-transparent rounded-full text-[13px] text-foreground placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-primary/30 focus:ring-2 focus:ring-primary/10 transition-all duration-200"
           />
         </div>
       </div>
 
       {/* Center: Nav Icons */}
-      <nav className="hidden md:flex items-center gap-2 justify-center flex-1">
-        {navItems.map((item) => {
-          const isActive = location.pathname.startsWith(item.url) || (item.url === '/home' && location.pathname === '/');
-          return (
-            <Link
-              key={item.title}
-              to={item.url}
-              className={cn(
-                "relative flex flex-col items-center justify-center gap-1 w-[60px] h-16 border-b-[3px] transition-all duration-200",
-                isActive
-                  ? "border-blue-500 text-blue-500"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-slate-50"
-              )}
-            >
-              <div className="relative">
-                <item.icon className={cn("w-6 h-6", isActive && "fill-current stroke-[1.5]")} strokeWidth={isActive ? 1.5 : 2} />
-                {item.title === 'Network' && pendingRequestsCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-[15px] flex items-center justify-center rounded-full leading-none shadow-sm border border-white">
-                    {pendingRequestsCount > 9 ? '9+' : pendingRequestsCount}
-                  </span>
+      <nav className="hidden md:flex items-center justify-center flex-1">
+        <div className="flex items-center">
+          {navItems.map((item) => {
+            const isActive =
+              location.pathname.startsWith(item.url) ||
+              (item.url === "/home" && location.pathname === "/");
+            return (
+              <Link
+                key={item.title}
+                to={item.url}
+                title={item.title}
+                className={cn(
+                  "relative flex flex-col items-center justify-center gap-0.5 w-[68px] h-16 transition-all duration-200 group border-b-[2.5px]",
+                  isActive
+                    ? "border-primary text-primary"
+                    : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
                 )}
-              </div>
-            </Link>
-          );
-        })}
+              >
+                <div className="relative">
+                  <item.icon
+                    className={cn(
+                      "w-[22px] h-[22px] transition-transform duration-150 group-hover:scale-110",
+                      isActive ? "stroke-[2.5]" : "stroke-[1.8]"
+                    )}
+                  />
+                  {/* Badge */}
+                  {item.title === "Network" && pendingRequestsCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 bg-primary text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border-2 border-white shadow-sm">
+                      {pendingRequestsCount > 9 ? "9+" : pendingRequestsCount}
+                    </span>
+                  )}
+                </div>
+                {/* Label */}
+                <span className={cn(
+                  "text-[10px] font-semibold leading-none transition-all duration-150",
+                  isActive ? "text-primary opacity-100" : "text-slate-400 opacity-0 group-hover:opacity-100"
+                )}>
+                  {item.title}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
-      {/* Right: Profile & Switch */}
-      <div className="flex items-center gap-4 justify-end flex-1">
+      {/* Right: Avatar + Sign out */}
+      <div className="flex items-center gap-3 justify-end flex-1">
         {profile ? (
-          <div className="flex items-center gap-3">
-            <Link to={`/profile/${profile.username}`} className="flex items-center gap-2.5 hover:bg-slate-50 py-1.5 px-2 rounded-full transition-colors cursor-pointer border border-transparent hover:border-slate-200">
-              <UserAvatar avatarUrl={profile.avatar_url} displayName={profile.display_name} size="sm" />
-              <div className="hidden lg:block text-left mr-1">
-                <p className="text-[13px] font-bold text-foreground leading-[1.2]">{profile.display_name}</p>
+          <div className="flex items-center gap-2">
+            <Link
+              to={`/profile/${profile.username}`}
+              className="flex items-center gap-2 hover:bg-slate-50 py-1.5 px-2.5 rounded-full transition-all duration-200 border border-transparent hover:border-slate-200 group"
+            >
+              <div className="relative">
+                <UserAvatar avatarUrl={profile.avatar_url} displayName={profile.display_name} size="sm" />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white" />
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-[13px] font-bold text-foreground leading-[1.2] group-hover:text-primary transition-colors">{profile.display_name}</p>
                 <p className="text-[11px] text-muted-foreground leading-[1.2]">@{profile.username}</p>
               </div>
             </Link>
-            <Button variant="ghost" onClick={handleSignOut} className="text-[13px] font-semibold h-8 px-3 rounded-full text-blue-500 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+            <Button
+              variant="ghost"
+              onClick={handleSignOut}
+              className="text-[12px] font-bold h-8 px-4 rounded-full text-primary border border-primary/20 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
+            >
               Switch
             </Button>
           </div>

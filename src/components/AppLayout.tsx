@@ -15,7 +15,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <main className="max-w-[1440px] w-full mx-auto flex gap-6 lg:gap-8 px-4 md:px-8 py-6 items-start justify-center">
         <LeftSidebar />
         
-        <div className="flex-1 max-w-[720px] min-w-0">
+        <div className="flex-1 max-w-[600px] min-w-0">
           {children}
         </div>
         

@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
 import { BASE_URL } from "@/lib/constants";
 
@@ -197,5 +197,34 @@ export function useToggleLike() {
         });
       }
     },
+  });
+}
+
+export function usePost(postId: string | undefined) {
+  const { user } = useAuth();
+  
+  return useQuery({
+    queryKey: ["post", postId],
+    queryFn: async () => {
+      if (!postId) return null;
+      
+      const headers: HeadersInit = {};
+      if (user?.token) {
+        headers["Authorization"] = `Bearer ${user.token}`;
+      }
+      
+      const res = await fetch(`${API}/${postId}`, { headers });
+      if (!res.ok) {
+        if (res.status === 404) throw new Error("Post not found");
+        throw new Error("Failed to fetch post");
+      }
+      
+      const data = await res.json();
+      return {
+        ...data,
+        profiles: data.user || { username: "unknown", display_name: "Unknown", avatar_url: null }
+      };
+    },
+    enabled: !!postId,
   });
 }

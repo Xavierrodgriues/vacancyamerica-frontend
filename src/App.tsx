@@ -28,6 +28,7 @@ const AdminDashboard = lazy(() => import("./admin/pages/AdminDashboard"));
 const SuperAdminLogin = lazy(() => import("./admin/pages/SuperAdminLogin"));
 const SuperAdminRegister = lazy(() => import("./admin/pages/SuperAdminRegister"));
 const SuperAdminDashboard = lazy(() => import("./admin/pages/SuperAdminDashboard"));
+const PostDetail = lazy(() => import("./pages/PostDetail"));
 
 const queryClient = new QueryClient();
 
@@ -126,6 +127,7 @@ const App = () => (
                     <Route path="/network" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Network /></Suspense></ProtectedRoute>} />
                     <Route path="/messages" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Messages /></Suspense></ProtectedRoute>} />
                     <Route path="/profile/:username" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><Profile /></Suspense></ProtectedRoute>} />
+                    <Route path="/post/:id" element={<ProtectedRoute><Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><PostDetail /></Suspense></ProtectedRoute>} />
 
                     {/* Admin routes */}
                     <Route path="/admin/login" element={<Suspense fallback={<Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mt-20" />}><AdminLogin /></Suspense>} />
