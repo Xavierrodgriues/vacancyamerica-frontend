@@ -1,5 +1,4 @@
 import { UserAvatar } from "@/components/UserAvatar";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
 import { useActivity } from "@/hooks/use-activity";
@@ -7,6 +6,7 @@ import { useFriends } from "@/hooks/use-friends";
 import { useSuggestedUsers } from "@/hooks/use-suggested-users";
 import { formatDistanceToNow } from "date-fns";
 import { BASE_URL } from "@/lib/constants";
+import { Activity, Sparkles, Heart, MessageCircle, UserPlus } from "lucide-react";
 
 export function RightSidebar() {
   const { user } = useAuth();
@@ -14,106 +14,140 @@ export function RightSidebar() {
   const { data: friends } = useFriends();
   const { data: suggestedProfiles = [] } = useSuggestedUsers();
 
-  const renderActivityText = (act: any) => {
-      const isActor = act.actor._id === user?._id;
-      const isRecipient = act.recipient._id === user?._id;
-      
-      const actorName = isActor ? "You" : act.actor.display_name;
-      const targetName = isRecipient ? "your" : `${act.recipient.display_name}'s`;
-      
-      const ActorLink = isActor ? <span className="font-bold text-[14px] mr-1">You</span> : <Link to={`/profile/${act.actor.username}`} className="font-bold text-[14px] hover:underline mr-1">{actorName}</Link>;
-      const TargetLink = isRecipient ? "your" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:underline">{act.recipient.display_name}'s</Link>;
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case "LIKE": return <Heart className="h-3 w-3 text-rose-500 fill-rose-500" />;
+      case "COMMENT": return <MessageCircle className="h-3 w-3 text-sky-500" />;
+      case "FOLLOW": return <UserPlus className="h-3 w-3 text-emerald-500" />;
+      default: return <Activity className="h-3 w-3 text-primary" />;
+    }
+  };
 
-      switch(act.type) {
-          case 'LIKE': 
-              return <>{ActorLink} liked {TargetLink} post.</>;
-          case 'COMMENT': 
-              return <>{ActorLink} commented on {TargetLink} post.</>;
-          case 'FOLLOW': 
-              return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:underline">{act.recipient.display_name}</Link>}.</>;
-          default: 
-              return <>{ActorLink} interacted with {TargetLink}.</>;
-      }
+  const renderActivityText = (act: any) => {
+    const isActor = act.actor._id === user?._id;
+    const isRecipient = act.recipient._id === user?._id;
+    const actorName = isActor ? "You" : act.actor.display_name;
+    const ActorLink = isActor
+      ? <span className="font-bold text-[13px]">You</span>
+      : <Link to={`/profile/${act.actor.username}`} className="font-bold text-[13px] hover:text-primary transition-colors">{actorName}</Link>;
+    const TargetLink = isRecipient ? "your" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary transition-colors">{act.recipient.display_name}'s</Link>;
+
+    switch (act.type) {
+      case "LIKE": return <>{ActorLink} liked {TargetLink} post</>;
+      case "COMMENT": return <>{ActorLink} commented on {TargetLink} post</>;
+      case "FOLLOW": return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient.username}`} className="font-semibold hover:text-primary">{act.recipient.display_name}</Link>}</>;
+      default: return <>{ActorLink} interacted with {TargetLink}</>;
+    }
   };
 
   const getOtherUser = (act: any) => {
-      return act.actor._id === user?._id ? act.recipient : act.actor;
+    return act.actor._id === user?._id ? act.recipient : act.actor;
   };
 
   const activities = activityList || [];
 
   return (
-    <aside className="hidden lg:flex flex-col gap-6 w-[320px] flex-shrink-0 sticky top-[88px] h-fit pb-6">
+    <aside className="hidden lg:flex flex-col gap-4 w-[300px] flex-shrink-0 sticky top-[88px] h-fit pb-6">
       {/* Activity */}
-      <div className="bg-white rounded-2xl border border-post-border p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-bold text-[15px] text-foreground">Activity</h3>
-          <span className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</span>
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-[13px] text-foreground flex items-center gap-2">
+            <Activity className="h-3.5 w-3.5 text-primary" />
+            Activity
+          </h3>
+          <span className="text-[11px] text-primary font-semibold cursor-pointer hover:text-primary/80 transition-colors">See all</span>
         </div>
-        
+
         {activities.length > 0 ? (
-          <div className="space-y-6 max-h-[350px] overflow-y-auto overflow-x-hidden pr-2">
+          <div className="space-y-4 max-h-[320px] overflow-y-auto overflow-x-hidden pr-1">
             {activities.map((act) => {
               const otherUser = getOtherUser(act);
               return (
-              <div key={act._id} className="flex items-start gap-3">
-                <Link to={`/profile/${otherUser.username}`} className="w-[38px] h-[38px] rounded-full flex-shrink-0 shadow-sm overflow-hidden border border-slate-100 block">
-                  <UserAvatar avatarUrl={otherUser.avatar_url} displayName={otherUser.display_name} />
-                </Link>
-                <div className="flex-1 min-w-0 pt-0.5 mt-[-2px]">
-                  <p className="text-[13px] text-foreground leading-[1.35]">
-                    {renderActivityText(act)}
-                    <span className="text-muted-foreground whitespace-nowrap ml-1 text-[11px] block mt-0.5">
-                      {formatDistanceToNow(new Date(act.createdAt), { addSuffix: true }).replace('about ', '')}
+                <div key={act._id} className="flex items-start gap-2.5 group">
+                  <div className="relative flex-shrink-0">
+                    <Link to={`/profile/${otherUser.username}`} className="w-9 h-9 rounded-full overflow-hidden border border-slate-100 block shadow-sm">
+                      <UserAvatar avatarUrl={otherUser.avatar_url} displayName={otherUser.display_name} />
+                    </Link>
+                    {/* Activity type badge */}
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                      {getActivityIcon(act.type)}
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12.5px] text-foreground leading-snug">
+                      {renderActivityText(act)}
+                    </p>
+                    <span className="text-[11px] text-muted-foreground mt-0.5 block">
+                      {formatDistanceToNow(new Date(act.createdAt), { addSuffix: true }).replace("about ", "")}
                     </span>
-                  </p>
+                  </div>
+                  {act.post?.image_url && act.type !== "FOLLOW" && (
+                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
+                      <img src={`${BASE_URL}/uploads/${act.post.image_url}`} alt="Post" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
-                {act.post?.image_url && act.type !== 'FOLLOW' && (
-                   <div className="w-10 h-10 rounded-md overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
-                     <img src={`${BASE_URL}/uploads/${act.post.image_url}`} alt="Post content" className="w-full h-full object-cover" />
-                   </div>
-                )}
-              </div>
-            )})}
+              );
+            })}
           </div>
         ) : (
-          <div className="text-center py-4">
-             <p className="text-sm text-muted-foreground">No recent activity.</p>
+          <div className="text-center py-6">
+            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-2">
+              <Activity className="h-5 w-5 text-slate-300" />
+            </div>
+            <p className="text-[12px] text-muted-foreground">No recent activity</p>
           </div>
         )}
       </div>
 
-      {/* Suggested */}
-      <div className="bg-white rounded-2xl border border-post-border p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-bold text-[15px] text-foreground">Suggested For you</h3>
-          <Link to="/explore" className="text-xs font-medium text-muted-foreground cursor-pointer hover:text-foreground transition-colors">See all</Link>
+      {/* Suggested For You */}
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-[13px] text-foreground flex items-center gap-2">
+            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+            Suggested For You
+          </h3>
+          <Link to="/explore" className="text-[11px] text-primary font-semibold hover:text-primary/80 transition-colors">
+            See all
+          </Link>
         </div>
-        
+
         {suggestedProfiles.length > 0 ? (
-          <div className="space-y-5 max-h-[300px] overflow-y-auto overflow-x-hidden pr-2">
+          <div className="space-y-3 max-h-[280px] overflow-y-auto overflow-x-hidden pr-1">
             {suggestedProfiles.map((p: any) => (
-              <div key={p.username} className="flex items-center gap-3">
-                <Link to={`/profile/${p.username}`} className="w-[40px] h-[40px] rounded-full flex-shrink-0 shadow-sm overflow-hidden border border-slate-100">
+              <div key={p.username} className="flex items-center gap-3 group p-2 rounded-xl hover:bg-slate-50 transition-colors duration-150">
+                <Link to={`/profile/${p.username}`} className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden border border-slate-100 shadow-sm">
                   <UserAvatar avatarUrl={p.avatar_url} displayName={p.display_name} size="md" />
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <Link to={`/profile/${p.username}`} className="hover:underline">
-                    <p className="text-[14px] font-bold text-foreground truncate leading-tight">{p.display_name}</p>
+                  <Link to={`/profile/${p.username}`}>
+                    <p className="text-[13px] font-bold text-foreground truncate leading-tight group-hover:text-primary transition-colors">{p.display_name}</p>
                   </Link>
-                  <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5">@{p.username}</p>
+                  <p className="text-[11px] text-muted-foreground truncate leading-tight">@{p.username}</p>
                 </div>
-                <Button variant="ghost" className="font-semibold text-[13px] text-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-colors h-8 px-3 rounded-full">
-                  Follow
-                </Button>
+                <Link to={`/profile/${p.username}`}>
+                  <button className="text-[12px] font-bold text-primary border border-primary/30 hover:bg-primary hover:text-white rounded-full px-3 py-1 transition-all duration-200 flex-shrink-0">
+                    Follow
+                  </button>
+                </Link>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-4">
-             <p className="text-sm text-muted-foreground">No users to suggest.</p>
+          <div className="text-center py-6">
+            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center mx-auto mb-2">
+              <Sparkles className="h-5 w-5 text-slate-300" />
+            </div>
+            <p className="text-[12px] text-muted-foreground">No suggestions yet</p>
           </div>
         )}
+      </div>
+
+      {/* Footer links */}
+      <div className="px-2">
+        <p className="text-[11px] text-slate-400 leading-relaxed">
+          © 2025 VacancyAmerica · <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link> · <span className="hover:text-primary transition-colors cursor-pointer">Privacy</span> · <span className="hover:text-primary transition-colors cursor-pointer">Terms</span>
+        </p>
       </div>
     </aside>
   );

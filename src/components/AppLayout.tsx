@@ -7,7 +7,7 @@ import { SupportChatbot } from "@/components/SupportChatbot";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ background: "linear-gradient(145deg, #f8f9fc 0%, #f1f4f9 50%, #f5f3ff10 100%)" }}>
       <TopNav />
       {/* Spacer for fixed nav */}
       <div className="h-16" />
