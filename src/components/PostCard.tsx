@@ -93,10 +93,13 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
     }, 1000);
   };
 
+
+
   return (
     <article className="bg-white rounded-2xl border border-post-border shadow-sm hover:shadow-md transition-all sm:mx-4 sm:my-4 mx-0 my-2 overflow-hidden">
       <div className="p-4">
-        <div className="flex gap-3">
+        {/* Header: avatar + name/time in a flex row */}
+        <div className="flex gap-3 items-start">
           <Link to={`/profile/${post.profiles.username}`} className="flex-shrink-0">
             <UserAvatar
               avatarUrl={post.profiles.avatar_url}
@@ -121,123 +124,126 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
               <span className="text-muted-foreground">·</span>
               <span className="text-muted-foreground text-sm">{timeAgo(createdAt)}</span>
             </div>
+          </div>
+        </div>
 
-            <p className="mt-1 text-foreground whitespace-pre-wrap break-words leading-relaxed">
-              {post.content}
-            </p>
+        {/* Post content — starts from the left edge, below the header row */}
+        <p className="mt-2 text-foreground whitespace-pre-wrap break-words leading-relaxed">
+          {post.content}
+        </p>
 
-            {post.image_url && (
-              <div 
-                className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-muted/30 relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] select-none"
-                onDoubleClick={handleDoubleClick}
+        {/* Image — full width (no left indent), like LinkedIn */}
+        {post.image_url && (
+          <div 
+            className="mt-3 rounded-2xl overflow-hidden border border-post-border bg-muted/30 relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] select-none"
+            onDoubleClick={handleDoubleClick}
+          >
+            {heartAnim && (
+              <div
+                key={heartAnim.id}
+                className="absolute pointer-events-none z-50 animate-heart-float"
+                style={{ left: heartAnim.x, top: heartAnim.y }}
               >
-                {heartAnim && (
-                  <div
-                    key={heartAnim.id}
-                    className="absolute pointer-events-none z-50 animate-heart-float"
-                    style={{ left: heartAnim.x, top: heartAnim.y }}
-                  >
-                    <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
-                  </div>
-                )}
-                {!imageLoaded && (
-                  <div className="absolute inset-0 bg-muted animate-pulse" />
-                )}
-                <img
-                  src={post.image_url}
-                  alt="Post"
-                  className={`max-h-[512px] w-full object-contain transition-opacity duration-300 relative ${imageLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                  loading={priority ? "eager" : "lazy"}
-                  onLoad={() => setImageLoaded(true)}
-                  {...(priority ? { fetchPriority: "high" } : {})}
-                />
+                <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
               </div>
             )}
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-muted animate-pulse" />
+            )}
+            <img
+              src={post.image_url}
+              alt="Post"
+              className={`max-h-[512px] w-full object-contain transition-opacity duration-300 relative ${imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
+              loading={priority ? "eager" : "lazy"}
+              onLoad={() => setImageLoaded(true)}
+              {...(priority ? { fetchPriority: "high" } : {})}
+            />
+          </div>
+        )}
 
-            {post.video_url && (
-              <div 
-                ref={containerRef} 
-                className="mt-3 rounded-2xl overflow-hidden border border-post-border relative select-none"
-                onDoubleClick={handleDoubleClick}
+        {/* Video — full width, like LinkedIn */}
+        {post.video_url && (
+          <div 
+            ref={containerRef} 
+            className="mt-3 rounded-2xl overflow-hidden border border-post-border relative select-none"
+            onDoubleClick={handleDoubleClick}
+          >
+            {heartAnim && (
+              <div
+                key={heartAnim.id}
+                className="absolute pointer-events-none z-50 animate-heart-float"
+                style={{ left: heartAnim.x, top: heartAnim.y }}
               >
-                {heartAnim && (
-                  <div
-                    key={heartAnim.id}
-                    className="absolute pointer-events-none z-50 animate-heart-float"
-                    style={{ left: heartAnim.x, top: heartAnim.y }}
-                  >
-                    <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
-                  </div>
-                )}
-                <video
-                  ref={videoRef}
-                  src={post.video_url}
-                  controls
-                  /* autoPlay removed, managed by observer */
-                  loop
-                  muted
-                  playsInline
-                  className="w-full max-h-[600px] object-contain bg-black aspect-video"
-                  preload="metadata"
-                />
+                <Heart className="w-24 h-24 fill-rose-500 text-rose-500 drop-shadow-2xl opacity-90" />
               </div>
             )}
+            <video
+              ref={videoRef}
+              src={post.video_url}
+              controls
+              loop
+              muted
+              playsInline
+              className="w-full max-h-[600px] object-contain bg-black aspect-video"
+              preload="metadata"
+            />
+          </div>
+        )}
 
-            <div className="flex items-center gap-6 mt-3 -ml-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2 ${showComments ? "text-primary" : ""}`}
-                onClick={() => setShowComments(!showComments)}
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span className="text-sm">Reply</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`rounded-full gap-1.5 px-2 transition-all duration-200 ${liked
-                  ? "text-destructive hover:text-destructive/80"
-                  : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                  }`}
-                onClick={handleLike}
-                disabled={toggleLike.isPending}
-              >
-                <Heart
-                  className={`h-4 w-4 transition-transform duration-200 ${liked ? "fill-current scale-110" : ""
-                    }`}
-                />
-                {likesCount > 0 && (
-                  <span className="text-sm tabular-nums">{formatCompactNumber(likesCount)}</span>
-                )}
-              </Button>
+        {/* Action buttons */}
+        <div className="flex items-center gap-6 mt-3 -ml-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2 ${showComments ? "text-primary" : ""}`}
+            onClick={() => setShowComments(!showComments)}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-sm">Reply</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`rounded-full gap-1.5 px-2 transition-all duration-200 ${liked
+              ? "text-destructive hover:text-destructive/80"
+              : "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              }`}
+            onClick={handleLike}
+            disabled={toggleLike.isPending}
+          >
+            <Heart
+              className={`h-4 w-4 transition-transform duration-200 ${liked ? "fill-current scale-110" : ""
+                }`}
+            />
+            {likesCount > 0 && (
+              <span className="text-sm tabular-nums">{formatCompactNumber(likesCount)}</span>
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.origin);
+              toast.success("Link copied!");
+            }}
+          >
+            <Share className="h-4 w-4" />
+          </Button>
+          {/* Follow button - visible if not own post and not already a friend */}
+          {user && post.profiles.username !== user.username && !isFriend && (
+            <Link to={`/profile/${post.profiles.username}`}>
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.origin);
-                  toast.success("Link copied!");
-                }}
               >
-                <Share className="h-4 w-4" />
+                <UserPlus className="h-4 w-4" />
+                <span className="text-sm">Follow</span>
               </Button>
-              {/* Follow button - visible if not own post and not already a friend */}
-              {user && post.profiles.username !== user.username && !isFriend && (
-                <Link to={`/profile/${post.profiles.username}`}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full gap-1.5 px-2"
-                  >
-                    <UserPlus className="h-4 w-4" />
-                    <span className="text-sm">Follow</span>
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
+            </Link>
+          )}
         </div>
       </div>
       {showComments && (
