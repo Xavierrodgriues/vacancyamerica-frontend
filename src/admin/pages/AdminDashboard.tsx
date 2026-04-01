@@ -57,6 +57,8 @@ export default function AdminDashboard() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [unreadMsgCount, setUnreadMsgCount] = useState(0);
+    const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const [notificationOpen, setNotificationOpen] = useState(false);
     const activeTabRef = useRef(activeTab);
 
     // Track previous level for animations
@@ -233,34 +235,7 @@ export default function AdminDashboard() {
                     </div>
                 </nav>
 
-                {/* Bottom: User Card + Logout */}
-                <div className="px-4 py-4 border-t border-slate-100">
-                    <div className={`flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-50 mb-3 transition-colors ${isCollapsed ? 'bg-transparent' : ''}`}>
-                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                            <User className="w-4 h-4 text-indigo-600" />
-                        </div>
-                        <div className={`flex-1 min-w-0 transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}`}>
-                            <p className="text-sm font-semibold text-slate-700 truncate">{admin.display_name}</p>
-                            <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">Level {admin.admin_level || 0}</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        onClick={handleLogout}
-                        title={isCollapsed ? 'Log out' : ''}
-                        className={`group relative w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold text-slate-400 hover:text-rose-500 transition-all duration-300 overflow-hidden ${isCollapsed ? 'justify-center' : ''}`}
-                    >
-                        <div className="absolute inset-0 bg-rose-50 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out z-0" />
-                        <div className="relative z-10 flex items-center gap-3 w-full">
-                            <LogOut className="w-[18px] h-[18px] flex-shrink-0 group-hover:-translate-x-1 transition-transform duration-300" />
-                            <span className={`transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
-                                Log out
-                            </span>
-                        </div>
-                    </button>
-                </div>
+                {/* Removed bottom sidebar User Card/Logout - moved to top header for mobile visibility */}
             </aside>
 
             {/* --- Main Content --- */}
@@ -290,13 +265,82 @@ export default function AdminDashboard() {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <button className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors relative">
-                                <Bell className="w-[18px] h-[18px] text-slate-500" />
-                                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
-                            </button>
-                            <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                                <User className="w-[18px] h-[18px] text-indigo-600" />
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            {/* Notification Dropdown */}
+                            <div className="relative">
+                                <button 
+                                    onClick={() => setNotificationOpen(!notificationOpen)}
+                                    onBlur={() => setTimeout(() => setNotificationOpen(false), 200)}
+                                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-sm ${notificationOpen ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-500'}`}
+                                >
+                                    <Bell className="w-5 h-5" />
+                                    <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white animate-pulse" />
+                                </button>
+                                
+                                {notificationOpen && (
+                                    <div className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 z-50 animate-in fade-in slide-in-from-top-4 origin-top-right">
+                                        <div className="flex items-center gap-3 mb-3">
+                                            <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center">
+                                                <Bell className="w-4 h-4 text-rose-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-sm font-bold text-slate-800 tracking-tight">System Alerts</h4>
+                                                <p className="text-[11px] font-semibold text-slate-400">You're fully caught up!</p>
+                                            </div>
+                                        </div>
+                                        <div className="h-px bg-slate-100 w-full mb-3" />
+                                        <div className="py-8 text-center bg-slate-50/50 rounded-xl border border-slate-100 border-dashed">
+                                            <div className="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                                            </div>
+                                            <p className="text-sm font-bold text-slate-500">Inbox Zero</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Profile Dropdown */}
+                            <div className="relative">
+                                <button 
+                                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                                    onBlur={() => setTimeout(() => setProfileDropdownOpen(false), 200)}
+                                    className={`flex items-center gap-2 pl-2 pr-3 h-10 rounded-xl border transition-all shadow-sm ${profileDropdownOpen ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-50' : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}
+                                >
+                                    <div className="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+                                        <User className="w-3.5 h-3.5 text-white" />
+                                    </div>
+                                    <span className={`text-sm font-bold truncate max-w-[100px] hidden sm:block ${profileDropdownOpen ? 'text-indigo-700' : 'text-slate-700'}`}>
+                                        {admin.display_name}
+                                    </span>
+                                    <ChevronDown className={`w-4 h-4 transition-transform hidden sm:block ${profileDropdownOpen ? 'rotate-180 text-indigo-500' : 'text-slate-400'}`} />
+                                </button>
+
+                                {profileDropdownOpen && (
+                                    <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-2 z-50 animate-in fade-in slide-in-from-top-4 origin-top-right">
+                                        <div className="px-3 py-3 border-b border-slate-100 mb-2 relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full blur-2xl opacity-50 -translate-y-1/2 translate-x-1/3" />
+                                            <div className="relative z-10">
+                                                <p className="text-sm font-bold text-slate-800 tracking-tight truncate">{admin.display_name}</p>
+                                                <p className="text-[11px] font-semibold text-slate-400 truncate mt-0.5">@{admin.username}</p>
+                                                <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100/50">
+                                                    <Shield className="w-3 h-3" /> Level {admin.admin_level || 0}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => setActiveTab('privileges')}
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors"
+                                        >
+                                            <Shield className="w-4 h-4" /> My Privileges
+                                        </button>
+                                        <button 
+                                            onClick={handleLogout}
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors mt-1"
+                                        >
+                                            <LogOut className="w-4 h-4" /> Log out
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
