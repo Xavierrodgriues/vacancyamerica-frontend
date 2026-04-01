@@ -651,6 +651,53 @@ function AnimatedDropdown({ value, onChange, options, align = "left", className 
 }
 
 // --- Posts View -------------------------------------------------------------
+function AdminFilterDropdown({ value, onChange, options, align = "left" }: any) {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const selectedOption = options.find((opt: any) => opt.value === value) || options[0];
+
+    return (
+        <div className="relative w-full" ref={dropdownRef}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`w-full px-4 py-2.5 rounded-xl bg-white border text-sm font-semibold transition-all duration-200 flex items-center justify-between gap-2 shadow-sm ${isOpen ? 'border-indigo-500 ring-1 ring-indigo-500 text-indigo-600' : 'border-slate-200 text-slate-700 hover:border-slate-300'}`}
+            >
+                <span className="truncate">{selectedOption.label}</span>
+                <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600' : 'text-slate-400'}`} />
+            </button>
+
+            {isOpen && (
+                <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} top-full mt-2 w-full sm:min-w-[180px] bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden z-[60] py-1 animate-in fade-in slide-in-from-top-2 duration-200`}>
+                    {options.map((option: any) => (
+                        <button
+                            key={option.value}
+                            onClick={() => {
+                                onChange(option.value);
+                                setIsOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors flex items-center justify-between ${value === option.value ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50'}`}
+                        >
+                            {option.label}
+                            {value === option.value && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPreviewPost }: any) {
     const [filterStatus, setFilterStatus] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
@@ -678,185 +725,185 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
     };
 
     if (loading) return <LoadingState />;
-    if (error) return <div className="text-center py-20 text-rose-500 font-bold">Failed to load posts</div>;
+    if (error) return (
+        <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-2xl border border-slate-100 mx-4">
+            <AlertCircle className="w-10 h-10 text-slate-400 mb-4" />
+            <p className="text-slate-500 font-medium">Failed to sync posts.</p>
+        </div>
+    );
 
     return (
-        <div className="space-y-8 pb-10">
-            {/* Action Bar / Floating Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full mb-6">
-                {/* Post Counter Capsule */}
-                <div className="drop-shadow-lg flex items-center gap-3 px-6 py-3.5 bg-white rounded-full border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 cursor-default group">
-                    <span className="relative flex h-3 w-3">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
-                    </span>
-                    <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                        <span className="text-emerald-500 text-sm group-hover:scale-110 transition-transform">{posts.length}</span> POSTS FOUND
-                    </p>
-                </div>
-
-                {/* Filters, Sorts & Create Button Container */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto z-20">
-                    {/* Filter Status */}
-                    <AnimatedDropdown
-                        value={filterStatus}
-                        onChange={(val: string) => { setFilterStatus(val); setPage(1); }}
-                        options={[
-                            { value: 'all', label: 'All Posts' },
-                            { value: 'published', label: 'Published' },
-                            { value: 'pending', label: 'Pending' },
-                            { value: 'rejected', label: 'Rejected' }
-                        ]}
-                    />
-
-                    {/* Sort By */}
-                    <AnimatedDropdown
-                        value={sortBy}
-                        onChange={(val: string) => { setSortBy(val); setPage(1); }}
-                        options={[
-                            { value: 'newest', label: 'Newest First' },
-                            { value: 'oldest', label: 'Oldest First' },
-                            { value: 'most_likes', label: 'Most Likes' },
-                            { value: 'least_likes', label: 'Least Likes' },
-                            { value: 'most_comments', label: 'Most Comments' },
-                            { value: 'least_comments', label: 'Least Comments' }
-                        ]}
-                    />
-
-                    {/* Create Button */}
+        <div className="space-y-6 md:space-y-8 pb-10 w-full animate-in fade-in duration-500 px-1 sm:px-0">
+            {/* Header section */}
+            <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-6 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+                            Community Posts
+                            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-md text-xs font-bold">{posts.length}</span>
+                        </h2>
+                        <p className="text-sm text-slate-500 mt-1">Review, approve, or delete user content.</p>
+                    </div>
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="w-full sm:w-auto drop-shadow-lg flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 active:scale-95 text-white px-8 py-3.5 rounded-full transition-all duration-500 font-bold text-sm tracking-wide shadow-[0_10px_30px_-10px_rgba(99,102,241,0.6)] hover:shadow-[0_20px_40px_-10px_rgba(99,102,241,0.8)] hover:-translate-y-1"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white px-6 py-2.5 rounded-xl transition-colors font-semibold text-sm shadow-sm"
                     >
-                        <Plus className="w-5 h-5 flex-shrink-0" />
+                        <Plus className="w-4 h-4 shrink-0" />
                         Create New Post
                     </button>
                 </div>
+
+                <div className="h-px w-full bg-slate-100 -my-2 sm:my-0"></div>
+
+                {/* Filters Row */}
+                <div className="grid grid-cols-2 sm:flex sm:flex-row items-center gap-3 w-full sm:justify-end">
+                    <div className="w-full sm:w-44">
+                        <AdminFilterDropdown
+                            value={filterStatus}
+                            onChange={(val: string) => { setFilterStatus(val); setPage(1); }}
+                            align="left"
+                            options={[
+                                { value: 'all', label: 'All Status' },
+                                { value: 'published', label: 'Published' },
+                                { value: 'pending', label: 'Pending' },
+                                { value: 'rejected', label: 'Rejected' }
+                            ]}
+                        />
+                    </div>
+                    <div className="w-full sm:w-48">
+                        <AdminFilterDropdown
+                            value={sortBy}
+                            onChange={(val: string) => { setSortBy(val); setPage(1); }}
+                            align="right"
+                            options={[
+                                { value: 'newest', label: 'Newest First' },
+                                { value: 'oldest', label: 'Oldest First' },
+                                { value: 'most_likes', label: 'Most Likes' },
+                                { value: 'least_likes', label: 'Least Likes' },
+                                { value: 'most_comments', label: 'Most Comments' }
+                            ]}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Post Grid */}
+            {/* Content Grid */}
             {posts.length === 0 ? (
-                <div className="drop-shadow-lg bg-white rounded-[2rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 p-16">
-                    <EmptyState icon={<FileText className="w-10 h-10" />} title="No posts yet" description="Create your first post to get started!" />
+                <div className="bg-white rounded-2xl border border-slate-200 p-12 flex flex-col items-center justify-center text-center shadow-sm">
+                    <div className="w-16 h-16 bg-slate-50 flex items-center justify-center rounded-full mb-4">
+                        <FileText className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-800">No posts found</h3>
+                    <p className="text-slate-500 text-sm mt-1">Adjust filters or create a new post.</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
-                    {posts.map((post: any) => (
-                        <div
-                            key={post._id}
-                            onClick={() => setPreviewPost(post)}
-                            className="drop-shadow-lg group bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-[0_10px_40px_-10px_rgba(0,0,0,0.06)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col relative"
-                        >
-                            {/* Image/Video Container */}
-                            <div className="aspect-video relative overflow-hidden bg-slate-50">
-                                {post.video_url ? (
-                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-                                        <div className="w-16 h-16 rounded-full bg-white/50 backdrop-blur-md flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                                            <Video className="w-8 h-8 text-slate-700" />
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {posts.map((post: any) => {
+                        return (
+                            <div
+                                key={post._id}
+                                onClick={() => setPreviewPost(post)}
+                                className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-indigo-200 cursor-pointer flex flex-col h-full shadow-sm hover:shadow-md transition-all duration-300 relative"
+                            >
+                                {/* Media block */}
+                                <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-100">
+                                    {post.video_url ? (
+                                        <div className="w-full h-full relative flex items-center justify-center bg-slate-900 group-hover:scale-105 transition-transform duration-700">
+                                            {post.thumbnail_url && (
+                                                <img src={post.thumbnail_url} className="absolute inset-0 w-full h-full object-cover opacity-50" alt="" />
+                                            )}
+                                            <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg z-10 border border-white/30">
+                                                <Video className="w-6 h-6 text-white ml-0.5" />
+                                            </div>
                                         </div>
-                                        <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <span className="text-xs font-black px-4 py-2 bg-black/60 rounded-xl text-white backdrop-blur-md flex items-center gap-2 uppercase tracking-widest">
-                                                <Video className="w-3.5 h-3.5" /> Video Preview
-                                            </span>
+                                    ) : post.image_url ? (
+                                        <div className="w-full h-full bg-slate-900 group-hover:scale-105 transition-transform duration-700 relative flex items-center justify-center">
+                                             {/* Blurry background for padded images */}
+                                             <img src={post.image_url} className="absolute inset-0 w-full h-full object-cover opacity-40 blur-md scale-110" alt="" />
+                                             <img
+                                                 src={post.image_url}
+                                                 alt={post.content || 'Post image'}
+                                                 className="w-full h-full object-contain relative z-10 drop-shadow-xl"
+                                             />
                                         </div>
-                                    </div>
-                                ) : post.image_url ? (
-                                    <img
-                                        src={post.image_url}
-                                        alt={post.content || 'Post image'}
-                                        className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-                                        <FileText className="w-12 h-12 text-slate-300 group-hover:scale-110 transition-transform duration-500" />
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+                                            <FileText className="w-12 h-12 text-slate-300" />
+                                        </div>
+                                    )}
 
-                                {/* Overlay Gradient */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                                {/* Delete Button */}
-                                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-2 group-hover:translate-y-0">
+                                    {/* Subdued Status Badge */}
+                                    <div className="absolute top-3 left-3 z-20">
+                                        <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-lg backdrop-blur-md shadow-sm border ${
+                                            post.status === 'published' ? 'bg-emerald-500/95 text-white border-emerald-400' :
+                                            post.status === 'pending' ? 'bg-amber-500/95 text-white border-amber-400' :
+                                            'bg-rose-500/95 text-white border-rose-400'
+                                        }`}>
+                                            {post.status}
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Delete Action - Top Right */}
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleDelete(post._id);
                                         }}
                                         disabled={deletingId === post._id}
-                                        className="p-3 bg-white/90 backdrop-blur-md text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+                                        className="absolute top-3 right-3 p-2 bg-white/95 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all shadow-sm opacity-100 sm:opacity-0 group-hover:opacity-100 z-20 disabled:opacity-50"
                                     >
-                                        <Trash2 className="w-5 h-5" />
+                                        <Trash2 className="w-4 h-4 shrink-0" />
                                     </button>
                                 </div>
 
-                                {/* Status Badge */}
-                                <div className="absolute bottom-4 left-4 z-10">
-                                    <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg flex items-center gap-2 backdrop-blur-md border ${post.status === 'published' ? 'bg-emerald-500/90 text-white shadow-emerald-500/20 border-emerald-400' :
-                                            post.status === 'rejected' ? 'bg-rose-500/90 text-white shadow-rose-500/20 border-rose-400' :
-                                                'bg-amber-500/90 text-amber-50 shadow-amber-500/20 border-amber-400'
-                                        }`}>
-                                        <span className={`w-2 h-2 rounded-full bg-white ${post.status === 'published' ? 'animate-pulse' : ''}`} />
-                                        {post.status}
-                                    </span>
+                                {/* Text content block */}
+                                <div className="p-5 flex-1 flex flex-col bg-white">
+                                    <p className="text-sm text-slate-700 font-semibold line-clamp-3 leading-relaxed mb-4 group-hover:text-indigo-600 transition-colors">
+                                        {post.content || post.caption || 'No specific text content.'}
+                                    </p>
+
+                                    <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-1.5 text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">
+                                                <Heart className="w-3.5 h-3.5 shrink-0" />
+                                                <span className="text-xs font-bold">{post.likesCount || 0}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">
+                                                <MessageCircle className="w-3.5 h-3.5 shrink-0" />
+                                                <span className="text-xs font-bold">{post.commentsCount || 0}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="text-[11px] font-bold tracking-wide text-slate-400">
+                                            {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Card Body */}
-                            <div className="p-6 flex-1 flex flex-col relative z-10 bg-white">
-                                <p className="text-sm text-slate-700 font-bold line-clamp-2 leading-relaxed group-hover:text-indigo-600 transition-colors">
-                                    {post.content || post.caption || 'No text content provided.'}
-                                </p>
-
-                                {/* Engagement quick stats */}
-                                <div className="flex items-center gap-4 mt-4 mb-2">
-                                    <span className="flex items-center gap-1.5 text-xs font-black text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg">
-                                        <Heart className="w-3.5 h-3.5 fill-rose-500" />
-                                        {post.likesCount || 0}
-                                    </span>
-                                    <span className="flex items-center gap-1.5 text-xs font-black text-violet-500 bg-violet-50 px-3 py-1.5 rounded-lg">
-                                        <MessageCircle className="w-3.5 h-3.5 fill-violet-500" />
-                                        {post.commentsCount || 0}
-                                    </span>
-                                </div>
-
-                                {/* Footer Timeline */}
-                                <div className="mt-auto pt-5 mt-5 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                                    <span className="flex items-center gap-1.5">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                    </span>
-                                    {post.scheduledFor && (
-                                        <span className="flex items-center gap-1.5 text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md">
-                                            <Clock className="w-3 h-3" />
-                                            {new Date(post.scheduledFor).toLocaleDateString()}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4 mt-12 mb-8">
+                <div className="flex justify-center items-center gap-3 mt-8 py-4">
                     <button
                         onClick={() => setPage((p: number) => Math.max(1, p - 1))}
                         disabled={page === 1}
-                        className="p-4 rounded-2xl bg-white border border-slate-100 disabled:opacity-40 hover:shadow-[0_10px_20px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 shadow-sm"
+                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent transition-all shadow-sm active:scale-95 bg-white"
                     >
-                        <ChevronLeft className="w-5 h-5 text-slate-600" />
+                        <ChevronLeft className="w-5 h-5 shrink-0" />
                     </button>
-                    <span className="flex items-center px-6 py-4 rounded-2xl bg-white border border-slate-100 text-sm text-slate-600 font-black tracking-widest uppercase shadow-sm">
-                        Page <span className="text-indigo-600 mx-2">{page}</span> of {totalPages}
+                    <span className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 font-bold shadow-sm">
+                        Page <span className="text-indigo-600 mx-1">{page}</span> of {totalPages}
                     </span>
                     <button
                         onClick={() => setPage((p: number) => Math.min(totalPages, p + 1))}
                         disabled={page === totalPages}
-                        className="p-4 rounded-2xl bg-white border border-slate-100 disabled:opacity-40 hover:shadow-[0_10px_20px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 shadow-sm"
+                        className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent transition-all shadow-sm active:scale-95 bg-white"
                     >
-                        <ChevronRight className="w-5 h-5 text-slate-600" />
+                        <ChevronRight className="w-5 h-5 shrink-0" />
                     </button>
                 </div>
             )}
