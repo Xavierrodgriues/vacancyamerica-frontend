@@ -33,7 +33,13 @@ import {
     Heart,
     MessageCircle,
     MessagesSquare,
-    Menu
+    MessageSquare,
+    Menu,
+    Activity,
+    Sparkles,
+    AlertTriangle,
+    Zap,
+    Flame
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
@@ -336,144 +342,145 @@ function OverviewSection() {
 
     if (isLoading) return <LoadingState />;
     if (error || !analytics) return (
-        <div className="text-center py-20 text-slate-400">Failed to load analytics.</div>
+        <div className="flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-3xl border border-slate-100 mx-4">
+            <AlertCircle className="w-10 h-10 text-rose-400 mb-4" />
+            <p className="text-slate-500 font-bold tracking-wide">Failed to sync platform metrics.</p>
+        </div>
     );
 
     const { statusBreakdown, totalLikes, totalComments, chartData, topPosts } = analytics;
-    const maxCount = Math.max(...chartData.map(d => d.count), 1);
-
-    const kpis = [
-        {
-            label: 'Total Posts',
-            value: statusBreakdown.total,
-            icon: <FileText className="w-6 h-6" />,
-            color: 'indigo',
-            bg: 'bg-gradient-to-br from-indigo-500 to-indigo-600',
-            text: 'text-white',
-            shadow: 'shadow-indigo-200',
-        },
-        {
-            label: 'Published',
-            value: statusBreakdown.published,
-            icon: <CheckCircle2 className="w-6 h-6" />,
-            color: 'emerald',
-            bg: 'bg-gradient-to-br from-emerald-400 to-emerald-500',
-            text: 'text-white',
-            shadow: 'shadow-emerald-200',
-        },
-        {
-            label: 'Pending',
-            value: statusBreakdown.pending,
-            icon: <Clock className="w-6 h-6" />,
-            color: 'amber',
-            bg: 'bg-gradient-to-br from-amber-400 to-amber-500',
-            text: 'text-white',
-            shadow: 'shadow-amber-200',
-        },
-        {
-            label: 'Likes',
-            value: totalLikes,
-            icon: <Heart className="w-6 h-6" />,
-            color: 'rose',
-            bg: 'bg-gradient-to-br from-rose-400 to-rose-500',
-            text: 'text-white',
-            shadow: 'shadow-rose-200',
-        },
-        {
-            label: 'Comments',
-            value: totalComments,
-            icon: <MessageCircle className="w-6 h-6" />,
-            color: 'violet',
-            bg: 'bg-gradient-to-br from-violet-400 to-violet-500',
-            text: 'text-white',
-            shadow: 'shadow-violet-200',
-        },
-    ];
-
-    const publishRate = statusBreakdown.total > 0
-        ? Math.round((statusBreakdown.published / statusBreakdown.total) * 100)
-        : 0;
+    
+    // Dynamic Calculations
+    const totalEngagement = totalLikes + (totalComments * 2);
+    const maxCount = Math.max(...chartData.map((d:any) => d.count), 1);
+    const publishRate = statusBreakdown.total > 0 
+        ? Math.round((statusBreakdown.published / statusBreakdown.total) * 100) : 0;
+    const rejectionRate = statusBreakdown.total > 0 
+        ? Math.round((statusBreakdown.rejected / statusBreakdown.total) * 100) : 0;
 
     return (
-        <div className="space-y-8 pb-10">
-            {/* KPI Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                {kpis.map((kpi) => (
-                    <div
-                        key={kpi.label}
-                        className="relative drop-shadow-lg bg-white rounded-[2rem] p-6 flex flex-col gap-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group border border-slate-100 cursor-default"
-                    >
-                        <div className="flex items-center justify-between z-10">
-                            <div className={`w-14 h-14 drop-shadow-lg rounded-2xl ${kpi.bg} shadow-lg ${kpi.shadow} flex items-center justify-center ${kpi.text} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
-                                {kpi.icon}
-                            </div>
-                            <div className={`w-3 h-3 rounded-full ${kpi.bg} animate-pulse shadow-sm`} />
-                        </div>
-                        <div className="relative z-10 mt-2">
-                            <p className="text-4xl font-black text-slate-800 tracking-tighter leading-none">{kpi.value.toLocaleString()}</p>
-                            <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-[0.2em] group-hover:text-slate-600 transition-colors">{kpi.label}</p>
-                        </div>
-                        {/* Decorative background circle */}
-                        <div className={`absolute -right-6 -bottom-6 w-32 h-32 ${kpi.bg} opacity-[0.03] group-hover:opacity-[0.08] rounded-full blur-2xl transition-opacity duration-500`} />
+        <div className="space-y-6 md:space-y-8 pb-10 w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Dynamic Insight Banner */}
+            <div className={`relative overflow-hidden rounded-[2rem] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border shadow-lg transition-all duration-500 hover:shadow-xl ${statusBreakdown.pending > 0 ? 'bg-gradient-to-r from-amber-500 to-orange-400 border-amber-400 shadow-amber-500/20 text-white' : 'bg-gradient-to-r from-indigo-600 to-blue-500 border-indigo-400 shadow-indigo-500/20 text-white'}`}>
+                <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="flex items-center gap-4 sm:gap-6 z-10 w-full">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
+                        {statusBreakdown.pending > 0 ? (
+                            <Clock className="w-8 h-8 text-white animate-pulse" />
+                        ) : (
+                            <Activity className="w-8 h-8 text-white" />
+                        )}
                     </div>
-                ))}
+                    <div className="flex-1">
+                        <h2 className="text-xl sm:text-2xl font-black tracking-tight drop-shadow-sm line-clamp-1">
+                            {statusBreakdown.pending > 0 
+                                ? `${statusBreakdown.pending} Posts Awaiting Review` 
+                                : "Platform Pulse: Healthy"}
+                        </h2>
+                        <p className="text-white/80 font-bold text-xs sm:text-sm mt-1 uppercase tracking-widest line-clamp-1">
+                            {statusBreakdown.pending > 0 
+                                ? "Action recommended to maintain content velocity." 
+                                : `Engagement score is ${totalEngagement.toLocaleString()} today. Keeping up the momentum!`}
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            {/* Chart + Top Posts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* 7-Day Activity Bar Chart */}
-                <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 group/chart relative overflow-hidden flex flex-col">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
+            {/* Next Gen KPIs Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {[
+                    { label: "Live Network", val: statusBreakdown.published, sub: `${publishRate}% Publish Rate`, icon: <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "emerald" },
+                    { label: "Pending queue", val: statusBreakdown.pending, sub: "In Review Stage", icon: <Clock className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "amber" },
+                    { label: "Total Reach", val: totalEngagement, sub: `High interaction`, icon: <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "indigo" },
+                    { label: "Quality Blocked", val: statusBreakdown.rejected, sub: `${rejectionRate}% Rejection Rate`, icon: <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "rose" },
+                ].map((kpi, idx) => {
+                    const colors = {
+                        emerald: "text-emerald-500 bg-emerald-50 border-emerald-100 shadow-emerald-500/10",
+                        amber: "text-amber-500 bg-amber-50 border-amber-100 shadow-amber-500/10",
+                        indigo: "text-indigo-500 bg-indigo-50 border-indigo-100 shadow-indigo-500/10",
+                        rose: "text-rose-500 bg-rose-50 border-rose-100 shadow-rose-500/10"
+                    }[kpi.col as 'emerald' | 'amber' | 'indigo' | 'rose'];
 
-                    <div className="flex items-center justify-between mb-8 relative z-10">
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                    const iconGlow = {
+                        emerald: "from-emerald-400 to-emerald-500 shadow-emerald-200",
+                        amber: "from-amber-400 to-amber-500 shadow-amber-200",
+                        indigo: "from-indigo-400 to-indigo-500 shadow-indigo-200",
+                        rose: "from-rose-400 to-rose-500 shadow-rose-200"
+                    }[kpi.col as 'emerald' | 'amber' | 'indigo' | 'rose'];
+
+                    return (
+                        <div key={idx} className={`relative p-5 sm:p-6 rounded-[2rem] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col justify-between`}>
+                            <div className={`absolute -right-10 -bottom-10 w-32 h-32 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${iconGlow} transition-opacity duration-500 group-hover:opacity-40`} />
+                            
+                            <div className="flex justify-between items-start mb-4 z-10 w-full">
+                                <div className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-gradient-to-br ${iconGlow} text-white flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-500`}>
+                                    {kpi.icon}
+                                </div>
+                                <span className="flex h-3 w-3 relative shrink-0">
+                                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${colors?.split(' ')[1]}`}></span>
+                                    <span className={`relative inline-flex rounded-full h-3 w-3 ${colors?.split(' ')[1]}`}></span>
                                 </span>
-                                <h3 className="text-xl font-black text-slate-800 tracking-tight">Post Activity</h3>
                             </div>
-                            <p className="text-sm font-medium text-slate-400 mt-1 ml-6">Live overview of your platform's pulse</p>
+                            
+                            <div className="z-10 mt-auto">
+                                <p className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter leading-none mb-1 group-hover:scale-105 origin-left transition-transform duration-300">{kpi.val.toLocaleString()}</p>
+                                <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{kpi.label}</p>
+                                <p className={`text-[10px] sm:text-[11px] font-black mt-2 uppercase tracking-wide ${colors?.split(' ')[0]}`}>{kpi.sub}</p>
+                            </div>
                         </div>
-                        <span className="px-4 py-2 rounded-xl bg-slate-50 text-slate-600 text-xs font-black uppercase tracking-widest border border-slate-100 shadow-sm">
-                            Last 7 Days
-                        </span>
+                    )
+                })}
+            </div>
+
+            {/* Dashboard Core: Charts & Trending */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+                
+                {/* Enhanced Activity Chart */}
+                <div className="col-span-1 lg:col-span-8 bg-white border border-slate-100 rounded-[2rem] p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col relative overflow-hidden group/chart h-[350px] sm:h-[400px]">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
+                    
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 z-10">
+                        <div>
+                            <h3 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                                <Activity className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-500" />
+                                Growth Velocity
+                            </h3>
+                            <p className="text-[10px] sm:text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest sm:ml-8">7-Day Trajectory</p>
+                        </div>
+                        <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600 text-[9px] sm:text-[10px] font-black uppercase tracking-widest self-start sm:self-auto">
+                            Auto-updating
+                        </div>
                     </div>
 
-                    <div className="flex items-end gap-4 h-64 mt-auto relative z-10 w-full pt-10">
-                        {chartData.map((day) => {
-                            const heightPct = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
-                            const isToday = day.label === new Date().toLocaleDateString('en-US', { weekday: 'short' });
-                            return (
-                                <div key={day.date} className="flex-1 flex flex-col items-center justify-end gap-3 group/bar h-full relative">
-                                    <div className="w-full flex items-end justify-center relative flex-1 pb-2">
-                                        <div
-                                            className="w-full max-w-[48px] flex flex-col items-center justify-end relative"
-                                            style={{ height: `${Math.max(heightPct, day.count > 0 ? 12 : 6)}%` }}
-                                        >
-                                            {/* Tooltip positioned just above the bar */}
-                                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 text-sm font-black text-indigo-600 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 translate-y-2 group-hover/bar:translate-y-0 drop-shadow-sm bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100 z-30 pointer-events-none">
-                                                {day.count}
-                                            </div>
+                    <div className="flex-1 flex items-end gap-2 sm:gap-4 relative z-10 w-full pt-6 sm:pt-10">
+                        <div className="absolute inset-x-0 inset-y-6 sm:inset-y-8 flex flex-col justify-between pointer-events-none opacity-20">
+                            {[...Array(4)].map((_, i) => (
+                                <div key={i} className="w-full h-px border-b border-dashed border-slate-300" />
+                            ))}
+                        </div>
 
-                                            {/* The actual visual bar */}
-                                            <div
-                                                className={`w-full h-full rounded-2xl transition-all duration-700 ease-in-out group-hover/bar:scale-x-110 relative overflow-hidden ${isToday
-                                                        ? 'bg-gradient-to-t from-indigo-600 via-indigo-500 to-indigo-400 shadow-[0_10px_20px_rgba(99,102,241,0.4)]'
-                                                        : day.count > 0
-                                                            ? 'bg-gradient-to-t from-slate-200 to-slate-100 group-hover/bar:from-indigo-300 group-hover/bar:to-indigo-200 shadow-sm'
-                                                            : 'bg-slate-50'
-                                                    }`}
-                                            >
-                                                <div className="absolute inset-0 bg-white/30 rounded-2xl opacity-0 group-hover/bar:opacity-100 transition-opacity duration-300" />
-                                                {/* Reflection highlight */}
-                                                <div className="absolute top-0 left-0 right-0 h-1 bg-white/40 group-hover/bar:bg-white/60 transition-colors" />
-                                            </div>
+                        {chartData.map((day:any) => {
+                            const heightPct = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
+                            const h = Math.max(heightPct, 8);
+                            const isToday = day.label === new Date().toLocaleDateString('en-US', { weekday: 'short' });
+                            
+                            return (
+                                <div key={day.date} className="flex-1 flex flex-col items-center justify-end gap-2 sm:gap-3 group/bar h-full relative hover:z-20">
+                                    <div className="w-full max-w-[40px] sm:max-w-[56px] flex flex-col items-center justify-end relative h-full pb-1 sm:pb-2">
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-slate-800 text-white text-[10px] sm:text-xs font-black rounded-lg sm:rounded-xl opacity-0 group-hover/bar:opacity-100 group-hover/bar:translate-y-0 translate-y-2 transition-all duration-300 pointer-events-none shadow-xl border border-slate-700 whitespace-nowrap z-50">
+                                            {day.count} Posts
+                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] sm:border-[5px] border-transparent border-t-slate-800" />
+                                        </div>
+                                        
+                                        <div 
+                                            className={`w-full rounded-lg sm:rounded-2xl transition-all duration-700 ease-out group-hover/bar:scale-x-110 relative overflow-hidden ${isToday ? 'bg-gradient-to-t from-indigo-500 to-indigo-400 shadow-[0_10px_30px_rgba(99,102,241,0.4)]' : day.count > 0 ? 'bg-gradient-to-t from-slate-200 to-slate-100 group-hover/bar:from-indigo-300 group-hover/bar:to-indigo-200' : 'bg-slate-50'}`}
+                                            style={{ height: `${h}%` }}
+                                        >
+                                            <div className="absolute inset-0 bg-white/20 opacity-0 group-hover/bar:opacity-100 transition-opacity duration-300" />
                                         </div>
                                     </div>
-                                    <span className={`text-xs font-bold uppercase tracking-widest transition-all duration-300 z-10 ${isToday ? 'text-indigo-600 scale-110 drop-shadow-sm' : 'text-slate-400 group-hover/bar:text-slate-800'}`}>
+                                    <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-colors ${isToday ? 'text-indigo-600' : 'text-slate-400 group-hover/bar:text-slate-800'}`}>
                                         {day.label}
                                     </span>
                                 </div>
@@ -482,118 +489,82 @@ function OverviewSection() {
                     </div>
                 </div>
 
-                {/* Right Panel: Publish Rate + Top Posts */}
-                <div className="flex flex-col gap-8">
-                    {/* Publish Rate donut-style */}
-                    <div className="drop-shadow-lg bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex items-center justify-between group/donut hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                        <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl" />
-
+                {/* Right Column: Mini Donut + Top Posts */}
+                <div className="col-span-1 lg:col-span-4 flex flex-col gap-6 md:gap-8">
+                    
+                    {/* Compact Dynamic Network Ring */}
+                    <div className="bg-white border border-slate-100 rounded-[2rem] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-row items-center justify-between group/donut relative overflow-hidden shrink-0 hover:shadow-lg transition-all duration-300">
                         <div className="relative z-10 flex-1">
-                            <p className="text-xl font-black text-slate-800 tracking-tight">Publish Rate</p>
-                            <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest leading-relaxed">
-                                <span className="text-indigo-600 font-black">{statusBreakdown.published}</span> / {statusBreakdown.total} Live
+                            <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight flex items-center gap-2 mb-1">
+                                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 fill-amber-500/20" /> Active Rate
+                            </h3>
+                            <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                                <span className="text-amber-500 font-black">{statusBreakdown.published}</span> Live of {statusBreakdown.total}
                             </p>
                         </div>
-
-                        <div className="relative w-28 h-28 flex-shrink-0 z-10">
-                            <svg viewBox="0 0 36 36" className="w-28 h-28 -rotate-90 group-hover/donut:scale-110 transition-transform duration-700 ease-out drop-shadow-xl">
-                                <defs>
-                                    <linearGradient id="publishGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#818cf8" />
-                                        <stop offset="100%" stopColor="#4f46e5" />
-                                    </linearGradient>
-                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                                        <feGaussianBlur stdDeviation="2" result="blur" />
-                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                                    </filter>
-                                </defs>
+                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 z-10">
+                             <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 group-hover/donut:scale-110 transition-transform duration-700 ease-out drop-shadow-md">
                                 <circle cx="18" cy="18" r="15.9" fill="none" className="stroke-slate-100" strokeWidth="4" />
                                 <circle
                                     cx="18" cy="18" r="15.9"
                                     fill="none"
-                                    stroke="url(#publishGlow)"
+                                    stroke="currentColor"
                                     strokeWidth="4"
                                     strokeDasharray={`${publishRate} ${100 - publishRate}`}
                                     strokeLinecap="round"
-                                    className="transition-all duration-[1500ms] ease-in-out"
-                                    filter="url(#glow)"
+                                    className="text-amber-500 transition-all duration-[1500ms] ease-in-out drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
                                 />
                             </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-2xl font-black text-slate-800 tracking-tighter">
+                            <span className="absolute inset-0 flex items-center justify-center text-xs sm:text-sm font-black text-slate-800 tracking-tighter">
                                 {publishRate}%
                             </span>
                         </div>
                     </div>
 
-                    {/* Top Posts */}
-                    <div className="drop-shadow-lg bg-white rounded-[2rem] p-7 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] border border-slate-100 flex-1 flex flex-col hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] transition-shadow duration-500">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
-                                <span className="p-1.5 bg-rose-100 rounded-lg text-rose-500">
-                                    <TrendingUp className="w-4 h-4" />
-                                </span>
-                                Trending Posts
+                    {/* Trending Scroll */}
+                    <div className="bg-white border border-slate-100 rounded-[2rem] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col flex-1 relative overflow-hidden group hover:shadow-lg transition-all duration-300 min-h-[250px] lg:min-h-0">
+                        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-rose-50/50 to-transparent pointer-events-none" />
+                        
+                        <div className="flex items-center justify-between mb-4 z-10">
+                            <h3 className="text-[10px] sm:text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                                <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
+                                Hot Content
                             </h3>
                         </div>
-                        {topPosts.length === 0 ? (
-                            <div className="flex-1 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center py-8">
-                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-3">
-                                    <Heart className="w-5 h-5 text-slate-300" />
+
+                        <div className="flex-1 overflow-y-auto pr-1 sm:pr-2 space-y-2 sm:space-y-3 relative z-10 max-h-[200px] sm:max-h-[220px] lg:max-h-full" style={{ scrollbarWidth: 'thin', scrollbarColor: '#E2E8F0 transparent' }}>
+                            {topPosts.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-slate-400 py-6">
+                                    <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 mb-2 opacity-50" />
+                                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">No data available</p>
                                 </div>
-                                <p className="text-sm font-bold text-slate-400">No trending data yet</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4 flex-1">
-                                {topPosts.map((post, i) => (
-                                    <div key={post._id} className="flex drop-shadow-lg items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-transparent hover:bg-white hover:border-slate-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group/post">
-                                        <div className={`w-12 h-12 rounded-xl flex items-center drop-shadow-lg justify-center text-sm font-black flex-shrink-0 shadow-md ${i === 0 ? 'bg-gradient-to-br from-amber-300 to-orange-500 text-white shadow-orange-200' :
-                                                i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white shadow-slate-200' :
-                                                    'bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 shadow-orange-100'
-                                            }`}>
-                                            #{i + 1}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm text-slate-800 font-bold line-clamp-1 group-hover/post:text-indigo-600 transition-colors">
-                                                {post.content || '📸 Image Content'}
-                                            </p>
-                                            <div className="flex items-center gap-4 mt-2">
-                                                <span className="flex items-center gap-1.5 text-xs font-black text-rose-500">
-                                                    <Heart className="w-3.5 h-3.5 fill-rose-500" />
-                                                    {post.likesCount}
-                                                </span>
-                                                <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                                <span className="text-xs font-bold text-slate-400">
-                                                    {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                                                </span>
-                                            </div>
+                            ) : topPosts.map((post:any, i:number) => (
+                                <div key={post._id} className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all duration-300 flex items-start gap-3 sm:gap-4">
+                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-inner ${
+                                        i === 0 ? 'bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-rose-500/30' : 
+                                        i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white' : 
+                                        'bg-white text-slate-500 border border-slate-200'
+                                    }`}>
+                                        #{i+1}
+                                    </div>
+                                    <div className="min-w-0 flex-1 py-0.5">
+                                        <p className="text-[10px] sm:text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed">
+                                            {post.content || 'Media Content'}
+                                        </p>
+                                        <div className="flex items-center gap-3 mt-1.5 sm:mt-2">
+                                            <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-rose-500 uppercase tracking-wider">
+                                                <Heart className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {post.likesCount}
+                                            </span>
+                                            <span className="flex items-center gap-1 text-[9px] sm:text-[10px] font-black text-indigo-500 uppercase tracking-wider">
+                                                <MessageSquare className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> {post.commentsCount}
+                                            </span>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Summary Footer Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                {[
-                    { label: 'Rejected Posts', value: statusBreakdown.rejected, icon: <AlertCircle className="w-6 h-6" />, color: 'text-rose-500', bg: 'bg-rose-50', gradient: 'group-hover:bg-rose-500 group-hover:text-white', border: 'border-rose-100' },
-                    { label: 'Total Engagement', value: totalLikes + totalComments, icon: <TrendingUp className="w-6 h-6" />, color: 'text-indigo-500', bg: 'bg-indigo-50', gradient: 'group-hover:bg-indigo-500 group-hover:text-white', border: 'border-indigo-100' },
-                    { label: 'Avg Likes/Post', value: statusBreakdown.published > 0 ? (totalLikes / statusBreakdown.published).toFixed(1) : '0', icon: <Heart className="w-6 h-6" />, color: 'text-rose-500', bg: 'bg-rose-50', gradient: 'group-hover:bg-rose-500 group-hover:text-white', border: 'border-rose-100' },
-                    { label: 'Comments / Post', value: statusBreakdown.published > 0 ? (totalComments / statusBreakdown.published).toFixed(1) : '0', icon: <MessageCircle className="w-6 h-6" />, color: 'text-violet-500', bg: 'bg-violet-50', gradient: 'group-hover:bg-violet-500 group-hover:text-white', border: 'border-violet-100' },
-                ].map((stat) => (
-                    <div key={stat.label} className="drop-shadow-lg bg-white rounded-3xl p-6 border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 group flex items-center gap-5 cursor-default relative overflow-hidden">
-                        <div className={`absolute inset-0 bg-gradient-to-br from-white to-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10`} />
-                        <div className={`w-14 h-14 drop-shadow-lg rounded-2xl ${stat.bg} ${stat.color} ${stat.gradient} flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-sm z-10`}>
-                            {stat.icon}
-                        </div>
-                        <div className="z-10">
-                            <p className="text-3xl font-black text-slate-800 tracking-tighter leading-none">{stat.value}</p>
-                            <p className="text-[11px] text-slate-400 font-bold mt-2 uppercase tracking-widest">{stat.label}</p>
-                        </div>
-                    </div>
-                ))}
             </div>
         </div>
     );
