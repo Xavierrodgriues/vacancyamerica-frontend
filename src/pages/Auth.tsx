@@ -234,10 +234,11 @@ export default function Auth() {
             <img
               src="/VA-logo2-removebg.png"
               alt="VacancyAmerica"
+              style={{ background: 'white', borderRadius: '1.2rem', padding: '1rem 1rem' }}
               className="h-[65px] lg:h-[80px] w-auto cursor-pointer"
               onClick={() => navigate("/")}
             />
-          </div>2
+          </div>
 
           {/* Main content */}
           <div className="relative z-10 -mt-4">
@@ -284,7 +285,12 @@ export default function Auth() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex justify-center mb-6">
-            <img src="/VA-logo2-removebg.png" alt="VacancyAmerica" className="h-[60px] w-auto" />
+            <img 
+              src="/VA-logo2-removebg.png" 
+              alt="VacancyAmerica" 
+              style={{ background: 'white', borderRadius: '1.2rem', padding: '1rem 1rem' }}
+              className="h-[60px] w-auto" 
+            />
           </div>
 
           <div className="max-w-[420px] w-full mx-auto">
