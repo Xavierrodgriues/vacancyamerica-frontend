@@ -375,89 +375,6 @@ export default function LandingPage() {
                 </div>
             </RevealSection>
 
-            {/* ─── JOB CATEGORIES CAROUSEL ─── */}
-            <section id="everyone" className="py-20 lg:py-28 everyone-bg">
-                <RevealSection className="max-w-5xl mx-auto text-center px-6 mb-12">
-                    <span className="section-label"><Globe className="w-3.5 h-3.5" /> Jobs for Everyone</span>
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-5">
-                        No Domain. No Barrier.
-                        <br /><span className="text-[#64748B]">Every Job Has a Home Here.</span>
-                    </h2>
-                    <p className="text-[#64748B] text-lg max-w-2xl mx-auto leading-relaxed">
-                        Whether you sweep floors or write code — your work has value and your next opportunity is here.
-                        VacancyAmerica lists <strong className="text-[#102A43]">every type of job</strong>, from entry-level to executive, blue-collar to white-collar.
-                    </p>
-                </RevealSection>
-
-                {/* Scrolling ticker */}
-                <div className="carousel-track-outer py-2">
-                    <div className="carousel-track gap-3" style={{ columnGap: "12px" }}>
-                        {[...JOB_CATEGORIES, ...JOB_CATEGORIES].map((cat, i) => (
-                            <div key={i} className="job-pill mx-1.5">
-                                <span className="text-[#E63946]">{cat.icon}</span>
-                                <span>{cat.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Message cards */}
-                <RevealSection className="max-w-5xl mx-auto px-6 mt-16">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {[
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><path d="M7 14l-2 6h14l-2-6" /><path d="M4 14h16" /><path d="M12 2v12" /><path d="M9 5l3-3 3 3" /></svg>, title: "Blue-Collar & Skilled Trades", desc: "Cleaners, plumbers, electricians, construction workers, landscapers, barbers, mechanics — every skilled trade is welcome and verified.", color: "from-amber-50 to-orange-50", border: "border-amber-200" },
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>, title: "Healthcare & Service", desc: "Nurses, aides, drivers, chefs, hotel staff, security guards — service roles that keep America running are front and center here.", color: "from-green-50 to-teal-50", border: "border-green-200" },
-                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>, title: "Professional & Corporate", desc: "Software engineers, data analysts, finance managers, designers, teachers — big-company roles from top employers across all 50 states.", color: "from-blue-50 to-indigo-50", border: "border-blue-200" },
-                        ].map(c => (
-                            <div key={c.title} className={`landing-card rounded-2xl p-7 border ${c.border} bg-gradient-to-br ${c.color}`}>
-                                <div className="mb-4">{c.icon}</div>
-                                <h3 className="font-bold text-lg text-[#102A43] mb-3">{c.title}</h3>
-                                <p className="text-[#64748B] text-sm leading-relaxed">{c.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </RevealSection>
-
-                {/* Why it matters */}
-                <RevealSection className="max-w-4xl mx-auto px-6 mt-12">
-                    <div className="bg-[#102A43] text-white rounded-3xl p-10 lg:p-14 relative overflow-hidden">
-                        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at bottom left, rgba(230,57,70,0.18) 0%, transparent 60%)" }} />
-                        <div className="relative">
-                            <span className="section-label bg-white/10 text-white border border-white/20">
-                                <Users className="w-3.5 h-3.5" /> Why VacancyAmerica?
-                            </span>
-                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-8 mt-4">
-                                A platform where everyone belongs
-                            </h3>
-                            <div className="grid sm:grid-cols-2 gap-5">
-                                {[
-                                    { icon: <CheckShield className="w-4 h-4" />, t: "Full job details, always", d: "Salary, location, hours, requirements — every listing is complete and honest." },
-                                    { icon: <Zap className="w-4 h-4" />, t: "Apply with one account", d: "Create a free profile once. Browse and apply to any job, any category." },
-                                    { icon: <Eye className="w-4 h-4" />, t: "No pay-to-rank system", d: "A cleaner's job is shown with the same fairness as a CEO position." },
-                                    { icon: <Ban className="w-4 h-4" />, t: "Zero scam tolerance", d: "Every employer is verified before any listing goes live. No exceptions." },
-                                ].map(item => (
-                                    <div key={item.t} className="feature-row border-white/10">
-                                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 text-white mt-0.5">{item.icon}</div>
-                                        <div>
-                                            <div className="font-semibold text-sm mb-0.5">{item.t}</div>
-                                            <div className="text-gray-400 text-sm leading-relaxed">{item.d}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                                <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white font-semibold px-8 py-3.5 rounded-full text-sm flex items-center gap-2 justify-center">
-                                    Browse Jobs — It's Free <ArrowRight className="w-4 h-4" />
-                                </button>
-                                <button onClick={() => navigate("/auth")} className="landing-btn-secondary bg-white/10 text-white font-medium px-8 py-3.5 rounded-full text-sm border border-white/20 flex items-center gap-2 justify-center hover:bg-white/20">
-                                    Create Free Account
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </RevealSection>
-            </section>
-
             {/* ─── FOR COMPANIES ─── */}
             <section id="for-companies" className="py-24 lg:py-32 px-6 lg:px-8 bg-white">
                 <RevealSection className="max-w-4xl mx-auto text-center mb-16">
@@ -554,6 +471,90 @@ export default function LandingPage() {
                     </div>
                 </RevealSection>
             </section>
+
+            {/* ─── JOB CATEGORIES CAROUSEL ─── */}
+            <section id="everyone" className="py-20 lg:py-28 everyone-bg">
+                <RevealSection className="max-w-5xl mx-auto text-center px-6 mb-12">
+                    <span className="section-label"><Globe className="w-3.5 h-3.5" /> Jobs for Everyone</span>
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-5">
+                        No Domain. No Barrier.
+                        <br /><span className="text-[#64748B]">Every Job Has a Home Here.</span>
+                    </h2>
+                    <p className="text-[#64748B] text-lg max-w-2xl mx-auto leading-relaxed">
+                        Whether you sweep floors or write code — your work has value and your next opportunity is here.
+                        VacancyAmerica lists <strong className="text-[#102A43]">every type of job</strong>, from entry-level to executive, blue-collar to white-collar.
+                    </p>
+                </RevealSection>
+
+                {/* Scrolling ticker */}
+                <div className="carousel-track-outer py-2">
+                    <div className="carousel-track gap-3" style={{ columnGap: "12px" }}>
+                        {[...JOB_CATEGORIES, ...JOB_CATEGORIES].map((cat, i) => (
+                            <div key={i} className="job-pill mx-1.5">
+                                <span className="text-[#E63946]">{cat.icon}</span>
+                                <span>{cat.label}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Message cards */}
+                <RevealSection className="max-w-5xl mx-auto px-6 mt-16">
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><path d="M7 14l-2 6h14l-2-6" /><path d="M4 14h16" /><path d="M12 2v12" /><path d="M9 5l3-3 3 3" /></svg>, title: "Blue-Collar & Skilled Trades", desc: "Cleaners, plumbers, electricians, construction workers, landscapers, barbers, mechanics — every skilled trade is welcome and verified.", color: "from-amber-50 to-orange-50", border: "border-amber-200" },
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>, title: "Healthcare & Service", desc: "Nurses, aides, drivers, chefs, hotel staff, security guards — service roles that keep America running are front and center here.", color: "from-green-50 to-teal-50", border: "border-green-200" },
+                            { icon: <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>, title: "Professional & Corporate", desc: "Software engineers, data analysts, finance managers, designers, teachers — big-company roles from top employers across all 50 states.", color: "from-blue-50 to-indigo-50", border: "border-blue-200" },
+                        ].map(c => (
+                            <div key={c.title} className={`landing-card rounded-2xl p-7 border ${c.border} bg-gradient-to-br ${c.color}`}>
+                                <div className="mb-4">{c.icon}</div>
+                                <h3 className="font-bold text-lg text-[#102A43] mb-3">{c.title}</h3>
+                                <p className="text-[#64748B] text-sm leading-relaxed">{c.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </RevealSection>
+
+                {/* Why it matters */}
+                <RevealSection className="max-w-4xl mx-auto px-6 mt-12">
+                    <div className="bg-[#102A43] text-white rounded-3xl p-10 lg:p-14 relative overflow-hidden">
+                        <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at bottom left, rgba(230,57,70,0.18) 0%, transparent 60%)" }} />
+                        <div className="relative">
+                            <span className="section-label bg-white/10 text-white border border-white/20">
+                                <Users className="w-3.5 h-3.5" /> Why VacancyAmerica?
+                            </span>
+                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-8 mt-4">
+                                A platform where everyone belongs
+                            </h3>
+                            <div className="grid sm:grid-cols-2 gap-5">
+                                {[
+                                    { icon: <CheckShield className="w-4 h-4" />, t: "Full job details, always", d: "Salary, location, hours, requirements — every listing is complete and honest." },
+                                    { icon: <Zap className="w-4 h-4" />, t: "Apply with one account", d: "Create a free profile once. Browse and apply to any job, any category." },
+                                    { icon: <Eye className="w-4 h-4" />, t: "No pay-to-rank system", d: "A cleaner's job is shown with the same fairness as a CEO position." },
+                                    { icon: <Ban className="w-4 h-4" />, t: "Zero scam tolerance", d: "Every employer is verified before any listing goes live. No exceptions." },
+                                ].map(item => (
+                                    <div key={item.t} className="feature-row border-white/10">
+                                        <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 text-white mt-0.5">{item.icon}</div>
+                                        <div>
+                                            <div className="font-semibold text-sm mb-0.5">{item.t}</div>
+                                            <div className="text-gray-400 text-sm leading-relaxed">{item.d}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                                <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white font-semibold px-8 py-3.5 rounded-full text-sm flex items-center gap-2 justify-center">
+                                    Browse Jobs — It's Free <ArrowRight className="w-4 h-4" />
+                                </button>
+                                <button onClick={() => navigate("/auth")} className="landing-btn-secondary bg-white/10 text-white font-medium px-8 py-3.5 rounded-full text-sm border border-white/20 flex items-center gap-2 justify-center hover:bg-white/20">
+                                    Create Free Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </RevealSection>
+            </section>
+
 
             {/* ─── MISSION ─── */}
             <section id="mission" className="py-24 lg:py-32 px-6 lg:px-8">

@@ -419,12 +419,12 @@ function OverviewSection() {
                     <div className="flex-1">
                         <h2 className="text-xl sm:text-2xl font-black tracking-tight drop-shadow-sm line-clamp-1">
                             {statusBreakdown.pending > 0 
-                                ? `${statusBreakdown.pending} Posts Awaiting Review` 
+                                ? `${statusBreakdown.pending} Posts Pending Verification` 
                                 : "Platform Pulse: Healthy"}
                         </h2>
                         <p className="text-white/80 font-bold text-xs sm:text-sm mt-1 uppercase tracking-widest line-clamp-1">
                             {statusBreakdown.pending > 0 
-                                ? "Action recommended to maintain content velocity." 
+                                ? "Waiting on Super Admin approval to go live." 
                                 : `Engagement score is ${totalEngagement.toLocaleString()} today. Keeping up the momentum!`}
                         </p>
                     </div>
@@ -434,10 +434,10 @@ function OverviewSection() {
             {/* Next Gen KPIs Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {[
-                    { label: "Live Network", val: statusBreakdown.published, sub: `${publishRate}% Publish Rate`, icon: <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "emerald" },
-                    { label: "Pending queue", val: statusBreakdown.pending, sub: "In Review Stage", icon: <Clock className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "amber" },
+                    { label: "Active Postings", val: statusBreakdown.published, sub: `${publishRate}% Publish Rate`, icon: <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "emerald" },
+                    { label: "Awaiting Verification", val: statusBreakdown.pending, sub: "Pending Super Admin", icon: <Clock className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "amber" },
                     { label: "Total Reach", val: totalEngagement, sub: `High interaction`, icon: <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "indigo" },
-                    { label: "Quality Blocked", val: statusBreakdown.rejected, sub: `${rejectionRate}% Rejection Rate`, icon: <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "rose" },
+                    { label: "Rejected Postings", val: statusBreakdown.rejected, sub: `${rejectionRate}% Rejection Rate`, icon: <AlertTriangle className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />, col: "rose" },
                 ].map((kpi, idx) => {
                     const colors = {
                         emerald: "text-emerald-500 bg-emerald-50 border-emerald-100 shadow-emerald-500/10",
