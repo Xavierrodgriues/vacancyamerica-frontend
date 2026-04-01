@@ -920,230 +920,188 @@ function PrivilegesView() {
     const currentLevel = admin.admin_level || 0;
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
-            <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white border border-slate-100 rounded-[2rem] p-8 lg:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] relative overflow-hidden flex flex-col">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 pb-10 px-1 sm:px-0 animate-in fade-in duration-500">
+            {/* Main Privileges Content */}
+            <div className="lg:col-span-2 space-y-6">
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col gap-6">
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-3">
+                                Your Capabilities
+                                <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
+                                    currentLevel >= 2 ? 'bg-indigo-50 text-indigo-600' :
+                                    currentLevel === 1 ? 'bg-indigo-50 text-indigo-600' :
+                                    'bg-indigo-50 text-indigo-600'
+                                }`}>Level {currentLevel} Focus</span>
+                            </h2>
+                            <p className="text-sm text-slate-500 mt-1">Review the features available to your current administrative tier.</p>
+                        </div>
 
-                    <div className="relative z-10">
-                        <h2 className="text-3xl font-black mb-2 text-slate-800 tracking-tight">
-                            Your Privileges
-                        </h2>
-                        <p className="text-slate-400 mb-10 text-sm font-bold uppercase tracking-widest">Current capabilities based on your admin level</p>
+                        <div className="h-px w-full bg-slate-100"></div>
 
-                        <div className="space-y-6">
-                            {/* Level 2 Content */}
-                            {currentLevel >= 2 && (
-                                <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-purple-200 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(168,85,247,0.15)] hover:-translate-y-2 transition-all duration-500">
-                                    <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-
-                                    <div className="flex items-start gap-5 relative z-10">
-                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-[0_10px_20px_rgba(168,85,247,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                                            <span className="text-2xl font-black text-white">2</span>
-                                        </div>
-                                        <div className="flex-1 pt-1">
-                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-1">Verified Partner</h3>
-                                            <p className="text-purple-600 text-xs font-bold uppercase tracking-widest">Current Access Level</p>
-                                        </div>
+                        {/* Level 2 Content */}
+                        {currentLevel >= 2 && (
+                            <div className="flex flex-col gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                        <TrendingUp className="w-6 h-6" />
                                     </div>
-                                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                                        <div className="p-5 bg-purple-50/50 backdrop-blur-sm rounded-2xl border border-purple-100/50 group-hover:bg-purple-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-emerald-600 font-black text-sm uppercase tracking-wide">
-                                                <CheckCircle2 className="w-5 h-5" />
-                                                Full Access
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Verified Employer/Partner status. Your posts are published instantly without requiring approval.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-purple-50/50 backdrop-blur-sm rounded-2xl border border-purple-100/50 group-hover:bg-purple-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-purple-600 font-black text-sm uppercase tracking-wide">
-                                                <Shield className="w-5 h-5" />
-                                                Verified Trust Badge
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Exclusive verified indicator on your profile and posts to establish immediate credibility.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-purple-50/50 backdrop-blur-sm rounded-2xl border border-purple-100/50 group-hover:bg-purple-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-indigo-600 font-black text-sm uppercase tracking-wide">
-                                                <TrendingUp className="w-5 h-5" />
-                                                Advanced Analytics
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Full access to comprehensive performance metrics, audience insights, and engagement reporting.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-purple-50/50 backdrop-blur-sm rounded-2xl border border-purple-100/50 group-hover:bg-purple-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-slate-700 font-black text-xs uppercase tracking-widest">
-                                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                                Process Flow
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed flex-wrap">
-                                                <span>Submit</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span className="text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">Published Instantly</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>Live</span>
-                                            </div>
-                                        </div>
+                                    <div className="pt-1">
+                                        <h3 className="text-lg font-bold text-slate-800">Verified Partner</h3>
+                                        <p className="text-sm text-slate-500 text-medium mt-0.5 leading-relaxed">As a verified entity, you maintain maximum content autonomy and platform priority.</p>
                                     </div>
                                 </div>
-                            )}
-
-                            {/* Level 1 Content */}
-                            {currentLevel === 1 && (
-                                <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-blue-200 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(59,130,246,0.15)] hover:-translate-y-2 transition-all duration-500">
-                                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-
-                                    <div className="flex items-start gap-5 relative z-10">
-                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-[0_10px_20px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                                            <span className="text-2xl font-black text-white">1</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-indigo-100 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm">
+                                            <CheckCircle2 className="w-4 h-4 shrink-0" />
+                                            Instant Access
                                         </div>
-                                        <div className="flex-1 pt-1">
-                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-1">Trusted Admin</h3>
-                                            <p className="text-blue-600 text-xs font-bold uppercase tracking-widest">Current Access Level</p>
-                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            Your posts bypass the standard queue and are published instantly. No approval wait times.
+                                        </p>
                                     </div>
-                                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                                        <div className="p-5 bg-blue-50/50 backdrop-blur-sm rounded-2xl border border-blue-100/50 group-hover:bg-blue-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-blue-600 font-black text-sm uppercase tracking-wide">
-                                                <CheckCircle2 className="w-5 h-5" />
-                                                Priority Review
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Trusted status. Your posts are reviewed with priority but still require approval from a Super Admin.
-                                            </p>
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-indigo-100 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm">
+                                            <Shield className="w-4 h-4 shrink-0" />
+                                            Verified Trust Badge
                                         </div>
-                                        <div className="p-5 bg-blue-50/50 backdrop-blur-sm rounded-2xl border border-blue-100/50 group-hover:bg-blue-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-cyan-600 font-black text-sm uppercase tracking-wide">
-                                                <Bell className="w-5 h-5" />
-                                                Enhanced Visibility
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Posts bypass the standard review queue, significantly reducing time to publish.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-blue-50/50 backdrop-blur-sm rounded-2xl border border-blue-100/50 sm:col-span-2 group-hover:bg-blue-50 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-slate-700 font-black text-xs uppercase tracking-widest">
-                                                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-                                                Process Flow
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed flex-wrap">
-                                                <span>Submit</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span className="text-blue-600 bg-blue-50 px-2 py-1 rounded-md">Priority Queue</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>Superadmin Appr.</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>Live</span>
-                                            </div>
-                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            Exclusive verified status attached to all your outbound content and profile pages.
+                                        </p>
                                     </div>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            {/* Level 0 Content */}
-                            {currentLevel === 0 && (
-                                <div className="bg-white border border-slate-100 rounded-[2rem] p-8 relative overflow-hidden group hover:border-slate-300 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500">
-                                    <div className="absolute top-0 right-0 w-64 h-64 bg-slate-500/5 rounded-full blur-3xl group-hover:bg-slate-500/10 transition-colors duration-500 -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-
-                                    <div className="flex items-start gap-5 relative z-10">
-                                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 flex items-center justify-center shadow-[0_10px_20px_rgba(100,116,139,0.3)] group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                                            <span className="text-2xl font-black text-white">0</span>
-                                        </div>
-                                        <div className="flex-1 pt-1">
-                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight mb-1">Standard Admin</h3>
-                                            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">Current Access Level</p>
-                                        </div>
+                        {/* Level 1 Content */}
+                        {currentLevel === 1 && (
+                            <div className="flex flex-col gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                                        <Bell className="w-6 h-6" />
                                     </div>
-                                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
-                                        <div className="p-5 bg-slate-50 backdrop-blur-sm rounded-2xl border border-slate-100 group-hover:bg-slate-100/70 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-amber-600 font-black text-sm uppercase tracking-wide">
-                                                <AlertCircle className="w-5 h-5" />
-                                                Approval Required
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Standard status. All posts must be approved by a Super Admin before going live.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-slate-50 backdrop-blur-sm rounded-2xl border border-slate-100 group-hover:bg-slate-100/70 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-slate-700 font-black text-sm uppercase tracking-wide">
-                                                <MessageCircle className="w-5 h-5" />
-                                                Comm. Interaction
-                                            </div>
-                                            <p className="text-slate-600 text-sm font-medium leading-relaxed">
-                                                Engage with your audience through DMs and monitor basic activity on posts.
-                                            </p>
-                                        </div>
-                                        <div className="p-5 bg-slate-50 backdrop-blur-sm rounded-2xl border border-slate-100 sm:col-span-2 group-hover:bg-slate-100/70 transition-colors duration-500 shadow-sm">
-                                            <div className="flex items-center gap-2 mb-3 text-slate-700 font-black text-xs uppercase tracking-widest">
-                                                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
-                                                Process Flow
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed flex-wrap">
-                                                <span>Submit</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span className="text-amber-600 bg-amber-50 px-2 py-1 rounded-md">Std. Queue</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>Superadmin Appr.</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>6hr Timer</span>
-                                                <ChevronRight className="w-3 h-3 text-slate-300" />
-                                                <span>Live</span>
-                                            </div>
-                                        </div>
+                                    <div className="pt-1">
+                                        <h3 className="text-lg font-bold text-slate-800">Trusted Admin</h3>
+                                        <p className="text-sm text-slate-500 text-medium mt-0.5 leading-relaxed">Trusted accounts benefit from prioritized content review and expanded moderation scopes.</p>
                                     </div>
                                 </div>
-                            )}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-indigo-100 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm">
+                                            <CheckCircle2 className="w-4 h-4 shrink-0" />
+                                            Priority Review
+                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            Your submissions hit the top of the queue, significantly reducing pending wait times.
+                                        </p>
+                                    </div>
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-100 hover:border-indigo-100 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm">
+                                            <TrendingUp className="w-4 h-4 shrink-0" />
+                                            Enhanced Visibility
+                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            Ability to highlight important discussions or lock problematic threads within the community.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Level 0 Content */}
+                        {currentLevel === 0 && (
+                            <div className="flex flex-col gap-6">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shrink-0">
+                                        <Shield className="w-6 h-6" />
+                                    </div>
+                                    <div className="pt-1">
+                                        <h3 className="text-lg font-bold text-slate-800">Standard Admin</h3>
+                                        <p className="text-sm text-slate-500 text-medium mt-0.5 leading-relaxed">Entry level administrative capabilities focusing on basic content submission and community interactions.</p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-slate-700 font-bold text-sm">
+                                            <AlertCircle className="w-4 h-4 shrink-0" />
+                                            Standard Review Queue
+                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            All content contributions undergo standard moderation before being published to the main feed.
+                                        </p>
+                                    </div>
+                                    <div className="p-5 bg-slate-50/50 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2 text-slate-700 font-bold text-sm">
+                                            <MessageCircle className="w-4 h-4 shrink-0" />
+                                            Base Interactions
+                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed">
+                                            Full ability to comment, like, and flag content, providing front-line community insight.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Process Flow visualization */}
+                        <div className="pt-4 border-t border-slate-100">
+                            <h4 className="text-sm font-bold text-slate-700 mb-3">Content Lifespan</h4>
+                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-widest leading-relaxed">
+                                <span>Draft</span>
+                                <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                                <span className={`${currentLevel >= 2 ? 'text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md' : ''}`}>Submit</span>
+                                <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                                <span className={`${currentLevel === 1 ? 'text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md' : currentLevel === 0 ? 'text-slate-700 bg-white border border-slate-200 px-2.5 py-1 rounded-md shadow-sm' : ''}`}>
+                                    {currentLevel >= 2 ? 'Instance Sync' : currentLevel === 1 ? 'Priority Review' : 'Hold / Review'}
+                                </span>
+                                <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                                <span className="text-emerald-600 font-bold">Live</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Level Hierarchy Sidebar */}
-            <div className="space-y-8">
-                <div className="bg-white border border-slate-100 rounded-[2rem] p-8 lg:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] relative overflow-hidden group">
-                    <h3 className="text-2xl font-black text-slate-800 mb-8 tracking-tight relative z-10">Level Hierarchy</h3>
-                    <div className="absolute top-0 right-0 w-48 h-48 bg-slate-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-indigo-50 transition-colors duration-700" />
-
-                    <div className="space-y-8 relative z-10">
+            <div className="space-y-6">
+                <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm h-full max-h-min flex flex-col">
+                    <h3 className="text-lg font-bold text-slate-800 tracking-tight mb-8">Access Hierarchy</h3>
+                    
+                    <div className="space-y-8 relative">
                         {/* Connecting Line */}
-                        <div className="absolute left-[23px] top-6 bottom-6 w-1 bg-slate-100 rounded-full" />
+                        <div className="absolute left-[19px] top-6 bottom-6 w-[2px] bg-slate-100" />
 
                         {/* Level 2 */}
-                        <div className={`relative flex gap-5 transition-all duration-500 ${currentLevel === 2 ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}`}>
-                            <div className={`w-12 h-12 rounded-2xl flex flex-shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 2 ? 'bg-gradient-to-br from-purple-500 to-indigo-500 text-white shadow-[0_10px_20px_rgba(168,85,247,0.3)]' : 'bg-slate-100 text-slate-400'
-                                }`}>
-                                <span className="font-black text-lg">2</span>
+                        <div className={`relative flex gap-4 transition-opacity ${currentLevel === 2 ? 'opacity-100' : 'opacity-40 hover:opacity-60'}`}>
+                            <div className={`w-10 h-10 rounded-xl flex shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 2 ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-50 border border-slate-200 text-slate-500'}`}>
+                                <span className="font-bold text-base">2</span>
                             </div>
                             <div className="pt-0.5">
-                                <h4 className={`font-black text-lg tracking-tight ${currentLevel === 2 ? 'text-slate-800' : 'text-slate-500'}`}>Verified Partner</h4>
-                                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2 leading-relaxed">Instant publishing<br />Full feature access</p>
+                                <h4 className={`font-bold text-sm tracking-tight ${currentLevel === 2 ? 'text-indigo-600' : 'text-slate-600'}`}>Verified Partner</h4>
+                                <p className="text-xs font-medium text-slate-500 mt-1 leading-relaxed">Instant publishing<br />Full feature autonomy</p>
                             </div>
                         </div>
 
                         {/* Level 1 */}
-                        <div className={`relative flex gap-5 transition-all duration-500 ${currentLevel === 1 ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}`}>
-                            <div className={`w-12 h-12 rounded-2xl flex flex-shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 1 ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-[0_10px_20px_rgba(59,130,246,0.3)]' : 'bg-slate-100 text-slate-400'
-                                }`}>
-                                <span className="font-black text-lg">1</span>
+                        <div className={`relative flex gap-4 transition-opacity ${currentLevel === 1 ? 'opacity-100' : 'opacity-40 hover:opacity-60'}`}>
+                            <div className={`w-10 h-10 rounded-xl flex shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 1 ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-50 border border-slate-200 text-slate-500'}`}>
+                                <span className="font-bold text-base">1</span>
                             </div>
                             <div className="pt-0.5">
-                                <h4 className={`font-black text-lg tracking-tight ${currentLevel === 1 ? 'text-slate-800' : 'text-slate-500'}`}>Trusted Admin</h4>
-                                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2 leading-relaxed">Priority review<br />Proven track record</p>
+                                <h4 className={`font-bold text-sm tracking-tight ${currentLevel === 1 ? 'text-indigo-600' : 'text-slate-600'}`}>Trusted Admin</h4>
+                                <p className="text-xs font-medium text-slate-500 mt-1 leading-relaxed">Priority queue review<br />Proven track record</p>
                             </div>
                         </div>
 
                         {/* Level 0 */}
-                        <div className={`relative flex gap-5 transition-all duration-500 ${currentLevel === 0 ? 'opacity-100 translate-x-2' : 'opacity-40 hover:opacity-70'}`}>
-                            <div className={`w-12 h-12 rounded-2xl flex flex-shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 0 ? 'bg-gradient-to-br from-slate-500 to-slate-600 text-white shadow-[0_10px_20px_rgba(100,116,139,0.3)]' : 'bg-slate-100 text-slate-400'
-                                }`}>
-                                <span className="font-black text-lg">0</span>
+                        <div className={`relative flex gap-4 transition-opacity ${currentLevel === 0 ? 'opacity-100' : 'opacity-40 hover:opacity-60'}`}>
+                            <div className={`w-10 h-10 rounded-xl flex shrink-0 items-center justify-center z-10 transition-colors ${currentLevel === 0 ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-50 border border-slate-200 text-slate-500'}`}>
+                                <span className="font-bold text-base">0</span>
                             </div>
                             <div className="pt-0.5">
-                                <h4 className={`font-black text-lg tracking-tight ${currentLevel === 0 ? 'text-slate-800' : 'text-slate-500'}`}>Standard Admin</h4>
-                                <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-2 leading-relaxed">Standard approval<br />Process</p>
+                                <h4 className={`font-bold text-sm tracking-tight ${currentLevel === 0 ? 'text-indigo-600' : 'text-slate-600'}`}>Standard Admin</h4>
+                                <p className="text-xs font-medium text-slate-500 mt-1 leading-relaxed">Base approval process<br />Community interactions</p>
                             </div>
                         </div>
                     </div>
