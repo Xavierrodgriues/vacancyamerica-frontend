@@ -83,3 +83,39 @@ export function useMarkActivityRead() {
         },
     });
 }
+
+export function useDeleteActivity() {
+    const { user } = useAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (activityId: string) => {
+            const res = await fetch(`${BASE_URL}/api/activity/${activityId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${user?.token}` },
+            });
+            if (!res.ok) throw new Error("Failed to delete activity");
+            return res.json();
+        },
+        onMutate: async (activityId: string) => {
+            await queryClient.cancelQueries({ queryKey: ["activity", user?._id] });
+            const previousActivity = queryClient.getQueryData<Activity[]>(["activity", user?._id]);
+            
+            if (previousActivity) {
+                queryClient.setQueryData<Activity[]>(
+                    ["activity", user?._id],
+                    previousActivity.filter((act) => act._id !== activityId)
+                );
+            }
+            return { previousActivity };
+        },
+        onError: (err, newTodo, context) => {
+            if (context?.previousActivity) {
+                queryClient.setQueryData(["activity", user?._id], context.previousActivity);
+            }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["activity", user?._id] });
+        },
+    });
+}

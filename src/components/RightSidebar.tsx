@@ -1,16 +1,17 @@
 import { UserAvatar } from "@/components/UserAvatar";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
-import { useActivity } from "@/hooks/use-activity";
+import { useActivity, useDeleteActivity } from "@/hooks/use-activity";
 import { useFriends } from "@/hooks/use-friends";
 import { useSuggestedUsers } from "@/hooks/use-suggested-users";
 import { formatDistanceToNow } from "date-fns";
 import { BASE_URL } from "@/lib/constants";
-import { Activity, Sparkles, Heart, MessageCircle, UserPlus } from "lucide-react";
+import { Activity, Sparkles, Heart, MessageCircle, UserPlus, X } from "lucide-react";
 
 export function RightSidebar() {
   const { user } = useAuth();
   const { data: activityList } = useActivity();
+  const deleteActivity = useDeleteActivity();
   const { data: friends } = useFriends();
   const { data: suggestedProfiles = [] } = useSuggestedUsers();
 
@@ -67,7 +68,7 @@ export function RightSidebar() {
             {activities.map((act) => {
               const otherUser = getOtherUser(act);
               return (
-                <div key={act._id} className="flex items-start gap-2.5 group">
+                <div key={act._id} className="flex items-start gap-2.5 group relative">
                   <div className="relative flex-shrink-0">
                     <Link to={`/profile/${otherUser.username}`} className="w-9 h-9 rounded-full overflow-hidden border border-slate-100 block shadow-sm">
                       <UserAvatar avatarUrl={otherUser.avatar_url} displayName={otherUser.display_name} />
@@ -77,7 +78,7 @@ export function RightSidebar() {
                       {getActivityIcon(act.type)}
                     </div>
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 pr-4">
                     <p className="text-[12.5px] text-foreground leading-snug">
                       {renderActivityText(act)}
                     </p>
@@ -86,14 +87,25 @@ export function RightSidebar() {
                     </span>
                   </div>
                   {act.post?.image_url && act.type !== "FOLLOW" && (
-                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
-                      <img 
+                    <div className="w-9 h-9 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100 mr-2">
+                       <img 
                         src={act.post.image_url.startsWith('http') ? act.post.image_url : `${BASE_URL}/uploads/${act.post.image_url}`} 
                         alt="Post" 
                         className="w-full h-full object-cover" 
                       />
                     </div>
                   )}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      deleteActivity.mutate(act._id);
+                    }}
+                    className="absolute top-0.5 right-0 p-1 bg-white/80 backdrop-blur-sm rounded border border-slate-100 shadow-sm text-slate-400 hover:text-rose-500 z-10 hover:bg-slate-50 transition-colors"
+                    title="Remove"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
                 </div>
               );
             })}

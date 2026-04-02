@@ -1,7 +1,7 @@
 import { X, Activity, Sparkles, Heart, MessageCircle, UserPlus, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/auth-context";
-import { useActivity, useMarkActivityRead } from "@/hooks/use-activity";
+import { useActivity, useMarkActivityRead, useDeleteActivity } from "@/hooks/use-activity";
 import { useSuggestedUsers } from "@/hooks/use-suggested-users";
 import { UserAvatar } from "@/components/UserAvatar";
 import { formatDistanceToNow } from "date-fns";
@@ -18,6 +18,7 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
     const { data: activityList } = useActivity();
     const { data: suggestedProfiles = [] } = useSuggestedUsers();
     const markRead = useMarkActivityRead();
+    const deleteActivity = useDeleteActivity();
 
     // Mark all as read when panel opens
     useEffect(() => {
@@ -115,7 +116,7 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
                                     return (
                                         <div
                                             key={act._id}
-                                            className={`flex items-start gap-3 p-2.5 rounded-xl transition-colors ${!act.isRead ? "bg-primary/5 border border-primary/10" : "hover:bg-slate-50"}`}
+                                            className={`relative flex items-start gap-3 p-2.5 rounded-xl transition-colors group ${!act.isRead ? "bg-primary/5 border border-primary/10" : "hover:bg-slate-50"}`}
                                         >
                                             <div className="relative flex-shrink-0">
                                                 <Link
@@ -129,7 +130,7 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
                                                     {getActivityIcon(act.type)}
                                                 </div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 pr-6">
                                                 <p className="text-[13px] text-slate-700 leading-snug">
                                                     {renderActivityText(act)}
                                                 </p>
@@ -138,7 +139,7 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
                                                 </span>
                                             </div>
                                             {act.post?.image_url && act.type !== "FOLLOW" && (
-                                                <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100">
+                                                <div className="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100 mr-2">
                                                     <img
                                                         src={act.post.image_url.startsWith("http") ? act.post.image_url : `${BASE_URL}/uploads/${act.post.image_url}`}
                                                         alt="Post"
@@ -146,6 +147,16 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
                                                     />
                                                 </div>
                                             )}
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    deleteActivity.mutate(act._id);
+                                                }}
+                                                className="absolute top-2 right-2 p-1.5 bg-white/80 rounded-full border border-slate-100 shadow-sm text-slate-400 hover:text-rose-500 z-10 hover:bg-slate-50 transition-colors"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
                                         </div>
                                     );
                                 })}
