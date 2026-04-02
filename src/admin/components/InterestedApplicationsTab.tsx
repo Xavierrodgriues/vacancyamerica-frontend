@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { InterestedApplication, useInterestedApplications, useUpdateInterestedStatus } from '../hooks/use-admin-posts';
 import { LoadingState, EmptyState } from './SharedUI';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
 /* ── helpers ─────────────────────────────────────────────── */
@@ -86,17 +87,18 @@ function ListView({
                 <div className="flex items-center justify-between gap-3 w-full sm:w-auto sm:flex-[3]">
                     <div className="flex items-center gap-2 flex-1 sm:flex-none">
                         <Filter className="w-4 h-4 text-slate-400 shrink-0 hidden sm:block" />
-                        <select
-                            value={statusFilter}
-                            onChange={e => setStatusFilter(e.target.value)}
-                            className="w-full sm:w-auto text-sm rounded-xl sm:rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition cursor-pointer"
-                        >
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="reviewed">Reviewed</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-full sm:w-[150px] shadow-sm rounded-xl sm:rounded-lg border-slate-200 bg-slate-50 focus:ring-indigo-400">
+                                <SelectValue placeholder="All Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                <SelectItem value="submitted">Submitted</SelectItem>
+                                <SelectItem value="reviewed">Reviewed</SelectItem>
+                                <SelectItem value="contacted">Contacted</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <span className="text-xs font-semibold text-slate-400 shrink-0 sm:ml-auto bg-slate-100 px-3 py-1.5 rounded-full">
                         {filtered.length} / {applications.length}
@@ -238,8 +240,7 @@ function DetailView({
 }) {
     const updateMutation = useUpdateInterestedStatus();
 
-    const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newStatus = e.target.value;
+    const handleStatusChange = async (newStatus: string) => {
         try {
             const result = await updateMutation.mutateAsync({ id: a._id, status: newStatus });
             toast.success('Status updated successfully');
@@ -271,23 +272,27 @@ function DetailView({
                 
                 <div className="flex items-center justify-between sm:justify-end sm:ml-auto w-full sm:w-auto pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 gap-2 shrink-0">
                     <span className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Status:</span>
-                    <select
+                    <Select
                         value={a.status}
-                        onChange={handleStatusChange}
+                        onValueChange={handleStatusChange}
                         disabled={updateMutation.isPending}
-                        className={`text-xs font-bold rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer border shadow-sm transition-all ${
+                    >
+                        <SelectTrigger className={`h-8 w-[130px] text-xs font-bold rounded-full px-3 focus:ring-indigo-500 border shadow-sm transition-all focus:ring-offset-0 ${
                             a.status === 'submitted' ? 'bg-amber-50 text-amber-700 border-amber-200' :
                             a.status === 'reviewed' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                             a.status === 'contacted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                             a.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
                             'bg-slate-100 text-slate-600 border-slate-200'
-                        } ${updateMutation.isPending ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'}`}
-                    >
-                        <option value="submitted" className="text-slate-800 bg-white">Submitted</option>
-                        <option value="reviewed" className="text-slate-800 bg-white">Reviewed</option>
-                        <option value="contacted" className="text-slate-800 bg-white">Contacted</option>
-                        <option value="rejected" className="text-slate-800 bg-white">Rejected</option>
-                    </select>
+                        } ${updateMutation.isPending ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'}`}>
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="submitted" className="text-xs font-semibold">Submitted</SelectItem>
+                            <SelectItem value="reviewed" className="text-xs font-semibold">Reviewed</SelectItem>
+                            <SelectItem value="contacted" className="text-xs font-semibold">Contacted</SelectItem>
+                            <SelectItem value="rejected" className="text-xs font-semibold">Rejected</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
