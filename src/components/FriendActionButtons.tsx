@@ -59,7 +59,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     if (isBlocked) {
         return (
             <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-red-50 border border-red-200 text-red-500 text-sm font-semibold select-none">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-50 border border-red-200 text-red-500 text-xs sm:text-sm font-semibold select-none">
                     <Ban className="w-3.5 h-3.5" />
                     Blocked
                 </div>
@@ -72,7 +72,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         if (variant === "compact") {
             return (
                 <button
-                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold transition-colors"
                     onClick={async () => {
                         if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
                     }}
@@ -87,7 +87,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         return (
             <div className="flex flex-wrap items-center gap-2">
                 {/* Friends pill */}
-                <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm font-semibold select-none">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs sm:text-sm font-semibold select-none">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     Friends
                 </div>
@@ -96,14 +96,14 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setDropdownOpen(v => !v)}
-                        className="flex items-center gap-1 px-3 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-sm font-medium transition-colors"
+                        className="flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition-colors"
                     >
                         More <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                     {dropdownOpen && (
-                        <div className="absolute left-0 top-full mt-1.5 w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                        <div className="absolute left-0 top-full mt-1.5 w-40 sm:w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
                             <button
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                                 onClick={async () => {
                                     setDropdownOpen(false);
                                     if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
@@ -115,7 +115,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                             </button>
                             <div className="h-px bg-slate-100 mx-3 my-1" />
                             <button
-                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                                className="w-full flex items-center gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-red-500 hover:bg-red-50 transition-colors"
                                 onClick={handleBlock}
                                 disabled={block.isPending}
                             >
@@ -134,7 +134,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         return (
             <div className="flex flex-wrap items-center gap-2">
                 <button
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-xs sm:text-sm font-semibold transition-colors disabled:opacity-60"
                     onClick={() => acceptRequest.mutateAsync(connection!.requestId!)}
                     disabled={acceptRequest.isPending}
                 >
@@ -142,7 +142,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                     Accept Request
                 </button>
                 <button
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-sm font-medium transition-colors disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
                     onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
@@ -150,7 +150,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                     Decline
                 </button>
                 <button
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-sm font-medium transition-colors disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
                     onClick={handleBlock}
                     disabled={block.isPending}
                 >
@@ -166,7 +166,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         return (
             <div className="flex flex-wrap items-center gap-2">
                 <button
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-semibold transition-colors disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs sm:text-sm font-semibold transition-colors disabled:opacity-60"
                     onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
@@ -178,7 +178,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                     Request Sent
                 </button>
                 <button
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-sm font-medium transition-colors disabled:opacity-60"
+                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
                     onClick={handleBlock}
                     disabled={block.isPending}
                 >
@@ -193,7 +193,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     return (
         <div className="flex flex-wrap items-center gap-2">
             <button
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-sm font-semibold transition-colors shadow-sm shadow-red-200 disabled:opacity-60"
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm shadow-red-200 disabled:opacity-60"
                 onClick={() => sendRequest.mutateAsync(userId)}
                 disabled={sendRequest.isPending || isLoading}
             >
@@ -205,7 +205,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                 Add Friend
             </button>
             <button
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-sm font-medium transition-colors disabled:opacity-60"
+                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
                 onClick={handleBlock}
                 disabled={block.isPending}
             >

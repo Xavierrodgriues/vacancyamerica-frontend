@@ -73,7 +73,7 @@ export function SearchUsers() {
                     </div>
                     <div className="bg-card rounded-xl border border-post-border shadow-sm overflow-hidden">
                         {recentSearches.map((user) => (
-                            <div key={user._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0 group">
+                            <div key={user._id} className="flex items-center justify-between gap-3 p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0 group">
                                 <Link 
                                     to={`/profile/${user.username}`} 
                                     className="flex items-center gap-3 min-w-0"
