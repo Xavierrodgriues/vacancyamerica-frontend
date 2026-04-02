@@ -36,10 +36,10 @@ export function SearchUsers() {
             {!isLoading && query && users && users.length > 0 && (
                 <div className="bg-card rounded-xl border border-post-border shadow-sm overflow-hidden">
                     {users.map((user: any) => (
-                        <div key={user._id} className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0">
+                        <div key={user._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0">
                             <Link 
                                 to={`/profile/${user.username}`} 
-                                className="flex items-center gap-3 flex-1 min-w-0"
+                                className="flex items-center gap-3 min-w-0"
                                 onClick={() => addRecentSearch({
                                     _id: user._id,
                                     username: user.username,
@@ -73,10 +73,10 @@ export function SearchUsers() {
                     </div>
                     <div className="bg-card rounded-xl border border-post-border shadow-sm overflow-hidden">
                         {recentSearches.map((user) => (
-                            <div key={user._id} className="flex items-center justify-between p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0 group">
+                            <div key={user._id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-secondary/50 transition-colors border-b border-post-border last:border-0 group">
                                 <Link 
                                     to={`/profile/${user.username}`} 
-                                    className="flex items-center gap-3 flex-1 min-w-0"
+                                    className="flex items-center gap-3 min-w-0"
                                     onClick={() => addRecentSearch(user)}
                                 >
                                     <UserAvatar avatarUrl={user.avatar_url} displayName={user.display_name} />
@@ -85,13 +85,15 @@ export function SearchUsers() {
                                         <p className="text-sm text-muted-foreground truncate">@{user.username}</p>
                                     </div>
                                 </Link>
-                                <button 
-                                    onClick={(e) => { e.preventDefault(); removeRecentSearch(user._id); }}
-                                    className="p-2 -mr-2 text-muted-foreground hover:text-foreground md:opacity-0 group-hover:opacity-100 transition-opacity rounded-full hover:bg-secondary"
-                                    aria-label="Remove from recent searches"
-                                >
-                                    <X className="h-4 w-4" />
-                                </button>
+                                <div className="flex sm:justify-end transition-opacity md:opacity-0 group-hover:opacity-100">
+                                    <button 
+                                        onClick={(e) => { e.preventDefault(); removeRecentSearch(user._id); }}
+                                        className="p-2 -ml-2 sm:-mr-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-secondary"
+                                        aria-label="Remove from recent searches"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

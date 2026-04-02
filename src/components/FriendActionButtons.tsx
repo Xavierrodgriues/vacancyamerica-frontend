@@ -58,7 +58,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     // ── Already blocked ──
     if (isBlocked) {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-red-50 border border-red-200 text-red-500 text-sm font-semibold select-none">
                     <Ban className="w-3.5 h-3.5" />
                     Blocked
@@ -85,7 +85,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         }
 
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 {/* Friends pill */}
                 <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm font-semibold select-none">
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -132,7 +132,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     // ── Incoming request ──
     if (incomingRequest) {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <button
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
                     onClick={() => acceptRequest.mutateAsync(connection!.requestId!)}
@@ -164,7 +164,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     // ── Outgoing pending ──
     if (outgoingRequest) {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <button
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-semibold transition-colors disabled:opacity-60"
                     onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
@@ -191,7 +191,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
 
     // ── Default: Add Friend ──
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
             <button
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-sm font-semibold transition-colors shadow-sm shadow-red-200 disabled:opacity-60"
                 onClick={() => sendRequest.mutateAsync(userId)}
