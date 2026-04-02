@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { UserAvatar } from "@/components/UserAvatar";
 const CommentSection = lazy(() => import("@/components/CommentSection").then(module => ({ default: module.CommentSection })));
 import { CommentSkeleton } from "@/components/Skeletons";
+import { InterestedApplicationDialog } from "@/components/InterestedApplicationDialog";
 import { timeAgo } from "@/lib/time";
-import { MessageCircle, Heart, Share2, UserPlus, MoreHorizontal } from "lucide-react";
+import { MessageCircle, Heart, Share2, UserPlus, MoreHorizontal, BriefcaseBusiness } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useToggleLike } from "@/hooks/use-posts";
 import { useFriends } from "@/hooks/use-friends";
@@ -35,6 +36,7 @@ interface Post {
 
 export function PostCard({ post, priority = false }: { post: Post; priority?: boolean }) {
   const [showComments, setShowComments] = useState(false);
+  const [showInterestedDialog, setShowInterestedDialog] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [heartAnim, setHeartAnim] = useState<{ id: number; x: number; y: number } | null>(null);
   const [likeAnimating, setLikeAnimating] = useState(false);
@@ -70,6 +72,15 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
     setLikeAnimating(true);
     setTimeout(() => setLikeAnimating(false), 400);
     toggleLike.mutate(postId);
+  };
+
+  const handleInterestedClick = () => {
+    if (!user) {
+      toast.error("Sign in to submit your interest");
+      return;
+    }
+
+    setShowInterestedDialog(true);
   };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
@@ -240,6 +251,14 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
           )}
         </button>
 
+        <button
+          onClick={handleInterestedClick}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-medium text-muted-foreground hover:bg-emerald-50 hover:text-emerald-700 transition-all duration-150"
+        >
+          <BriefcaseBusiness className="h-[17px] w-[17px]" />
+          <span>Interested</span>
+        </button>
+
         {/* Share */}
         <button
           onClick={async () => {
@@ -283,6 +302,12 @@ export function PostCard({ post, priority = false }: { post: Post; priority?: bo
           </Suspense>
         </div>
       )}
+
+      <InterestedApplicationDialog
+        open={showInterestedDialog}
+        onOpenChange={setShowInterestedDialog}
+        postId={postId}
+      />
     </article>
   );
 }

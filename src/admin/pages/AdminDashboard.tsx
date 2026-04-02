@@ -5,7 +5,8 @@ import {
     useAdminPosts,
     useAdminPostStats,
     useCreateAdminPost,
-    useDeleteAdminPost
+    useDeleteAdminPost,
+    useInterestedApplications
 } from '../hooks/use-admin-posts';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
@@ -39,13 +40,15 @@ import {
     Sparkles,
     AlertTriangle,
     Zap,
-    Flame
+    Flame,
+    BriefcaseBusiness
 } from 'lucide-react';
 import { StatCard, LoadingState, EmptyState } from '../components/SharedUI';
 import { PostPreviewSidebar } from '../components/PostPreviewSidebar';
 import { AdminPost } from '../hooks/use-admin-posts';
 import { useAdminAnalytics } from '../hooks/use-admin-posts';
 import MessagesTab from '../components/MessagesTab';
+import InterestedApplicationsTab from '../components/InterestedApplicationsTab';
 
 export default function AdminDashboard() {
     const { admin, logout } = useAdminAuth();
@@ -53,13 +56,15 @@ export default function AdminDashboard() {
     const [page, setPage] = useState(1);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [previewPost, setPreviewPost] = useState<AdminPost | null>(null);
-    const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'privileges' | 'messages'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'posts' | 'interested' | 'privileges' | 'messages'>('overview');
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [unreadMsgCount, setUnreadMsgCount] = useState(0);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const activeTabRef = useRef(activeTab);
+    const { data: interestedApplicationsData } = useInterestedApplications();
+    const interestedCount = interestedApplicationsData?.data?.length || 0;
 
     // Track previous level for animations
     const prevLevelRef = useRef(admin?.admin_level);
@@ -143,6 +148,7 @@ export default function AdminDashboard() {
     const sidebarItems = [
         { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
         { id: 'posts' as const, label: 'Manage Posts', icon: FileText },
+        { id: 'interested' as const, label: 'Interested Users', icon: BriefcaseBusiness, badge: interestedCount },
         { id: 'privileges' as const, label: 'Privileges', icon: Shield },
         { id: 'messages' as const, label: 'Messages', icon: MessagesSquare, badge: unreadMsgCount },
     ];
@@ -254,12 +260,14 @@ export default function AdminDashboard() {
                                 <h2 className="text-xl md:text-2xl font-bold text-slate-800">
                                     {activeTab === 'overview' ? 'Overview'
                                         : activeTab === 'posts' ? 'Manage Posts'
+                                            : activeTab === 'interested' ? 'Interested Users'
                                             : activeTab === 'privileges' ? 'My Privileges'
                                                 : 'Messages'}
                                 </h2>
                                 <p className="text-sm text-slate-400 mt-0.5">
                                     {activeTab === 'overview' ? 'System stats & quick summary'
                                         : activeTab === 'posts' ? 'Review, approve, or delete community content'
+                                            : activeTab === 'interested' ? 'People who showed interest in your published posts'
                                             : activeTab === 'privileges' ? 'Manage your admin capabilities'
                                                 : 'View and reply to user conversations'}
                                 </p>
@@ -268,7 +276,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2 sm:gap-3">
                             {/* Notification Dropdown */}
                             <div className="relative">
-                                <button 
+                                <button
                                     onClick={() => setNotificationOpen(!notificationOpen)}
                                     onBlur={() => setTimeout(() => setNotificationOpen(false), 200)}
                                     className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-sm ${notificationOpen ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-500'}`}
@@ -276,7 +284,7 @@ export default function AdminDashboard() {
                                     <Bell className="w-5 h-5" />
                                     <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white animate-pulse" />
                                 </button>
-                                
+
                                 {notificationOpen && (
                                     <div className="absolute right-0 mt-3 w-72 bg-white rounded-2xl shadow-2xl shadow-slate-200/50 border border-slate-100 p-4 z-50 animate-in fade-in slide-in-from-top-4 origin-top-right">
                                         <div className="flex items-center gap-3 mb-3">
@@ -301,7 +309,7 @@ export default function AdminDashboard() {
 
                             {/* Profile Dropdown */}
                             <div className="relative">
-                                <button 
+                                <button
                                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                                     onBlur={() => setTimeout(() => setProfileDropdownOpen(false), 200)}
                                     className={`flex items-center gap-2 pl-2 pr-3 h-10 rounded-xl border transition-all shadow-sm ${profileDropdownOpen ? 'bg-indigo-50 border-indigo-200 ring-2 ring-indigo-50' : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}
@@ -327,13 +335,13 @@ export default function AdminDashboard() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <button 
+                                        <button
                                             onClick={() => setActiveTab('privileges')}
                                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors"
                                         >
                                             <Shield className="w-4 h-4" /> My Privileges
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={handleLogout}
                                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-colors mt-1"
                                         >
@@ -359,6 +367,8 @@ export default function AdminDashboard() {
                             setPreviewPost={setPreviewPost}
                         />
                     )}
+
+                    {activeTab === 'interested' && <InterestedApplicationsTab />}
 
                     {activeTab === 'privileges' && <PrivilegesView />}
 
@@ -393,13 +403,13 @@ function OverviewSection() {
     );
 
     const { statusBreakdown, totalLikes, totalComments, chartData, topPosts } = analytics;
-    
+
     // Dynamic Calculations
     const totalEngagement = totalLikes + (totalComments * 2);
-    const maxCount = Math.max(...chartData.map((d:any) => d.count), 1);
-    const publishRate = statusBreakdown.total > 0 
+    const maxCount = Math.max(...chartData.map((d: any) => d.count), 1);
+    const publishRate = statusBreakdown.total > 0
         ? Math.round((statusBreakdown.published / statusBreakdown.total) * 100) : 0;
-    const rejectionRate = statusBreakdown.total > 0 
+    const rejectionRate = statusBreakdown.total > 0
         ? Math.round((statusBreakdown.rejected / statusBreakdown.total) * 100) : 0;
 
     return (
@@ -407,7 +417,7 @@ function OverviewSection() {
             {/* Dynamic Insight Banner */}
             <div className={`relative overflow-hidden rounded-[2rem] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border shadow-lg transition-all duration-500 hover:shadow-xl ${statusBreakdown.pending > 0 ? 'bg-gradient-to-r from-amber-500 to-orange-400 border-amber-400 shadow-amber-500/20 text-white' : 'bg-gradient-to-r from-indigo-600 to-blue-500 border-indigo-400 shadow-indigo-500/20 text-white'}`}>
                 <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-                
+
                 <div className="flex items-center gap-4 sm:gap-6 z-10 w-full">
                     <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-inner">
                         {statusBreakdown.pending > 0 ? (
@@ -418,13 +428,13 @@ function OverviewSection() {
                     </div>
                     <div className="flex-1">
                         <h2 className="text-xl sm:text-2xl font-black tracking-tight drop-shadow-sm line-clamp-1">
-                            {statusBreakdown.pending > 0 
-                                ? `${statusBreakdown.pending} Posts Pending Verification` 
+                            {statusBreakdown.pending > 0
+                                ? `${statusBreakdown.pending} Posts Pending Verification`
                                 : "Platform Pulse: Healthy"}
                         </h2>
                         <p className="text-white/80 font-bold text-xs sm:text-sm mt-1 uppercase tracking-widest line-clamp-1">
-                            {statusBreakdown.pending > 0 
-                                ? "Waiting on Super Admin approval to go live." 
+                            {statusBreakdown.pending > 0
+                                ? "Waiting on Super Admin approval to go live."
                                 : `Engagement score is ${totalEngagement.toLocaleString()} today. Keeping up the momentum!`}
                         </p>
                     </div>
@@ -456,7 +466,7 @@ function OverviewSection() {
                     return (
                         <div key={idx} className={`relative p-5 sm:p-6 rounded-[2rem] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col justify-between`}>
                             <div className={`absolute -right-10 -bottom-10 w-32 h-32 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${iconGlow} transition-opacity duration-500 group-hover:opacity-40`} />
-                            
+
                             <div className="flex justify-between items-start mb-4 z-10 w-full">
                                 <div className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl bg-gradient-to-br ${iconGlow} text-white flex items-center justify-center shadow-lg group-hover:rotate-6 transition-transform duration-500`}>
                                     {kpi.icon}
@@ -466,7 +476,7 @@ function OverviewSection() {
                                     <span className={`relative inline-flex rounded-full h-3 w-3 ${colors?.split(' ')[1]}`}></span>
                                 </span>
                             </div>
-                            
+
                             <div className="z-10 mt-auto">
                                 <p className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter leading-none mb-1 group-hover:scale-105 origin-left transition-transform duration-300">{kpi.val.toLocaleString()}</p>
                                 <p className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-widest leading-tight">{kpi.label}</p>
@@ -479,11 +489,11 @@ function OverviewSection() {
 
             {/* Dashboard Core: Charts & Trending */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-                
+
                 {/* Enhanced Activity Chart */}
                 <div className="col-span-1 lg:col-span-8 bg-white border border-slate-100 rounded-[2rem] p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col relative overflow-hidden group/chart h-[350px] sm:h-[400px]">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2" />
-                    
+
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 z-10">
                         <div>
                             <h3 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
@@ -504,11 +514,11 @@ function OverviewSection() {
                             ))}
                         </div>
 
-                        {chartData.map((day:any) => {
+                        {chartData.map((day: any) => {
                             const heightPct = maxCount > 0 ? (day.count / maxCount) * 100 : 0;
                             const h = Math.max(heightPct, 8);
                             const isToday = day.label === new Date().toLocaleDateString('en-US', { weekday: 'short' });
-                            
+
                             return (
                                 <div key={day.date} className="flex-1 flex flex-col items-center justify-end gap-2 sm:gap-3 group/bar h-full relative hover:z-20">
                                     <div className="w-full max-w-[40px] sm:max-w-[56px] flex flex-col items-center justify-end relative h-full pb-1 sm:pb-2">
@@ -516,8 +526,8 @@ function OverviewSection() {
                                             {day.count} Posts
                                             <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] sm:border-[5px] border-transparent border-t-slate-800" />
                                         </div>
-                                        
-                                        <div 
+
+                                        <div
                                             className={`w-full rounded-lg sm:rounded-2xl transition-all duration-700 ease-out group-hover/bar:scale-x-110 relative overflow-hidden ${isToday ? 'bg-gradient-to-t from-indigo-500 to-indigo-400 shadow-[0_10px_30px_rgba(99,102,241,0.4)]' : day.count > 0 ? 'bg-gradient-to-t from-slate-200 to-slate-100 group-hover/bar:from-indigo-300 group-hover/bar:to-indigo-200' : 'bg-slate-50'}`}
                                             style={{ height: `${h}%` }}
                                         >
@@ -535,7 +545,7 @@ function OverviewSection() {
 
                 {/* Right Column: Mini Donut + Top Posts */}
                 <div className="col-span-1 lg:col-span-4 flex flex-col gap-6 md:gap-8">
-                    
+
                     {/* Compact Dynamic Network Ring */}
                     <div className="bg-white border border-slate-100 rounded-[2rem] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-row items-center justify-between group/donut relative overflow-hidden shrink-0 hover:shadow-lg transition-all duration-300">
                         <div className="relative z-10 flex-1">
@@ -547,7 +557,7 @@ function OverviewSection() {
                             </p>
                         </div>
                         <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 z-10">
-                             <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 group-hover/donut:scale-110 transition-transform duration-700 ease-out drop-shadow-md">
+                            <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 group-hover/donut:scale-110 transition-transform duration-700 ease-out drop-shadow-md">
                                 <circle cx="18" cy="18" r="15.9" fill="none" className="stroke-slate-100" strokeWidth="4" />
                                 <circle
                                     cx="18" cy="18" r="15.9"
@@ -568,7 +578,7 @@ function OverviewSection() {
                     {/* Trending Scroll */}
                     <div className="bg-white border border-slate-100 rounded-[2rem] p-5 sm:p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col flex-1 relative overflow-hidden group hover:shadow-lg transition-all duration-300 min-h-[250px] lg:min-h-0">
                         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-rose-50/50 to-transparent pointer-events-none" />
-                        
+
                         <div className="flex items-center justify-between mb-4 z-10">
                             <h3 className="text-[10px] sm:text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
                                 <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
@@ -582,14 +592,13 @@ function OverviewSection() {
                                     <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 mb-2 opacity-50" />
                                     <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">No data available</p>
                                 </div>
-                            ) : topPosts.map((post:any, i:number) => (
+                            ) : topPosts.map((post: any, i: number) => (
                                 <div key={post._id} className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all duration-300 flex items-start gap-3 sm:gap-4">
-                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-inner ${
-                                        i === 0 ? 'bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-rose-500/30' : 
-                                        i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white' : 
-                                        'bg-white text-slate-500 border border-slate-200'
-                                    }`}>
-                                        #{i+1}
+                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center font-black text-xs sm:text-sm shrink-0 shadow-inner ${i === 0 ? 'bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-rose-500/30' :
+                                            i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white' :
+                                                'bg-white text-slate-500 border border-slate-200'
+                                        }`}>
+                                        #{i + 1}
                                     </div>
                                     <div className="min-w-0 flex-1 py-0.5">
                                         <p className="text-[10px] sm:text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed">
@@ -682,8 +691,8 @@ function AnimatedDropdown({ value, onChange, options, align = "left", className 
                             setIsOpen(false);
                         }}
                         className={`w-full text-left px-5 py-3.5 text-sm font-bold transition-all duration-200 flex items-center gap-2 ${value === option.value
-                                ? 'bg-indigo-50/80 text-indigo-600 pl-6 border-l-[3px] border-indigo-500'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
+                            ? 'bg-indigo-50/80 text-indigo-600 pl-6 border-l-[3px] border-indigo-500'
+                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-[3px] border-transparent'
                             }`}
                     >
                         {option.label}
@@ -862,13 +871,13 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                                         </div>
                                     ) : post.image_url ? (
                                         <div className="w-full h-full bg-slate-900 group-hover:scale-105 transition-transform duration-700 relative flex items-center justify-center">
-                                             {/* Blurry background for padded images */}
-                                             <img src={post.image_url} className="absolute inset-0 w-full h-full object-cover opacity-40 blur-md scale-110" alt="" />
-                                             <img
-                                                 src={post.image_url}
-                                                 alt={post.content || 'Post image'}
-                                                 className="w-full h-full object-contain relative z-10 drop-shadow-xl"
-                                             />
+                                            {/* Blurry background for padded images */}
+                                            <img src={post.image_url} className="absolute inset-0 w-full h-full object-cover opacity-40 blur-md scale-110" alt="" />
+                                            <img
+                                                src={post.image_url}
+                                                alt={post.content || 'Post image'}
+                                                className="w-full h-full object-contain relative z-10 drop-shadow-xl"
+                                            />
                                         </div>
                                     ) : (
                                         <div className="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
@@ -878,15 +887,14 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
 
                                     {/* Subdued Status Badge */}
                                     <div className="absolute top-3 left-3 z-20">
-                                        <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-lg backdrop-blur-md shadow-sm border ${
-                                            post.status === 'published' ? 'bg-emerald-500/95 text-white border-emerald-400' :
-                                            post.status === 'pending' ? 'bg-amber-500/95 text-white border-amber-400' :
-                                            'bg-rose-500/95 text-white border-rose-400'
-                                        }`}>
+                                        <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-lg backdrop-blur-md shadow-sm border ${post.status === 'published' ? 'bg-emerald-500/95 text-white border-emerald-400' :
+                                                post.status === 'pending' ? 'bg-amber-500/95 text-white border-amber-400' :
+                                                    'bg-rose-500/95 text-white border-rose-400'
+                                            }`}>
                                             {post.status}
                                         </span>
                                     </div>
-                                    
+
                                     {/* Delete Action - Top Right */}
                                     <button
                                         onClick={(e) => {
@@ -917,7 +925,7 @@ function PostsView({ page, setPage, showCreateModal, setShowCreateModal, setPrev
                                                 <span className="text-xs font-bold">{post.commentsCount || 0}</span>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="text-[11px] font-bold tracking-wide text-slate-400">
                                             {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                         </div>
@@ -972,11 +980,10 @@ function PrivilegesView() {
                         <div>
                             <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-3">
                                 Your Capabilities
-                                <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${
-                                    currentLevel >= 2 ? 'bg-indigo-50 text-indigo-600' :
-                                    currentLevel === 1 ? 'bg-indigo-50 text-indigo-600' :
-                                    'bg-indigo-50 text-indigo-600'
-                                }`}>Level {currentLevel} Focus</span>
+                                <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${currentLevel >= 2 ? 'bg-indigo-50 text-indigo-600' :
+                                        currentLevel === 1 ? 'bg-indigo-50 text-indigo-600' :
+                                            'bg-indigo-50 text-indigo-600'
+                                    }`}>Level {currentLevel} Focus</span>
                             </h2>
                             <p className="text-sm text-slate-500 mt-1">Review the features available to your current administrative tier.</p>
                         </div>
@@ -1111,7 +1118,7 @@ function PrivilegesView() {
             <div className="space-y-6">
                 <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm h-full max-h-min flex flex-col">
                     <h3 className="text-lg font-bold text-slate-800 tracking-tight mb-8">Access Hierarchy</h3>
-                    
+
                     <div className="space-y-8 relative">
                         {/* Connecting Line */}
                         <div className="absolute left-[19px] top-6 bottom-6 w-[2px] bg-slate-100" />

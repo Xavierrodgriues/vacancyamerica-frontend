@@ -24,6 +24,35 @@ export interface AdminPost {
     };
 }
 
+export interface InterestedApplicationDocument {
+    originalName: string;
+    mimeType: string;
+    r2Key: string;
+    originalSize: number;
+    compressedSize: number;
+    previewUrl: string;
+}
+
+export interface InterestedApplication {
+    _id: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    location?: string;
+    coverLetter?: string;
+    status: 'submitted' | 'reviewed' | 'contacted' | 'rejected';
+    createdAt: string;
+    applicant: {
+        _id: string;
+        username: string;
+        display_name: string;
+        avatar_url?: string | null;
+        email?: string;
+    };
+    post: AdminPost;
+    documents: InterestedApplicationDocument[];
+}
+
 // --- Regular Admin Hooks ---
 
 export function useAdminPosts({ page = 1, status = 'all', sort = 'newest' } = {}) {
@@ -77,6 +106,22 @@ export function useAdminAnalytics() {
         },
         enabled: !!admin?.token,
         staleTime: 60 * 1000, // 1 minute
+    });
+}
+
+export function useInterestedApplications() {
+    const { admin } = useAdminAuth();
+    return useQuery<{ success: boolean; data: InterestedApplication[] }>({
+        queryKey: ['adminInterestedApplications'],
+        queryFn: async () => {
+            const res = await fetch(`${API_URL}/interested-applications`, {
+                headers: { 'Authorization': `Bearer ${admin?.token}` }
+            });
+            if (!res.ok) throw new Error('Failed to fetch interested applications');
+            return res.json();
+        },
+        enabled: !!admin?.token,
+        staleTime: 30 * 1000,
     });
 }
 

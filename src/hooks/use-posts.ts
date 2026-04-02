@@ -200,6 +200,60 @@ export function useToggleLike() {
   });
 }
 
+export function useSubmitInterestedApplication() {
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({
+      postId,
+      fullName,
+      email,
+      phone,
+      location,
+      coverLetter,
+      documents,
+    }: {
+      postId: string;
+      fullName: string;
+      email: string;
+      phone: string;
+      location: string;
+      coverLetter: string;
+      documents: File[];
+    }) => {
+      if (!user?.token) {
+        throw new Error("Not authenticated");
+      }
+
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("location", location);
+      formData.append("coverLetter", coverLetter);
+
+      documents.forEach((document) => {
+        formData.append("documents", document);
+      });
+
+      const res = await fetch(`${API}/${postId}/interested`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to submit interest");
+      }
+
+      return data;
+    },
+  });
+}
+
 export function usePost(postId: string | undefined) {
   const { user } = useAuth();
   
