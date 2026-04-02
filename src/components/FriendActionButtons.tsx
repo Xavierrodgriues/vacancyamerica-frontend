@@ -101,7 +101,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                         More <ChevronDown className="w-3.5 h-3.5" />
                     </button>
                     {dropdownOpen && (
-                        <div className="absolute left-0 top-full mt-1.5 w-40 sm:w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                        <div className="absolute right-0 top-full mt-1.5 w-40 sm:w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
                             <button
                                 className="w-full flex items-center gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                                 onClick={async () => {
