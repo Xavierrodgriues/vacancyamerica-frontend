@@ -122,8 +122,8 @@ export function InterestedApplicationDialog({
         onOpenChange(nextOpen);
       }}
     >
-      <DialogContent className="max-w-2xl rounded-2xl border-slate-200 p-0 overflow-hidden">
-        <div className="bg-gradient-to-r from-sky-50 via-white to-emerald-50 px-6 py-5 border-b border-slate-100">
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-2xl max-h-[90vh] rounded-2xl border-slate-200 p-0 overflow-hidden flex flex-col">
+        <div className="bg-gradient-to-r from-sky-50 via-white to-emerald-50 px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-100 shrink-0">
           <DialogHeader className="space-y-2">
             <DialogTitle className="text-xl text-slate-900">Apply as Interested</DialogTitle>
             <DialogDescription className="text-slate-600">
@@ -132,8 +132,8 @@ export function InterestedApplicationDialog({
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <form onSubmit={handleSubmit} className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5 space-y-5">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="interested-full-name">Full name</Label>
               <Input
@@ -157,7 +157,7 @@ export function InterestedApplicationDialog({
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="interested-phone">Phone</Label>
               <Input
@@ -202,7 +202,7 @@ export function InterestedApplicationDialog({
                 multiple
                 onChange={handleDocumentsChange}
                 disabled={submitInterestedApplication.isPending}
-                className="cursor-pointer bg-white"
+                className="cursor-pointer bg-white text-sm file:mr-3 file:max-w-full file:truncate"
               />
               <p className="mt-2 text-xs text-slate-500">
                 Upload up to {MAX_FILE_COUNT} files. Allowed: PDF, DOC, DOCX, JPG, PNG, WEBP. Max 10 MB each.
@@ -232,7 +232,7 @@ export function InterestedApplicationDialog({
             </div>
           </div>
 
-          <DialogFooter className="gap-3 sm:gap-3">
+          <DialogFooter className="gap-3 sm:gap-3 pt-2 sticky bottom-0 bg-white">
             <Button
               type="button"
               variant="outline"

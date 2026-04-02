@@ -65,6 +65,10 @@ export default function AdminDashboard() {
     const activeTabRef = useRef(activeTab);
     const { data: interestedApplicationsData } = useInterestedApplications();
     const interestedCount = interestedApplicationsData?.data?.length || 0;
+    const [viewedInterestedCount, setViewedInterestedCount] = useState<number>(
+        () => parseInt(localStorage.getItem('admin_viewed_interested_count') || '0', 10)
+    );
+    const newInterestedBadge = Math.max(0, interestedCount - viewedInterestedCount);
 
     // Track previous level for animations
     const prevLevelRef = useRef(admin?.admin_level);
@@ -72,11 +76,14 @@ export default function AdminDashboard() {
     // Keep activeTabRef in sync (avoids stale closures in callbacks)
     useEffect(() => {
         activeTabRef.current = activeTab;
-        // Clear unread badge as soon as admin opens the messages tab
         if (activeTab === 'messages') {
             setUnreadMsgCount(0);
         }
-    }, [activeTab]);
+        if (activeTab === 'interested' && interestedCount > 0) {
+            localStorage.setItem('admin_viewed_interested_count', String(interestedCount));
+            setViewedInterestedCount(interestedCount);
+        }
+    }, [activeTab, interestedCount]);
 
     // Called by MessagesTab when a new unread message arrives
     const handleNewMessage = useCallback(
@@ -148,7 +155,7 @@ export default function AdminDashboard() {
     const sidebarItems = [
         { id: 'overview' as const, label: 'Overview', icon: LayoutDashboard },
         { id: 'posts' as const, label: 'Manage Posts', icon: FileText },
-        { id: 'interested' as const, label: 'Interested Users', icon: BriefcaseBusiness, badge: interestedCount },
+        { id: 'interested' as const, label: 'Interested Users', icon: BriefcaseBusiness, badge: newInterestedBadge },
         { id: 'privileges' as const, label: 'Privileges', icon: Shield },
         { id: 'messages' as const, label: 'Messages', icon: MessagesSquare, badge: unreadMsgCount },
     ];
@@ -355,7 +362,7 @@ export default function AdminDashboard() {
                 </header>
 
                 {/* Page Content */}
-                <main className="px-4 md:px-8 py-6 md:py-8">
+                <main className={activeTab === 'interested' ? 'h-[calc(100vh-73px)] overflow-hidden' : 'px-4 md:px-8 py-6 md:py-8'}>
                     {activeTab === 'overview' && <OverviewSection />}
 
                     {activeTab === 'posts' && (
