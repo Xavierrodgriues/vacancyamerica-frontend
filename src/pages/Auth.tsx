@@ -289,7 +289,7 @@ export default function Auth() {
               src="/VA-logo2-removebg.png" 
               alt="VacancyAmerica" 
               style={{ background: 'white', borderRadius: '1.2rem', padding: '1rem 1rem' }}
-              className="h-[60px] w-auto" 
+              className="h-[105px] w-auto" 
             />
           </div>
 

@@ -188,7 +188,7 @@ export default function AdminRegister() {
                         <img
                             src="/VA-logo2-removebg.png"
                             alt="VacancyAmerica"
-                            className="h-[65px] lg:h-[80px] w-auto"
+                            className="h-[105px] lg:h-[80px] w-auto"
                         />
                     </Link>
                     {/* Main content */}
