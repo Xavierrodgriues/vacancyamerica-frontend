@@ -326,12 +326,53 @@ By combining structured moderation with verification controls, the platform sign
 // Get unique categories
 const CATEGORIES = [...new Set(FAQ_DATA.map(faq => faq.category))];
 
+const AnimatedBotMessageContent = ({ content, onComplete }: { content: string, onComplete: () => void }) => {
+    const [displayedContent, setDisplayedContent] = useState('');
+    const onCompleteRef = useRef(onComplete);
+
+    useEffect(() => {
+        onCompleteRef.current = onComplete;
+    }, [onComplete]);
+
+    useEffect(() => {
+        let i = 0;
+        const tokens = content.match(/(\S+|\s+)/g) || [];
+        setDisplayedContent('');
+
+        const initialDelay = setTimeout(() => {
+            const interval = setInterval(() => {
+                if (i < tokens.length) {
+                    setDisplayedContent(prev => prev + tokens[i]);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    onCompleteRef.current();
+                }
+            }, 30); // Types at 30ms per token
+
+            return () => clearInterval(interval);
+        }, 100);
+
+        return () => clearTimeout(initialDelay);
+    }, [content]);
+
+    return (
+        <p className="text-[#e7e9ea] text-sm leading-relaxed whitespace-pre-wrap">
+            {displayedContent.split('**').map((part, i) =>
+                i % 2 === 1 ? <strong key={i} className="text-blue-400">{part}</strong> : part
+            )}
+            <span className="w-1.5 h-4 ml-0.5 inline-block bg-blue-400 animate-pulse align-middle" />
+        </p>
+    );
+};
+
 // ─── Message Types ──────────────────────────────────────────────────────────
 interface ChatMessage {
     id: string;
     type: 'bot' | 'user';
     content: string;
     timestamp: Date;
+    isAnimated?: boolean;
     isQuickReply?: boolean;
 }
 
@@ -342,6 +383,7 @@ export function SupportChatbot() {
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [hasNewMessage, setHasNewMessage] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isBotTyping, setIsBotTyping] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -414,27 +456,36 @@ export function SupportChatbot() {
             timestamp: new Date()
         };
 
-        // Simulate typing delay
         setMessages(prev => [...prev, userMsg]);
+        setIsBotTyping(true);
 
         setTimeout(() => {
             const botMsg: ChatMessage = {
                 id: `bot-${Date.now()}`,
                 type: 'bot',
                 content: faq.answer,
-                timestamp: new Date()
-            };
-
-            const followUp: ChatMessage = {
-                id: `followup-${Date.now()}`,
-                type: 'bot',
-                content: 'Was this helpful? Feel free to ask another question or go back to categories.',
                 timestamp: new Date(),
-                isQuickReply: true
+                isAnimated: true // Starts the split word animation
             };
+            setMessages(prev => [...prev, botMsg]);
+        }, 400); // Slight delay for natural feel
+    };
 
-            setMessages(prev => [...prev, botMsg, followUp]);
-        }, 600);
+    const handleAnimationComplete = (id: string) => {
+        // Remove animation flag
+        setMessages(prev => prev.map(m => m.id === id ? { ...m, isAnimated: false } : m));
+
+        // Add follow-up questions
+        const followUp: ChatMessage = {
+            id: `followup-${Date.now()}`,
+            type: 'bot',
+            content: 'Was this helpful? Feel free to ask another question or go back to categories.',
+            timestamp: new Date(),
+            isQuickReply: true
+        };
+        
+        setMessages(prev => [...prev, followUp]);
+        setIsBotTyping(false); // Reveal the buttons again
     };
 
     const handleReset = () => {
@@ -513,11 +564,18 @@ export function SupportChatbot() {
                                             </div>
                                             <div>
                                                 <div className="bg-[#1a1f25] border border-[#2f3336] rounded-2xl rounded-tl-md px-4 py-3">
-                                                    <p className="text-[#e7e9ea] text-sm leading-relaxed whitespace-pre-wrap">
-                                                        {msg.content.split('**').map((part, i) =>
-                                                            i % 2 === 1 ? <strong key={i} className="text-blue-400">{part}</strong> : part
-                                                        )}
-                                                    </p>
+                                                    {msg.isAnimated ? (
+                                                        <AnimatedBotMessageContent 
+                                                            content={msg.content} 
+                                                            onComplete={() => handleAnimationComplete(msg.id)} 
+                                                        />
+                                                    ) : (
+                                                        <p className="text-[#e7e9ea] text-sm leading-relaxed whitespace-pre-wrap">
+                                                            {msg.content.split('**').map((part, i) =>
+                                                                i % 2 === 1 ? <strong key={i} className="text-blue-400">{part}</strong> : part
+                                                            )}
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <span className="text-[#536471] text-[10px] ml-2 mt-1 block">{formatTime(msg.timestamp)}</span>
                                             </div>
@@ -536,7 +594,7 @@ export function SupportChatbot() {
                         ))}
 
                         {/* Category Buttons */}
-                        {!selectedCategory && (
+                        {!selectedCategory && !isBotTyping && (
                             <div className="space-y-2 mt-2">
                                 {CATEGORIES.map((category) => (
                                     <button
@@ -552,7 +610,7 @@ export function SupportChatbot() {
                         )}
 
                         {/* FAQ Buttons for selected category */}
-                        {selectedCategory && (
+                        {selectedCategory && !isBotTyping && (
                             <div className="space-y-2 mt-2">
                                 {activeFAQs.map((faq) => (
                                     <button
