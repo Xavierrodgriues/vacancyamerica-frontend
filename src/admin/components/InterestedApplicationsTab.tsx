@@ -4,8 +4,9 @@ import {
     Download, ArrowLeft, Calendar, MapPin, ExternalLink,
     ChevronRight, Search, Filter
 } from 'lucide-react';
-import { InterestedApplication, useInterestedApplications } from '../hooks/use-admin-posts';
+import { InterestedApplication, useInterestedApplications, useUpdateInterestedStatus } from '../hooks/use-admin-posts';
 import { LoadingState, EmptyState } from './SharedUI';
+import { toast } from 'sonner';
 
 /* ── helpers ─────────────────────────────────────────────── */
 
@@ -185,10 +186,27 @@ function ListView({
 function DetailView({
     application: a,
     onBack,
+    onStatusChange,
 }: {
     application: InterestedApplication;
     onBack: () => void;
+    onStatusChange: (newApplication: InterestedApplication) => void;
 }) {
+    const updateMutation = useUpdateInterestedStatus();
+
+    const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newStatus = e.target.value;
+        try {
+            const result = await updateMutation.mutateAsync({ id: a._id, status: newStatus });
+            toast.success('Status updated successfully');
+            if (result.data) {
+                onStatusChange(result.data);
+            }
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to update status');
+        }
+    };
+
     return (
         <div className="flex flex-col h-full bg-slate-50 overflow-auto">
 
@@ -203,8 +221,25 @@ function DetailView({
                 </button>
                 <div className="h-5 w-px bg-slate-200" />
                 <p className="text-sm font-semibold text-slate-800 truncate">{a.fullName}</p>
-                <div className="ml-auto">
-                    <StatusBadge status={a.status} />
+                <div className="ml-auto flex items-center gap-2">
+                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wilder">Status:</span>
+                    <select
+                        value={a.status}
+                        onChange={handleStatusChange}
+                        disabled={updateMutation.isPending}
+                        className={`text-xs font-bold rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer border shadow-sm transition-all ${
+                            a.status === 'submitted' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                            a.status === 'reviewed' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            a.status === 'contacted' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            a.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200' :
+                            'bg-slate-100 text-slate-600 border-slate-200'
+                        } ${updateMutation.isPending ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'}`}
+                    >
+                        <option value="submitted" className="text-slate-800 bg-white">Submitted</option>
+                        <option value="reviewed" className="text-slate-800 bg-white">Reviewed</option>
+                        <option value="contacted" className="text-slate-800 bg-white">Contacted</option>
+                        <option value="rejected" className="text-slate-800 bg-white">Rejected</option>
+                    </select>
                 </div>
             </div>
 
@@ -384,7 +419,11 @@ export default function InterestedApplicationsTab() {
     return (
         <div className="h-full">
             {selected
-                ? <DetailView application={selected} onBack={() => setSelected(null)} />
+                ? <DetailView 
+                    application={selected} 
+                    onBack={() => setSelected(null)} 
+                    onStatusChange={(updatedApp) => setSelected(updatedApp)}
+                  />
                 : <ListView applications={applications} onSelect={setSelected} />
             }
         </div>

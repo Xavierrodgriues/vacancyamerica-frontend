@@ -125,6 +125,33 @@ export function useInterestedApplications() {
     });
 }
 
+export function useUpdateInterestedStatus() {
+    const { admin } = useAdminAuth();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, status }: { id: string; status: string }) => {
+            const res = await fetch(`${API_URL}/interested-applications/${id}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${admin?.token}`
+                },
+                body: JSON.stringify({ status })
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.message || 'Failed to update status');
+            }
+            return res.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['adminInterestedApplications'] });
+        }
+    });
+}
+
 export function useCreateAdminPost() {
     const { admin } = useAdminAuth();
     const queryClient = useQueryClient();
