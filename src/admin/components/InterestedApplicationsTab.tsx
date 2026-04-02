@@ -72,46 +72,88 @@ function ListView({
         <div className="flex flex-col h-full bg-slate-50">
 
             {/* ── Toolbar ── */}
-            <div className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0">
-                <div className="relative flex-1 w-full sm:max-w-xs">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <div className="bg-white border-b border-slate-200 p-4 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 leading-none">
+                <div className="relative w-full sm:max-w-xs sm:flex-[2]">
+                    <Search className="absolute left-3 top-[50%] -translate-y-[50%] w-4 h-4 text-slate-400 pointer-events-none" />
                     <input
                         type="text"
                         placeholder="Search applicants…"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
+                        className="w-full pl-9 pr-4 py-2.5 sm:py-2 text-sm rounded-xl sm:rounded-lg border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition"
                     />
                 </div>
-                <div className="flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-slate-400 shrink-0" />
-                    <select
-                        value={statusFilter}
-                        onChange={e => setStatusFilter(e.target.value)}
-                        className="text-sm rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
-                    >
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="reviewed">Reviewed</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
+                <div className="flex items-center justify-between gap-3 w-full sm:w-auto sm:flex-[3]">
+                    <div className="flex items-center gap-2 flex-1 sm:flex-none">
+                        <Filter className="w-4 h-4 text-slate-400 shrink-0 hidden sm:block" />
+                        <select
+                            value={statusFilter}
+                            onChange={e => setStatusFilter(e.target.value)}
+                            className="w-full sm:w-auto text-sm rounded-xl sm:rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 sm:py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition cursor-pointer"
+                        >
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <span className="text-xs font-semibold text-slate-400 shrink-0 sm:ml-auto bg-slate-100 px-3 py-1.5 rounded-full">
+                        {filtered.length} / {applications.length}
+                    </span>
                 </div>
-                <span className="text-xs text-slate-400 ml-auto shrink-0">
-                    {filtered.length} of {applications.length} applicant{applications.length !== 1 ? 's' : ''}
-                </span>
             </div>
 
-            {/* ── Table ── */}
-            <div className="flex-1 overflow-auto">
+            {/* ── Data Views ── */}
+            <div className="flex-1 overflow-auto bg-slate-50 sm:bg-white">
                 {filtered.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-24 text-slate-400">
-                        <BriefcaseBusiness className="w-10 h-10 mb-3 opacity-40" />
+                    <div className="flex flex-col items-center justify-center py-24 px-4 text-slate-400 text-center">
+                        <BriefcaseBusiness className="w-10 h-10 mb-3 opacity-40 mx-auto" />
                         <p className="font-semibold text-sm">No applicants found</p>
                         <p className="text-xs mt-1">Try adjusting your search or filter</p>
                     </div>
                 ) : (
-                    <table className="w-full text-sm border-collapse">
+                    <>
+                        {/* ── Mobile View: Cards ── */}
+                        <div className="md:hidden p-4 space-y-3">
+                            {filtered.map((app) => (
+                                <div
+                                    key={app._id}
+                                    onClick={() => onSelect(app)}
+                                    className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 cursor-pointer active:scale-[0.98] transition-transform"
+                                >
+                                    <div className="flex items-start gap-3 mb-3">
+                                        <Avatar name={app.fullName} size="md" />
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-bold text-slate-800 text-sm truncate">{app.fullName}</p>
+                                            <p className="text-xs text-slate-500 truncate">{app.email}</p>
+                                        </div>
+                                    </div>
+                                    {app.post?.content && (
+                                        <div className="mb-3 px-3 py-2 bg-slate-50 rounded-lg border border-slate-100">
+                                            <p className="text-xs text-slate-500 line-clamp-2">{app.post.content}</p>
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-50">
+                                        <StatusBadge status={app.status} />
+                                        <div className="flex items-center gap-3 text-xs font-semibold text-slate-400">
+                                            <span className="flex items-center gap-1">
+                                                <FileText className="w-3.5 h-3.5 text-slate-300" /> 
+                                                {app.documents.length}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <Calendar className="w-3.5 h-3.5 text-slate-300" />
+                                                {new Date(app.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* ── Desktop View: Table ── */}
+                        <div className="hidden md:block">
+                            <table className="w-full text-sm border-collapse">
                         <thead>
                             <tr className="bg-white border-b border-slate-200 text-left sticky top-0 z-10">
                                 <th className="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Applicant</th>
@@ -174,6 +216,8 @@ function ListView({
                             ))}
                         </tbody>
                     </table>
+                </div>
+                </>
                 )}
             </div>
         </div>
@@ -211,18 +255,22 @@ function DetailView({
         <div className="flex flex-col h-full bg-slate-50 overflow-auto">
 
             {/* ── Top Bar ── */}
-            <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center gap-4 shrink-0 sticky top-0 z-10">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to list
-                </button>
-                <div className="h-5 w-px bg-slate-200" />
-                <p className="text-sm font-semibold text-slate-800 truncate">{a.fullName}</p>
-                <div className="ml-auto flex items-center gap-2">
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wilder">Status:</span>
+            <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shrink-0 sticky top-0 z-10">
+                <div className="flex items-center justify-between w-full sm:w-auto shrink-0">
+                    <button
+                        onClick={onBack}
+                        className="flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-indigo-600 transition-colors"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>Back <span className="hidden sm:inline">to list</span></span>
+                    </button>
+                    <p className="sm:hidden text-sm font-bold text-slate-800 truncate max-w-[150px]">{a.fullName}</p>
+                </div>
+                <div className="hidden sm:block h-5 w-px bg-slate-200 shrink-0" />
+                <p className="hidden sm:block text-sm font-semibold text-slate-800 truncate">{a.fullName}</p>
+                
+                <div className="flex items-center justify-between sm:justify-end sm:ml-auto w-full sm:w-auto pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 gap-2 shrink-0">
+                    <span className="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider">Status:</span>
                     <select
                         value={a.status}
                         onChange={handleStatusChange}
@@ -259,7 +307,7 @@ function DetailView({
                                 <p className="text-sm text-slate-500">{a.email}</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 border-t border-slate-100">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-6 pt-4 border-t border-slate-100">
                             <InfoItem icon={<Phone className="w-4 h-4" />} label="Phone" value={a.phone} />
                             <InfoItem icon={<Mail className="w-4 h-4" />} label="Email" value={a.email} />
                             {a.location && <InfoItem icon={<MapPin className="w-4 h-4" />} label="Location" value={a.location} />}
@@ -360,11 +408,11 @@ function DetailView({
 /* ── Small reusable bits ─────────────────────────────────── */
 function InfoItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
-        <div className="flex flex-col gap-1">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{label}</p>
-            <div className="flex items-center gap-1.5 text-sm text-slate-700">
-                <span className="text-slate-400">{icon}</span>
-                <span className="truncate">{value}</span>
+        <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
+            <div className="flex items-center gap-2 text-sm text-slate-700">
+                <span className="text-slate-400 shrink-0">{icon}</span>
+                <span className="truncate max-w-[200px]" title={value}>{value}</span>
             </div>
         </div>
     );
