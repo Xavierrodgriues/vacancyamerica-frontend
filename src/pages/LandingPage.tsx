@@ -342,10 +342,10 @@ export default function LandingPage() {
 
                     <div className="landing-hero-animate-delay-2 flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                         <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white font-semibold px-8 py-3.5 rounded-full text-sm flex items-center gap-2 w-full sm:w-auto justify-center shadow-lg shadow-red-200">
-                            Find My Job — Free <ArrowRight className="w-4 h-4" />
+                            Find My Job <ArrowRight className="w-4 h-4" />
                         </button>
                         <button onClick={() => navigate("/auth")} className="landing-btn-secondary bg-white text-[#102A43] font-semibold px-8 py-3.5 rounded-full text-sm border border-[#E5E7EB] w-full sm:w-auto flex items-center gap-2 justify-center">
-                            <Briefcase className="w-4 h-4" /> Post a Job — Free
+                            <Briefcase className="w-4 h-4" /> Post a Job
                         </button>
                     </div>
 
@@ -820,10 +820,10 @@ export default function LandingPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white font-bold px-8 py-3.5 rounded-full text-sm flex items-center gap-2 shadow-lg shadow-red-900/40">
-                            Find My Job — Free <ArrowRight className="w-4 h-4" />
+                            Find My Job <ArrowRight className="w-4 h-4" />
                         </button>
                         <button onClick={() => navigate("/auth")} className="text-sm font-medium text-gray-400 hover:text-white transition-colors px-6 py-3.5">
-                            Post a Job for Free →
+                            Post a Job
                         </button>
                     </div>
                 </RevealSection>
