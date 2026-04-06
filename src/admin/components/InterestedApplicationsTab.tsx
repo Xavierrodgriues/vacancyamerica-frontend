@@ -256,7 +256,7 @@ function DetailView({
         <div className="flex flex-col h-full bg-slate-50 overflow-auto">
 
             {/* ── Top Bar ── */}
-            <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shrink-0 sticky top-0 z-10">
+            <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 shrink-0 sticky top-0 z-40">
                 <div className="flex items-center justify-between w-full sm:w-auto shrink-0">
                     <button
                         onClick={onBack}
@@ -300,23 +300,36 @@ function DetailView({
             <div className="flex-1 px-6 py-6 max-w-5xl mx-auto w-full space-y-6">
 
                 {/* Profile header card */}
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div className="h-20 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600" />
-                    <div className="px-6 pb-6">
-                        <div className="flex items-end gap-4 -mt-8 mb-4">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg ring-4 ring-white">
+                <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden mb-8 relative">
+                    {/* Dynamic Premium Banner */}
+                    <div className="h-28 sm:h-36 relative overflow-hidden" style={{backgroundColor: "#5850e7"}}>
+                        {/* Decorative aesthetic shapes */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
+                    </div>
+                    
+                    <div className="px-6 sm:px-8 pb-8 relative z-10">
+                        {/* Flex container naturally positioned BELOW the banner */}
+                        <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 mb-6">
+                            {/* Avatar explicitly pulled UP into the banner via negative margin */}
+                            <div className="-mt-16 sm:-mt-20 w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-primary to-rose-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold shadow-xl ring-[6px] ring-white shrink-0 relative z-20">
                                 {initials(a.fullName)}
                             </div>
-                            <div className="pb-1">
-                                <h2 className="text-lg font-bold text-slate-900">{a.fullName}</h2>
-                                <p className="text-sm text-slate-500">{a.email}</p>
+                            
+                            {/* Text naturally sits within the flex container, zero overlap with banner */}
+                            <div className="flex-1 pb-1 sm:pb-2 pt-2 sm:pt-0">
+                                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-none mb-1">{a.fullName}</h1>
+                                <p className="text-sm sm:text-base font-semibold text-slate-500 flex items-center gap-1.5 mt-2">
+                                    <Mail className="w-4 h-4 text-slate-400" />
+                                    {a.email}
+                                </p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-6 pt-4 border-t border-slate-100">
-                            <InfoItem icon={<Phone className="w-4 h-4" />} label="Phone" value={a.phone} />
-                            <InfoItem icon={<Mail className="w-4 h-4" />} label="Email" value={a.email} />
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-8 pt-6 border-t border-slate-100">
+                            <InfoItem icon={<Phone className="w-4 h-4" />} label="Phone Number" value={a.phone} />
                             {a.location && <InfoItem icon={<MapPin className="w-4 h-4" />} label="Location" value={a.location} />}
-                            <InfoItem icon={<Calendar className="w-4 h-4" />} label="Applied" value={fDateTime(a.createdAt)} />
+                            <InfoItem icon={<Calendar className="w-4 h-4" />} label="Applied On" value={fDateTime(a.createdAt)} />
                         </div>
                     </div>
                 </div>
