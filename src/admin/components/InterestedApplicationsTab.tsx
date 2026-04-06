@@ -367,14 +367,14 @@ function DetailView({
 
                         {/* Post */}
                         <Section title="Applied To Post" icon={<BriefcaseBusiness className="w-4 h-4" />}>
-                            <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed line-clamp-6">
+                            <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">
                                 {a.post?.content || <span className="italic text-slate-400">No post content</span>}
                             </p>
                             {(a.post?.image_url || a.post?.video_url) && (
-                                <div className="mt-3 rounded-xl overflow-hidden border border-slate-200">
+                                <div className="mt-4 rounded-xl overflow-hidden border border-slate-200 bg-slate-50/50 flex items-center justify-center">
                                     {a.post.image_url
-                                        ? <img src={a.post.image_url} alt="Post" className="w-full max-h-48 object-cover" />
-                                        : <video src={a.post.video_url || undefined} controls className="w-full max-h-48 bg-black" />
+                                        ? <img src={a.post.image_url} alt="Post Preview" className="w-full h-auto max-h-[350px] object-contain" />
+                                        : <video src={a.post.video_url || undefined} controls className="w-full h-auto max-h-[350px] bg-black" />
                                     }
                                 </div>
                             )}
