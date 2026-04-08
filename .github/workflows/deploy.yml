@@ -31,10 +31,12 @@ jobs:
 
       - name: Tag Image
         run: |
+          docker tag vacancyamerica-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/vacancyamerica-frontend:${{ github.sha }}
           docker tag vacancyamerica-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/vacancyamerica-frontend:latest
 
       - name: Push Image
         run: |
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/vacancyamerica-frontend:${{ github.sha }}
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/vacancyamerica-frontend:latest
 
       - name: Trigger Infra Deployment
