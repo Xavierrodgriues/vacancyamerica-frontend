@@ -15,9 +15,10 @@ interface FriendActionButtonsProps {
     userId: string;
     username: string;
     variant?: "default" | "compact";
+    fullWidth?: boolean;
 }
 
-export function FriendActionButtons({ userId, username, variant = "default" }: FriendActionButtonsProps) {
+export function FriendActionButtons({ userId, username, variant = "default", fullWidth = false }: FriendActionButtonsProps) {
     const { user } = useAuth();
     const { data: myProfile } = useProfile();
     const { data: connection, isLoading } = useConnectionStatus(userId);
@@ -55,11 +56,16 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         }
     };
 
+    const containerStyle = `flex flex-wrap items-center gap-2 ${fullWidth ? "w-full" : ""}`;
+    const primaryBtnStyle = `flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#E63946] hover:bg-[#d32f3f] text-white text-xs sm:text-[14px] font-bold shadow-sm transition-all disabled:opacity-60 ${fullWidth ? "flex-1 h-10" : "rounded-full"}`;
+    const secondaryBtnStyle = `flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[14px] font-bold shadow-sm transition-all disabled:opacity-60 ${fullWidth ? "flex-1 h-10" : "rounded-full"}`;
+    const dangerBtnStyle = `flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-semibold transition-all disabled:opacity-60 ${fullWidth ? "h-10 px-4" : "rounded-full"}`;
+
     // ── Already blocked ──
     if (isBlocked) {
         return (
-            <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-50 border border-red-200 text-red-500 text-xs sm:text-sm font-semibold select-none">
+            <div className={containerStyle}>
+                <div className={`flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-50 border border-red-200 text-red-500 text-sm font-semibold select-none ${fullWidth ? "w-full justify-center h-10" : "rounded-full"}`}>
                     <Ban className="w-3.5 h-3.5" />
                     Blocked
                 </div>
@@ -85,10 +91,10 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
         }
 
         return (
-            <div className="flex flex-wrap items-center gap-2">
-                {/* Friends pill */}
-                <div className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 text-xs sm:text-sm font-semibold select-none">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+            <div className={containerStyle}>
+                {/* Friends pill (as a full width button if needed) */}
+                <div className={`flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm font-semibold shadow-sm select-none ${fullWidth ? "flex-1 h-10" : "rounded-full"}`}>
+                    <CheckCircle2 className="w-4 h-4" />
                     Friends
                 </div>
 
@@ -96,14 +102,14 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setDropdownOpen(v => !v)}
-                        className="flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition-colors"
+                        className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-sm font-bold shadow-sm transition-all ${fullWidth ? "h-10" : "rounded-full"}`}
                     >
-                        More <ChevronDown className="w-3.5 h-3.5" />
+                        {fullWidth ? <ChevronDown className="w-4 h-4" /> : <>More <ChevronDown className="w-3.5 h-3.5" /></>}
                     </button>
                     {dropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 w-40 sm:w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                        <div className={`absolute ${fullWidth ? "right-0" : "right-0"} top-full mt-1.5 w-44 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden`}>
                             <button
-                                className="w-full flex items-center gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                                 onClick={async () => {
                                     setDropdownOpen(false);
                                     if (confirm("Unfriend this user?")) await unfriend.mutateAsync(userId);
@@ -115,7 +121,7 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
                             </button>
                             <div className="h-px bg-slate-100 mx-3 my-1" />
                             <button
-                                className="w-full flex items-center gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm text-red-500 hover:bg-red-50 transition-colors"
+                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
                                 onClick={handleBlock}
                                 disabled={block.isPending}
                             >
@@ -132,31 +138,56 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     // ── Incoming request ──
     if (incomingRequest) {
         return (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={containerStyle}>
                 <button
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-xs sm:text-sm font-semibold transition-colors disabled:opacity-60"
+                    className={primaryBtnStyle}
                     onClick={() => acceptRequest.mutateAsync(connection!.requestId!)}
                     disabled={acceptRequest.isPending}
                 >
-                    {acceptRequest.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserCheck className="w-3.5 h-3.5" />}
-                    Accept Request
+                    {acceptRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserCheck className="w-4 h-4" />}
+                    Accept
                 </button>
                 <button
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
+                    className={secondaryBtnStyle}
                     onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
-                    {cancelRequest.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserX className="w-3.5 h-3.5" />}
+                    {cancelRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserX className="w-4 h-4 hidden sm:block" />}
                     Decline
                 </button>
-                <button
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
-                    onClick={handleBlock}
-                    disabled={block.isPending}
-                >
-                    {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
-                    Block
-                </button>
+                
+                {/* More dropdown for incoming request, specifically for Block */}
+                {fullWidth ? (
+                    <div className="relative" ref={dropdownRef}>
+                        <button
+                            onClick={() => setDropdownOpen(v => !v)}
+                            className="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold shadow-sm transition-all"
+                        >
+                            <ChevronDown className="w-4 h-4" />
+                        </button>
+                        {dropdownOpen && (
+                            <div className="absolute right-0 top-full mt-1.5 w-40 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                                <button
+                                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                                    onClick={handleBlock}
+                                    disabled={block.isPending}
+                                >
+                                    {block.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
+                                    Block
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <button
+                        className={dangerBtnStyle}
+                        onClick={handleBlock}
+                        disabled={block.isPending}
+                    >
+                        {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
+                        Block
+                    </button>
+                )}
             </div>
         );
     }
@@ -164,54 +195,93 @@ export function FriendActionButtons({ userId, username, variant = "default" }: F
     // ── Outgoing pending ──
     if (outgoingRequest) {
         return (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={containerStyle}>
                 <button
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs sm:text-sm font-semibold transition-colors disabled:opacity-60"
+                    className={secondaryBtnStyle}
                     onClick={() => cancelRequest.mutateAsync(connection!.requestId!)}
                     disabled={cancelRequest.isPending}
                 >
-                    {cancelRequest.isPending ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                        <Clock className="w-3.5 h-3.5" />
-                    )}
-                    Request Sent
+                    {cancelRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Clock className="w-4 h-4 hidden sm:block" />}
+                    Requested
                 </button>
-                <button
-                    className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
-                    onClick={handleBlock}
-                    disabled={block.isPending}
-                >
-                    {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
-                    Block
-                </button>
+                
+                {fullWidth ? (
+                    <div className="relative" ref={dropdownRef}>
+                        <button
+                            onClick={() => setDropdownOpen(v => !v)}
+                            className="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold shadow-sm transition-all"
+                        >
+                            <ChevronDown className="w-4 h-4" />
+                        </button>
+                        {dropdownOpen && (
+                            <div className="absolute right-0 top-full mt-1.5 w-40 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                                <button
+                                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                                    onClick={handleBlock}
+                                    disabled={block.isPending}
+                                >
+                                    {block.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
+                                    Block User
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <button
+                        className={dangerBtnStyle}
+                        onClick={handleBlock}
+                        disabled={block.isPending}
+                    >
+                        {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
+                        Block
+                    </button>
+                )}
             </div>
         );
     }
 
     // ── Default: Add Friend ──
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className={containerStyle}>
             <button
-                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E63946] hover:bg-[#d32f3f] text-white text-xs sm:text-sm font-semibold transition-colors shadow-sm shadow-red-200 disabled:opacity-60"
+                className={primaryBtnStyle}
                 onClick={() => sendRequest.mutateAsync(userId)}
                 disabled={sendRequest.isPending || isLoading}
             >
-                {sendRequest.isPending ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                    <UserPlus className="w-3.5 h-3.5" />
-                )}
+                {sendRequest.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
                 Add Friend
             </button>
-            <button
-                className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-red-200 bg-red-50 hover:bg-red-100 text-red-500 text-xs sm:text-sm font-medium transition-colors disabled:opacity-60"
-                onClick={handleBlock}
-                disabled={block.isPending}
-            >
-                {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
-                Block
-            </button>
+            {fullWidth ? (
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={() => setDropdownOpen(v => !v)}
+                        className="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold shadow-sm transition-all"
+                    >
+                        <ChevronDown className="w-4 h-4" />
+                    </button>
+                    {dropdownOpen && (
+                        <div className="absolute right-0 top-full mt-1.5 w-40 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 z-50 overflow-hidden">
+                            <button
+                                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                                onClick={handleBlock}
+                                disabled={block.isPending}
+                            >
+                                {block.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
+                                Block
+                            </button>
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <button
+                    className={dangerBtnStyle}
+                    onClick={handleBlock}
+                    disabled={block.isPending}
+                >
+                    {block.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Ban className="w-3.5 h-3.5" />}
+                    Block
+                </button>
+            )}
         </div>
     );
 }

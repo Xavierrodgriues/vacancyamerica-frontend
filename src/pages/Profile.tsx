@@ -174,27 +174,7 @@ export default function Profile() {
       </div>
 
       {/* ── Profile Identity Block ── */}
-      <div className="px-4 sm:px-6">
-        {/* Action buttons row — sits right below the banner, aligned right */}
-        <div className="flex justify-end pt-3 pb-2 min-h-[52px]">
-          {isOwnProfile && !editing && (
-            <button
-              onClick={startEdit}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-slate-200 bg-white text-[13px] font-bold text-foreground hover:border-[#E63946] hover:text-[#E63946] transition-all duration-200 shadow-sm"
-            >
-              <Pencil className="w-3.5 h-3.5" />
-              Edit profile
-            </button>
-          )}
-          {!isOwnProfile && visitedProfile && (
-            <FriendActionButtons
-              userId={visitedProfile.user_id}
-              username={visitedProfile.username}
-            />
-          )}
-        </div>
-
-
+      <div className="px-4 sm:px-6 pt-[48px]">
         {/* Name / Username / Bio */}
         {editing ? (
           <div className="space-y-3 mt-1 mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
@@ -253,7 +233,7 @@ export default function Profile() {
         )}
 
         {/* ── Stats Row ── */}
-        <div className="flex items-center gap-6 py-3 border-t border-b border-slate-100 mb-1">
+        <div className="flex items-center gap-6 py-3 border-t border-b border-slate-100">
           <div className="flex flex-col items-start gap-0.5">
             <span className="text-[17px] font-extrabold text-foreground leading-none">{formatCompactNumber(postCount)}</span>
             <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide">Posts</span>
@@ -272,6 +252,27 @@ export default function Profile() {
             </span>
             <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wide">Following</span>
           </div>
+        </div>
+
+        {/* ── Action Buttons ── */}
+        <div className="flex items-center gap-2 pt-4 pb-1 w-full relative z-10">
+          {isOwnProfile && !editing && (
+            <Button
+              onClick={startEdit}
+              variant="outline"
+              className="flex-1 rounded-xl h-[38px] border-slate-200 text-[14px] font-bold text-slate-700 shadow-sm hover:border-[#E63946] hover:text-[#E63946]"
+            >
+              <Pencil className="w-4 h-4 mr-1.5" />
+              Edit profile
+            </Button>
+          )}
+          {!isOwnProfile && visitedProfile && (
+            <FriendActionButtons
+              userId={visitedProfile.user_id}
+              username={visitedProfile.username}
+              fullWidth={true}
+            />
+          )}
         </div>
       </div>
 

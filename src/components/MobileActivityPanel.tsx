@@ -50,7 +50,7 @@ export function MobileActivityPanel({ isOpen, onClose }: MobileActivityPanelProp
         switch (act.type) {
             case "LIKE": return <>{ActorLink} liked {TargetLink} post</>;
             case "COMMENT": return <>{ActorLink} commented on {TargetLink} post</>;
-            case "FOLLOW": return <>{ActorLink} started following {isRecipient ? "you" : <Link to={`/profile/${act.recipient?.username}`} className="font-semibold hover:text-primary" onClick={onClose}>{act.recipient?.display_name || ""}</Link>}</>;
+            case "FOLLOW": return isRecipient ? <>{ActorLink} sent you a connection request</> : <>{ActorLink} sent a connection request to <Link to={`/profile/${act.recipient?.username}`} className="font-semibold hover:text-primary" onClick={onClose}>{act.recipient?.display_name || ""}</Link></>;
             default: return <>{ActorLink} interacted with {TargetLink}</>;
         }
     };
