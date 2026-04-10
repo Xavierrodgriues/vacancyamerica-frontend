@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { MobileActivityPanel } from "@/components/MobileActivityPanel";
+import { useConversations } from "@/hooks/use-chat";
 
 const navItems = [
   { title: "Home",     url: "/home",     icon: Home },
@@ -22,12 +23,16 @@ export function MobileNav() {
   const { data: profile } = useProfile();
   const { data: requests } = useFriendRequests();
   const { data: activityList } = useActivity();
+  const { data: conversations } = useConversations();
   const [activityOpen, setActivityOpen] = useState(false);
 
   const pendingRequestsCount =
     requests?.filter((r) => r.receiver._id === profile?._id && r.status === "pending").length || 0;
 
   const unreadCount = (activityList || []).filter((a) => !a.isRead).length;
+
+  const unreadMessagesCount = 
+    conversations?.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0) || 0;
 
   const handleSignOut = async () => {
     await signOut();
@@ -61,8 +66,14 @@ export function MobileNav() {
                   <item.icon className={cn("h-5.5 w-5.5", isActive && "stroke-[2.5]")} />
                   {/* Network badge */}
                   {item.title === "Network" && pendingRequestsCount > 0 && (
-                    <span className="absolute -top-1 -right-1.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full leading-none border border-white shadow-sm">
+                    <span className="absolute -top-1 -right-1.5 bg-red-500 text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border border-white shadow-sm">
                       {pendingRequestsCount > 9 ? "9+" : pendingRequestsCount}
+                    </span>
+                  )}
+                  {/* Messages badge */}
+                  {item.title === "Messages" && unreadMessagesCount > 0 && (
+                    <span className="absolute -top-1 -right-1.5 bg-red-500 text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border border-white shadow-sm">
+                      {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
                     </span>
                   )}
                 </div>

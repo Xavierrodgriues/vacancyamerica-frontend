@@ -2,7 +2,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, Home, Compass, MessageCircle, Bell, Users } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile } from "@/hooks/use-profile";
-import { useFriendRequests } from "@/hooks/use-friends";
+import { useFriendRequests, useFriendRealtimeUpdates } from "@/hooks/use-friends";
+import { useConversations } from "@/hooks/use-chat";
+import { useActivity } from "@/hooks/use-activity";
 import { UserAvatar } from "@/components/UserAvatar";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,9 +23,18 @@ export function TopNav() {
   const { signOut } = useAuth();
   const { data: profile } = useProfile();
   const { data: requests } = useFriendRequests();
+  const { data: conversations } = useConversations();
+  const { data: activityList } = useActivity();
+
+  useFriendRealtimeUpdates();
 
   const pendingRequestsCount =
     requests?.filter((r) => r.receiver._id === profile?._id && r.status === "pending").length || 0;
+    
+  const unreadMessagesCount = 
+    conversations?.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0) || 0;
+
+  const unreadActivityCount = (activityList || []).filter((a) => !a.isRead).length;
 
   const handleSignOut = async () => {
     await signOut();
@@ -78,6 +89,16 @@ export function TopNav() {
                   {item.title === "Network" && pendingRequestsCount > 0 && (
                     <span className="absolute -top-1.5 -right-2 bg-primary text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border-2 border-white shadow-sm">
                       {pendingRequestsCount > 9 ? "9+" : pendingRequestsCount}
+                    </span>
+                  )}
+                  {item.title === "Messages" && unreadMessagesCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 bg-primary text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border-2 border-white shadow-sm">
+                      {unreadMessagesCount > 9 ? "9+" : unreadMessagesCount}
+                    </span>
+                  )}
+                  {item.title === "Notifications" && unreadActivityCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 bg-primary text-white text-[9px] font-bold min-w-[16px] h-4 flex items-center justify-center rounded-full px-0.5 border-2 border-white shadow-sm">
+                      {unreadActivityCount > 9 ? "9+" : unreadActivityCount}
                     </span>
                   )}
                 </div>
