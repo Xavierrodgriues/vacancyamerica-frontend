@@ -313,46 +313,53 @@ export default function LandingPage() {
                 </div>
             )}
 
-            {/* ─── HERO ─── */}
-            <section id="hero" className="relative pt-32 pb-24 lg:pt-48 lg:pb-36 px-6 lg:px-8 overflow-hidden">
-                {/* Background accent blobs */}
-                <div className="absolute top-24 -left-32 w-96 h-96 bg-[#E63946]/6 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 -right-24 w-80 h-80 bg-[#102A43]/6 rounded-full blur-3xl pointer-events-none" />
-                {/* dot grid */}
-                <div className="absolute inset-0 -z-10 opacity-[0.035]" style={{ backgroundImage: "radial-gradient(circle, #102A43 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+            {/* ─── TRUSTWORTHY CLEAN HERO ─── */}
+            <section id="hero" className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 px-6 lg:px-8 overflow-hidden bg-white">
+                {/* Very subtle, professional background accents */}
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-50/60 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-50/60 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+                
+                {/* Subtle dot grid for tech/professional feel */}
+                <div className="absolute inset-0 -z-10 opacity-[0.5]" style={{ backgroundImage: "radial-gradient(circle, #e2e8f0 1.5px, transparent 1.5px)", backgroundSize: "32px 32px" }} />
 
-                <div className="max-w-4xl mx-auto text-center">
-                    <div className="badge-pop inline-flex items-center gap-2 bg-[#E63946]/10 text-[#E63946] text-xs font-bold tracking-widest uppercase px-5 py-2 rounded-full mb-8 border border-[#E63946]/20">
-                        <CheckShield className="w-3.5 h-3.5" />
-                        USA-Only · 100% Verified · Free
+                <div className="max-w-5xl mx-auto text-center relative z-10 w-full mb-8">
+                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-bold tracking-widest uppercase px-6 py-2.5 rounded-full mb-10 border border-blue-100 shadow-sm animate-[fadeInUp_0.6s_ease-out]">
+                        <CheckShield className="w-4 h-4 text-blue-600" />
+                        US Citizens & GC Only · 100% Verified
                     </div>
 
-                    <h1 className="landing-hero-animate text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.08] mb-6">
+                    <h1 className="text-5xl sm:text-6xl lg:text-[76px] font-extrabold tracking-tight leading-[1.05] mb-8 text-[#102A43] animate-[fadeInUp_0.6s_ease-out_100ms_both]">
                         Every Job. Every Level.
                         <br />
-                        <span className="hero-gradient-text">Always Verified.</span>
+                        <span className="text-[#E63946] relative inline-block">
+                            Always Verified.
+                            <svg className="absolute w-full h-3 -bottom-1 left-0 text-red-100 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path fill="currentColor" d="M0 5 Q 50 10 100 5 L 100 10 L 0 10 Z"></path>
+                            </svg>
+                        </span>
                     </h1>
 
-                    <p className="landing-hero-animate-delay text-lg sm:text-xl text-[#64748B] max-w-2xl mx-auto leading-relaxed mb-4">
-                        From barbers and cleaners to Fortune 500 engineers — <strong className="text-[#102A43]">VacancyAmerica</strong> is the only platform where <em>every</em> American worker finds real, verified jobs. No fake listings. No hidden fees. Ever.
+                    <p className="text-lg sm:text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-6 animate-[fadeInUp_0.6s_ease-out_200ms_both]">
+                        From skilled trades to Fortune 500 tech — <strong className="text-[#102A43]">VacancyAmerica</strong> is the platform where American workers find real jobs. No fake listings. No hidden fees.
                     </p>
-                    <p className="landing-hero-animate-delay text-sm text-[#94A3B8] max-w-xl mx-auto mb-10">
-                        Companies: we verify your listing and connect you with quality applicants — completely free.
+                    
+                    <p className="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto mb-12 font-medium animate-[fadeInUp_0.6s_ease-out_300ms_both]">
+                        Companies: We verify your listing and connect you with quality applicants for free.
                     </p>
 
-                    <div className="landing-hero-animate-delay-2 flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                        <button onClick={() => navigate("/auth")} className="landing-btn-primary bg-[#E63946] text-white font-semibold px-8 py-3.5 rounded-full text-sm flex items-center gap-2 w-full sm:w-auto justify-center shadow-lg shadow-red-200">
-                            Find My Job <ArrowRight className="w-4 h-4" />
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-14 animate-[fadeInUp_0.6s_ease-out_400ms_both]">
+                        <button onClick={() => navigate("/auth")} className="bg-[#E63946] hover:bg-[#d03340] text-white font-bold px-10 py-4 rounded-full text-lg flex items-center justify-center gap-2 w-full sm:w-auto shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                            Find My Job <ArrowRight className="w-5 h-5" />
                         </button>
-                        <button onClick={() => navigate("/auth")} className="landing-btn-secondary bg-white text-[#102A43] font-semibold px-8 py-3.5 rounded-full text-sm border border-[#E5E7EB] w-full sm:w-auto flex items-center gap-2 justify-center">
-                            <Briefcase className="w-4 h-4" /> Post a Job
+                        <button onClick={() => navigate("/auth")} className="bg-white hover:bg-slate-50 text-[#102A43] border border-slate-200 font-bold px-10 py-4 rounded-full text-lg flex items-center gap-2 justify-center w-full sm:w-auto shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ring-1 ring-slate-900/5">
+                            <Briefcase className="w-5 h-5 text-slate-400" /> Post a Job
                         </button>
                     </div>
 
-                    <div className="landing-hero-animate-delay-3 flex items-center justify-center gap-6 text-xs text-[#94A3B8]">
-                        <span className="flex items-center gap-1.5"><CheckShield className="w-3.5 h-3.5 text-green-500" /> No sign-up fee</span>
-                        <span className="flex items-center gap-1.5"><CheckShield className="w-3.5 h-3.5 text-green-500" /> No hidden charges</span>
-                        <span className="flex items-center gap-1.5"><CheckShield className="w-3.5 h-3.5 text-green-500" /> All jobs verified</span>
+                    <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-semibold text-slate-500 animate-[fadeInUp_0.6s_ease-out_500ms_both]">
+                        <span className="flex items-center gap-2"><CheckShield className="w-4 h-4 text-green-500" /> No sign-up fee</span>
+                        <span className="flex items-center gap-2"><CheckShield className="w-4 h-4 text-green-500" /> No hidden charges</span>
+                        <span className="flex items-center gap-2"><CheckShield className="w-4 h-4 text-green-500" /> All jobs verified</span>
                     </div>
                 </div>
             </section>
@@ -364,7 +371,7 @@ export default function LandingPage() {
                         { value: "100%", label: "Jobs Verified", sub: "manual review" },
                         { value: "0", label: "Fake Listings", sub: "zero tolerance" },
                         { value: "$0", label: "Cost to Use", sub: "free" },
-                        { value: "All 50", label: "States Covered", sub: "USA citizens" },
+                        { value: "All 50", label: "States Covered", sub: "US Citizens & GC Holders" },
                     ].map((stat, i) => (
                         <div key={stat.label} className={`stat-item stagger-${i + 1}`}>
                             <div className="text-3xl lg:text-4xl font-extrabold tracking-tight text-[#102A43]">{stat.value}</div>
@@ -374,6 +381,68 @@ export default function LandingPage() {
                     ))}
                 </div>
             </RevealSection>
+
+            {/* ─── USC / GC EXCLUSIVITY ─── */}
+            <section className="py-20 lg:py-28 px-6 lg:px-8 bg-gradient-to-br from-[#102A43] via-[#163554] to-[#102A43] text-white relative overflow-hidden">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#E63946]/10 rounded-full blur-[80px] translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[80px] -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+                
+                <RevealSection className="max-w-5xl mx-auto relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="inline-flex items-center gap-2 bg-white/10 text-white text-xs font-bold tracking-widest uppercase px-5 py-2 rounded-full mb-6 border border-white/20">
+                            <CheckShield className="w-3.5 h-3.5 text-green-400" />
+                            Built for American Workers
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
+                            Are you a <span className="text-[#E63946]">US Citizen</span> or <span className="text-[#E63946]">Green Card</span> holder?
+                            <br /><span className="text-gray-300">We are here for you.</span>
+                        </h2>
+                        <p className="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+                            VacancyAmerica is built from the ground up to protect and prioritize the domestic workforce. No offshore competition, no scams, just real opportunities.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md hover:bg-white/10 transition-colors">
+                            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-white">
+                                <Users className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-white">No Global Competition</h3>
+                            <p className="text-gray-400 leading-relaxed text-sm">
+                                Connect directly with employers who need local talent. You won't have to compete with thousands of international applicants for a role.
+                            </p>
+                        </div>
+                        
+                        <div className="bg-white/5 border border-[#E63946]/30 rounded-3xl p-8 backdrop-blur-md relative overflow-hidden transform lg:-translate-y-4 hover:bg-white/10 transition-colors shadow-2xl shadow-[#E63946]/10">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#E63946] to-transparent"></div>
+                            <div className="w-12 h-12 bg-[#E63946]/20 rounded-2xl flex items-center justify-center mb-6 text-[#E63946]">
+                                <Award className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-white">Stand Out Instantly</h3>
+                            <p className="text-gray-400 leading-relaxed text-sm">
+                                Employers on our platform value candidates with USC or GC status. By being here, your application jumps to the top of their priority list.
+                            </p>
+                        </div>
+
+                        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md hover:bg-white/10 transition-colors">
+                            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 text-white">
+                                <Search className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-white">Filtered & Focused</h3>
+                            <p className="text-gray-400 leading-relaxed text-sm">
+                                Stop scrolling through "ghost jobs" or companies that can't legally hire you. Spend time applying only to companies looking for your exact status.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-12 text-center">
+                        <button onClick={() => navigate("/auth")} className="bg-white text-[#102A43] hover:bg-gray-100 font-bold px-8 py-3.5 rounded-full text-sm inline-flex items-center gap-2 transition-colors">
+                            Create Your Free Profile <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </div>
+                </RevealSection>
+            </section>
 
             {/* ─── FOR COMPANIES ─── */}
             <section id="for-companies" className="py-24 lg:py-32 px-6 lg:px-8 bg-white">
